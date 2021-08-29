@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="common" />
+        <module name="ws-server" />
+        <module name="deliver-server" />
+        <module name="msg-server" />
+        <module name="logic-server" />
+        <module name="dispatcher" />
+        <module name="gateway" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="LogicServer" target="8" />
+      <module name="wsserver" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
