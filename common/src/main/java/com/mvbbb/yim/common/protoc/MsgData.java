@@ -9,10 +9,11 @@ import java.util.Date;
 @Data
 public class MsgData {
     private String clientMsgId;
-    private String serverMsgId;
+    private long serverMsgId;
     private String fromUserId;
     private SessionType sessionType;
     private String toSessionId;
+    private String recvUserId;
     private MsgType msgType;
     private String data;
     private Date timestamp;

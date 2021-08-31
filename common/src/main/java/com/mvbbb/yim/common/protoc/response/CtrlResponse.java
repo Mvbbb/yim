@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 public class CtrlResponse<T> {
-    private String client_msg_id;
+    private String clientMsgId;
     private CtrlResponseType type;
     private String msg;
     private T data;

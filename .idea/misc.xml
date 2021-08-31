@@ -10,6 +10,8 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/LogicServer/pom.xml" />
+        <option value="$PROJECT_DIR$/deliver-server/pom.xml" />
+        <option value="$PROJECT_DIR$/dispatcher/pom.xml" />
         <option value="$PROJECT_DIR$/wsserver/pom.xml" />
       </set>
     </option>
