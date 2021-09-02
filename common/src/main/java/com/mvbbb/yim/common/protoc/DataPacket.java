@@ -1,11 +1,11 @@
 package com.mvbbb.yim.common.protoc;
 
-import lombok.Builder;
+import com.mvbbb.yim.common.protoc.ws.CmdIdEnum;
 import lombok.Data;
 
 @Data
 public class DataPacket<T> {
     private int version;
-    private int cmdId;
+    private CmdIdEnum cmdId;
     T data;
 }

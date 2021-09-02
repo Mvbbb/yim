@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     UserMapper userMapper;
     @Resource
-    RedisTemplate<String,String> redisTemplate;
+    RedisTemplate<Object,Object> redisTemplate;
 
 
     @Override
@@ -47,14 +47,4 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectById(userId);
     }
 
-    @Override
-    public void userOnline(String userId, WsServerRoute wsServerRoute) {
-        String value = JSONObject.toJSONString(wsServerRoute);
-        redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId,value);
-    }
-
-    @Override
-    public void userOffline(String userId) {
-        redisTemplate.delete(RedisConstant.STATUS_USER_ROUTE_PREFIX);
-    }
 }

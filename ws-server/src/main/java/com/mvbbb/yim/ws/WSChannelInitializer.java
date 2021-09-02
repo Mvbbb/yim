@@ -12,7 +12,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {

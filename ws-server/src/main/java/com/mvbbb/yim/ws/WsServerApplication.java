@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws","com.mvbbb.yim.common.config"})
 @EnableDubbo
 @PropertySource({"classpath:/dubbo-consumer.properties","classpath:/dubbo-provider.properties"})
 public class WsServerApplication implements CommandLineRunner {
@@ -19,12 +19,14 @@ public class WsServerApplication implements CommandLineRunner {
     }
 
     @Resource
-    RedisTemplate<String,String> redisTemplate;
+    RedisTemplate<Object,Object> redisTemplate;
 
     @Override
     public void run(String... args) throws Exception {
-        new WebSocketServer(7100).startWebSocketServer();
+        new Thread(()->{
+            new WebSocketServer(WsServerConfig.port).startWebSocketServer();
+        }).start();
         ConsumeMsgTask consumeMsgTask = new ConsumeMsgTask(redisTemplate);
-        new Thread(consumeMsgTask).start();;
+        new Thread(consumeMsgTask).start();
     }
 }

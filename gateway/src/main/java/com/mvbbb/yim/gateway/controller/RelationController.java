@@ -2,12 +2,10 @@ package com.mvbbb.yim.gateway.controller;
 
 import com.mvbbb.yim.common.entity.Group;
 import com.mvbbb.yim.common.entity.User;
-import com.mvbbb.yim.common.protoc.DataPacket;
-import com.mvbbb.yim.common.protoc.request.CreateGroupRequest;
-import com.mvbbb.yim.common.protoc.request.CtrlRequest;
-import com.mvbbb.yim.common.protoc.request.GroupMemberAddRequest;
-import com.mvbbb.yim.common.protoc.response.CtrlResponse;
-import com.mvbbb.yim.common.util.DataPacketBuilder;
+import com.mvbbb.yim.common.protoc.http.request.CreateGroupRequest;
+import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
+import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
+import com.mvbbb.yim.common.protoc.http.request.GroupMemberRequest;
 import com.mvbbb.yim.common.vo.GroupVO;
 import com.mvbbb.yim.logic.service.RelationService;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -27,128 +25,105 @@ public class RelationController {
 
 
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)
-    public DataPacket<CtrlResponse<List<User>>> friendList(@RequestBody DataPacket<CtrlRequest<Object>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
+    public GenericResponse<List<User>> friendList(@RequestBody GenericRequest<String> request) {
+        String userId = request.getData();
         Date timestamp = new Date(System.currentTimeMillis());
 
         List<User> friends = relationService.listFriend(userId);
 
-        return DataPacketBuilder.buildOkCtrlResponse(dataPacket.getData().getClientMsgId(),"成功",timestamp,friends);
+        return GenericResponse.success(friends);
     }
 
     @RequestMapping(path = "/friend/add", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<Object>> addFriend(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String friendId = dataPacket.getData().getData();
-        String userId = dataPacket.getData().getUserId();
-        Date timestamp = new Date(System.currentTimeMillis());
+    public GenericResponse<Object> addFriend(@RequestBody GenericRequest<String> request) {
+        String userId = request.getUserId();
+        String friendId = request.getData();
 
         relationService.addFriend(userId,friendId);
 
-        return DataPacketBuilder.buildOkCtrlResponse(dataPacket.getData().getClientMsgId(),"成功",timestamp,null);
+        return GenericResponse.success();
     }
 
     @RequestMapping(path = "/friend/delete", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<Object>> deleteFriend(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-        String userId = dataPacket.getData().getUserId();
-        String friendId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-
+    public GenericResponse<Object> deleteFriend(@RequestBody GenericRequest<String> request) {
+        String userId = request.getUserId();
+        String friendId = request.getData();
         relationService.deleteFriend(userId,friendId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,null);
+        return GenericResponse.success();
     }
 
     // 查看自己加入的群组
     @RequestMapping(path = "/group/list", method = RequestMethod.GET)
-    public DataPacket<CtrlResponse<List<Group>>> groupList(@RequestBody DataPacket<CtrlRequest<Object>> dataPacket) {
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-        String userId = dataPacket.getData().getUserId();
-        Date timestamp = new Date(System.currentTimeMillis());
+    public GenericResponse<List<Group>> groupList(@RequestBody GenericRequest<Object> request) {
+        String userId = request.getUserId();
         List<Group> groups = relationService.listGroup(userId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groups);
+        return GenericResponse.success(groups);
     }
 
     // 查看全部群组
     @RequestMapping(path = "/group/list/all", method = RequestMethod.GET)
-    public DataPacket<CtrlResponse<List<Group>>> groupAllList(@RequestBody DataPacket<CtrlRequest<Object>> dataPacket) {
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-        Date timestamp = new Date(System.currentTimeMillis());
+    public GenericResponse<List<Group>> groupAllList(@RequestBody GenericRequest<Object> request) {
         List<Group> groups = relationService.listAllGroup();
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groups);
+        return GenericResponse.success(groups);
     }
 
     @RequestMapping(path = "/group/join", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<GroupVO>> groupJoin(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
-        String groupId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
+    public GenericResponse<GroupVO> groupJoin(@RequestBody GenericRequest<String> request) {
+        String userId = request.getUserId();
+        String groupId = request.getData();
 
         GroupVO groupVO = relationService.joinGroup(userId, groupId);
-
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groupVO);
+        return GenericResponse.success(groupVO);
     }
 
     @RequestMapping(path = "/group/create", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<GroupVO>> groupCreate(@RequestBody DataPacket<CtrlRequest<CreateGroupRequest>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
-        List<String> members = dataPacket.getData().getData().getMembers();
-        String groupName = dataPacket.getData().getData().getGroupName();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
+    public GenericResponse<GroupVO> groupCreate(@RequestBody GenericRequest<CreateGroupRequest> request) {
+        String userId = request.getUserId();
+        List<String> members = request.getData().getMembers();
+        String groupName = request.getData().getGroupName();
         GroupVO group = relationService.createGroup(userId, groupName, members);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,group);
+        return GenericResponse.success(group);
     }
 
     @RequestMapping(path = "/group/quit", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<Object>> groupQuit(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
-        String groupId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
+    public GenericResponse<Object> groupQuit(@RequestBody GenericRequest<String> request) {
+        String userId = request.getUserId();
+        String groupId = request.getData();
         relationService.quitGroup(userId,groupId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,null);
+        return GenericResponse.success();
     }
 
     @RequestMapping(path = "/group/member/kickout", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<GroupVO>> groupMemberKickout(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
-        String groupId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-        GroupVO groupVO = relationService.kickoutGroupMember(groupId, userId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groupVO);
+    public GenericResponse<GroupVO> groupMemberKickout(@RequestBody GenericRequest<GroupMemberRequest> request) {
+
+        String groupId = request.getData().getGroupId();
+        String kickoutMember = request.getData().getMemberId();
+        GroupVO groupVO = relationService.kickoutGroupMember(groupId, kickoutMember);
+        return GenericResponse.success(groupVO);
     }
 
     @RequestMapping(path = "/group/member/add", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<GroupVO>> groupMemberAdd(@RequestBody DataPacket<CtrlRequest<GroupMemberAddRequest>> dataPacket) {
-        String userId = dataPacket.getData().getUserId();
-        String groupId = dataPacket.getData().getData().getGroupId();
-        String memberId = dataPacket.getData().getData().getMemberId();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
+    public GenericResponse<GroupVO> groupMemberAdd(@RequestBody GenericRequest<GroupMemberRequest> request) {
+
+        String groupId = request.getData().getGroupId();
+        String memberId = request.getData().getMemberId();
+
         GroupVO groupVO = relationService.addGroupMember(groupId, memberId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groupVO);
+        return GenericResponse.success(groupVO);
     }
 
     @RequestMapping(path = "/group/info", method = RequestMethod.GET)
-    public DataPacket<CtrlResponse<GroupVO>> groupInfo(@RequestBody DataPacket<CtrlRequest<String>> dataPacket){
-        String groupId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-
+    public GenericResponse<GroupVO> groupInfo(@RequestBody GenericRequest<String> request){
+        String groupId = request.getData();
         GroupVO groupVO = relationService.getGroupInfo(groupId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,groupVO);
+        return GenericResponse.success(groupVO);
     }
 
     @RequestMapping(path = "/group/dissolution", method = RequestMethod.POST)
-    public DataPacket<CtrlResponse<Object>> groupDissolution(@RequestBody DataPacket<CtrlRequest<String>> dataPacket) {
-        String groupId = dataPacket.getData().getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-        String clientMsgId = dataPacket.getData().getClientMsgId();
-
+    public GenericResponse<Object> groupDissolution(@RequestBody GenericRequest<String> request) {
+        String groupId = request.getData();
         relationService.dissolutionGroup(groupId);
-        return DataPacketBuilder.buildOkCtrlResponse(clientMsgId,"成功",timestamp,null);
+        return GenericResponse.success();
     }
 
 }

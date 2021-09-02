@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.msg","com.mvbbb.yim.common.config"})
 @EnableDubbo
 @PropertySource("classpath:/dubbo-provider.properties")
 @MapperScan("com.mvbbb.yim.common.mapper")

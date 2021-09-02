@@ -1,13 +1,15 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.auth.AuthService;
+import com.mvbbb.yim.auth.service.AuthService;
 import com.mvbbb.yim.common.entity.User;
-import com.mvbbb.yim.common.protoc.DataPacket;
-import com.mvbbb.yim.common.protoc.enums.AuthResponseEnum;
-import com.mvbbb.yim.common.protoc.request.LoginRequest;
-import com.mvbbb.yim.common.protoc.request.RegisterRequest;
-import com.mvbbb.yim.common.protoc.response.AuthResponse;
-import com.mvbbb.yim.common.protoc.response.RegisterResponse;
+import com.mvbbb.yim.common.protoc.AuthEnum;
+import com.mvbbb.yim.common.protoc.http.ResCode;
+import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
+import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
+import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
+import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
+import com.mvbbb.yim.common.protoc.http.response.AuthResponse;
+import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
 import com.mvbbb.yim.logic.service.UserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
@@ -23,67 +25,64 @@ public class UserController {
     @DubboReference
     UserService userService;
 
+    // todo 提高粒度
     @RequestMapping(path = "/login",method = RequestMethod.POST)
-    public DataPacket<AuthResponse> login(@RequestBody LoginRequest loginRequest){
+    public GenericResponse<AuthResponse> login(@RequestBody LoginRequest loginRequest){
         String token = authService.checkLogin(loginRequest.getUserId(), loginRequest.getPassword());
-        DataPacket<AuthResponse> authResponseDataPacket = new DataPacket<>();
-        AuthResponse authResponse = new AuthResponse();
         if(token==null){
-            authResponse.setStatus(AuthResponseEnum.ERROR);
-            authResponse.setErrMsg("用户名不存在或者密码错误");
-        }else{
-            authResponse.setUserId(loginRequest.getUserId());
-            authResponse.setToken(token);
+            return GenericResponse.failed(ResCode.FAILED);
         }
-        authResponseDataPacket.setData(authResponse);
-        return authResponseDataPacket;
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setUserId(loginRequest.getUserId());
+        authResponse.setToken(token);
+        return GenericResponse.success(authResponse);
     }
 
     @RequestMapping(path = "/register",method = RequestMethod.POST)
-    public DataPacket<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
+    public GenericResponse<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
         User user = authService.register(registerRequest.getUsername(), registerRequest.getPassword());
-        DataPacket<RegisterResponse> dataPacket = new DataPacket<>();
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setUserId(user.getUserId());
         registerResponse.setAvatar(user.getAvatar());
         registerResponse.setUsername(user.getUsername());
-        dataPacket.setData(registerResponse);
-        return dataPacket;
+        return GenericResponse.success(registerResponse);
     }
 
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public void logout(@RequestParam String userId) {
-
+    public GenericResponse<Object> logout(@RequestParam GenericRequest<Object> request) {
+        AuthEnum authRes = authService.logout(request.getUserId(), request.getToken());
+        return authRes==AuthEnum.SUCCESS?GenericResponse.success():GenericResponse.failed(ResCode.FAILED);
     }
 
 
     @RequestMapping(path = "/user/all",method = RequestMethod.GET)
-    public void allUser(){
-
+    public GenericResponse<List<User>> allUser(){
         List<User> users = userService.listAllUser();
-
+        return GenericResponse.success(users);
     }
 
 
     @RequestMapping(path = "/user/info",method = RequestMethod.GET)
-    public void userInfo(){
-        String userId = null;
+    public GenericResponse<User> userInfo(@RequestBody GenericRequest<String > request){
+        String userId = request.getData();
         User userInfo = userService.getUserInfo(userId);
-
+        return GenericResponse.success(userInfo);
     }
 
     @RequestMapping(path = "/user/avatar/update",method = RequestMethod.POST)
-    public void userAvatarUpdate(){
-        String userId = null;
-        String avatar = null;
+    public GenericResponse<Object> userAvatarUpdate(@RequestBody GenericRequest<String> request){
+        String userId = request.getUserId();
+        String avatar = request.getData();
         userService.updateUserAvatar(userId,avatar);
+        return GenericResponse.success();
     }
 
     @RequestMapping(path = "/user/name/update",method = RequestMethod.POST)
-    public void userNameUpdate(){
-        String userId = null;
-        String username = null;
+    public GenericResponse<Object> userNameUpdate(@RequestBody GenericRequest<String> request){
+        String userId = request.getUserId();
+        String username = request.getData();
         userService.updateUserName(userId,username);
+        return GenericResponse.success();
     }
 }

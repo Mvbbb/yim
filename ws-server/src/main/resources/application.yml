@@ -1,0 +1,5 @@
+spring:
+  redis:
+    host: ubuntu
+server:
+  port: 7006

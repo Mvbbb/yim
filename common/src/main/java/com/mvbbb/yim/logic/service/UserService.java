@@ -14,8 +14,4 @@ public interface UserService {
     User updateUserAvatar(String userId,String avatar);
 
     User updateUserName(String userId,String username);
-
-    void userOnline(String userId, WsServerRoute wsServerRoute);
-
-    void userOffline(String userId);
 }

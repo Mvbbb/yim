@@ -17,15 +17,14 @@ public class RouteService {
     static Logger logger = LoggerFactory.getLogger(RouteService.class);
 
     @Resource
-    RedisTemplate<String,String> redisTemplate;
+    RedisTemplate<Object,Object> redisTemplate;
 
-    public RouteService(RedisTemplate<String,String> redisTemplate) {
+    public RouteService(RedisTemplate<Object,Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     public WsServerRoute getUserWsServer(String userId){
-        String wsRoute = redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId);
-        WsServerRoute wsServerRoute = JSONObject.parseObject(wsRoute, WsServerRoute.class);
+        WsServerRoute wsServerRoute = JSONObject.parseObject(((String) redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId)),WsServerRoute.class);
         if(null == wsServerRoute){
             logger.error("user: [{}] not connect to WsServer",userId);
         }

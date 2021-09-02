@@ -11,12 +11,12 @@
         <module name="ws-server" />
         <module name="auth-server" />
         <module name="msg-server" />
-        <module name="client" />
         <module name="logic-server" />
         <module name="gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="client" target="8" />
       <module name="deliver-server" target="8" />
       <module name="dispatcher" target="8" />
       <module name="LogicServer" target="8" />

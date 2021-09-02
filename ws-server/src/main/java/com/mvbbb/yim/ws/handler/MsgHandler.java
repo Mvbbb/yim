@@ -5,8 +5,6 @@ import com.mvbbb.yim.msg.service.MsgService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
 @Component
 public class MsgHandler {
 

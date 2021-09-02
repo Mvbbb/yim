@@ -1,9 +1,15 @@
 package com.mvbbb.yim.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-public class WsServerRoute {
+@NoArgsConstructor
+@AllArgsConstructor
+public class WsServerRoute implements Serializable {
     private String ip;
-    private String port;
+    private int port;
 }

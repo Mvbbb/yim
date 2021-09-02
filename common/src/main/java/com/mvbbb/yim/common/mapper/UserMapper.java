@@ -21,4 +21,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Update("update yim_user set username = ${username} where user_id = ${userId}")
     int updateUsername(String userId, @Param("username") String username);
+
+    @Update("update yim_user set password = ${newPassword} where user_id = ${userId} and password = ${oldPassword}")
+    int updatePassword(@Param("userId")String userId,@Param("oldPassword")String oldPassword,@Param("newPassword")String newPassword);
 }

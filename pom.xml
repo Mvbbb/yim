@@ -15,7 +15,6 @@
         <module>msg-server</module>
         <module>common</module>
         <module>auth-server</module>
-        <module>client</module>
     </modules>
 
     <parent>
