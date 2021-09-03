@@ -2,6 +2,7 @@ package com.mvbbb.yim.gateway.controller;
 
 import com.mvbbb.yim.common.entity.Group;
 import com.mvbbb.yim.common.entity.User;
+import com.mvbbb.yim.common.protoc.http.ResCode;
 import com.mvbbb.yim.common.protoc.http.request.CreateGroupRequest;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
@@ -25,10 +26,8 @@ public class RelationController {
 
 
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)
-    public GenericResponse<List<User>> friendList(@RequestBody GenericRequest<String> request) {
-        String userId = request.getData();
-        Date timestamp = new Date(System.currentTimeMillis());
-
+    public GenericResponse<List<User>> friendList(@RequestBody GenericRequest<Object> request) {
+        String userId = request.getUserId();
         List<User> friends = relationService.listFriend(userId);
 
         return GenericResponse.success(friends);
@@ -122,8 +121,9 @@ public class RelationController {
     @RequestMapping(path = "/group/dissolution", method = RequestMethod.POST)
     public GenericResponse<Object> groupDissolution(@RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
-        relationService.dissolutionGroup(groupId);
-        return GenericResponse.success();
+        String userId = request.getUserId();
+        boolean success = relationService.dissolutionGroup(userId, groupId);
+        return success?GenericResponse.success():GenericResponse.failed(ResCode.FAILED);
     }
 
 }

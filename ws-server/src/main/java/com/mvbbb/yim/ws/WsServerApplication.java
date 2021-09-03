@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws","com.mvbbb.yim.common.config"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws","com.mvbbb.yim.common"})
 @EnableDubbo
 @PropertySource({"classpath:/dubbo-consumer.properties","classpath:/dubbo-provider.properties"})
 public class WsServerApplication implements CommandLineRunner {

@@ -1,5 +1,6 @@
 package com.mvbbb.yim.logic.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mvbbb.yim.common.entity.FriendRelation;
 import com.mvbbb.yim.common.entity.Group;
@@ -11,7 +12,10 @@ import com.mvbbb.yim.common.mapper.UserGroupRelationMapper;
 import com.mvbbb.yim.common.mapper.UserMapper;
 import com.mvbbb.yim.common.util.GenRandomUtil;
 import com.mvbbb.yim.common.vo.GroupVO;
+import com.mvbbb.yim.common.vo.UserVO;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 @DubboService
 public class RelationServiceImpl implements RelationService{
 
+    private Logger logger = LoggerFactory.getLogger(RelationServiceImpl.class);
     @Resource
     FriendRelationMapper friendRelationMapper;
     @Resource
@@ -85,6 +90,10 @@ public class RelationServiceImpl implements RelationService{
         ownerGroupRelation.setLastAckedMsgid(-1);
         groupRelationMapper.insert(ownerGroupRelation);
         members.forEach((memberId)->{
+            User user = userMapper.selectById(memberId);
+            if(user==null){
+                logger.error("user not exist, can not add to group. user: [{}]",user);
+            }
             UserGroupRelation groupRelation = new UserGroupRelation();
             groupRelation.setGroupId(group.getGroupId());
             groupRelation.setUserId(memberId);
@@ -114,22 +123,34 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public GroupVO getGroupInfo(String groupId) {
+
         GroupVO groupVO = new GroupVO();
         Group group = groupMapper.selectById(groupId);
+
         // 查询群组内的所有成员id，包含群主
         List<String> userIds = groupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))
                 .stream().map(UserGroupRelation::getUserId).collect(Collectors.toList());
-        List<User> members = userIds.stream().map((userId) -> {
-            return userMapper.selectById(userId);
+        List<UserVO> members = userIds.stream().map((memberId) -> {
+            User user = userMapper.selectById(memberId);
+            UserVO userVO = new UserVO();
+            BeanUtil.copyProperties(user,userVO);
+            return userVO;
         }).collect(Collectors.toList());
+        groupVO.setUserCnt(members.size());
         groupVO.setMembers(members);
         return groupVO;
     }
 
     @Override
-    public void dissolutionGroup(String groupId) {
+    public boolean dissolutionGroup(String userId,String groupId) {
+        Group group = groupMapper.selectGroup(userId,groupId);
+        if(group==null){
+            logger.error("group not exist. group: [{}]",groupId);
+            return false;
+        }
         int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId));
         int delete1 = groupMapper.delete(new LambdaQueryWrapper<Group>().eq(Group::getGroupId, groupId));
+        return true;
     }
 
     @Override

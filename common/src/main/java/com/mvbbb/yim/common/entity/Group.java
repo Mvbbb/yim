@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 
 @Data
 @TableName("yim_group")
+@ToString
 public class Group implements Serializable {
     @TableId
     private String groupId;

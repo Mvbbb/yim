@@ -28,7 +28,7 @@ public interface RelationService {
 
     GroupVO getGroupInfo(String groupId);
 
-    void dissolutionGroup(String groupId);
+    boolean dissolutionGroup(String userId,String groupId);
 
     List<Group> listAllGroup();
 

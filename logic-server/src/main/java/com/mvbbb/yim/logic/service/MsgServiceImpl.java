@@ -2,12 +2,15 @@ package com.mvbbb.yim.logic.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mvbbb.yim.common.entity.MsgRecv;
+import com.mvbbb.yim.common.entity.MsgSend;
 import com.mvbbb.yim.common.mapper.MsgRecvMapper;
+import com.mvbbb.yim.common.mapper.MsgSendMapper;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.http.OfflineSessionMsg;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
+import com.mvbbb.yim.common.util.BeanConvertor;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
@@ -20,10 +23,28 @@ public class MsgServiceImpl implements MsgService{
 
     @Resource
     MsgRecvMapper msgRecvMapper;
+    @Resource
+    MsgSendMapper msgSendMapper;
 
     @Override
-    public List<MsgData> getHistoryMsg(String userId, String sessionId, SessionType sessionType) {
-        return null;
+    public List<MsgData> getHistoryMsg(String userId, String sessionId, SessionType sessionType,int from,int limit) {
+        List<MsgData> res = null;
+        switch (sessionType){
+            case SINGLE:
+                List<MsgSend> singleMsgSends = msgSendMapper.selectHistorySingleMsg(userId,sessionId,from,limit);
+                res = singleMsgSends.stream().map((msgSend -> {
+                    return BeanConvertor.msgSendToMsgData(userId, msgSend, SessionType.SINGLE);
+                })).collect(Collectors.toList());
+                break;
+            case GROUP:
+                List<MsgSend> groupMsgSends = msgSendMapper.selectHistoryGroupMsg(sessionId,from,limit);
+                res = groupMsgSends.stream().map((msgSend -> {
+                    return BeanConvertor.msgSendToMsgData(userId, msgSend, SessionType.GROUP);
+                })).collect(Collectors.toList());
+                break;
+            default:break;
+        }
+        return res;
     }
 
     @Override

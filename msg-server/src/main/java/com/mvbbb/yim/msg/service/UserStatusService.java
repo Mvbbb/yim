@@ -15,5 +15,4 @@ public class  UserStatusService {
     public boolean isUserOnline(String userId){
         return redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId) != null;
     }
-
 }

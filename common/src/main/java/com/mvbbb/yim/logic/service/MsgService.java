@@ -7,6 +7,6 @@ import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import java.util.List;
 
 public interface MsgService {
-    List<MsgData> getHistoryMsg(String userId, String sessionId, SessionType sessionType);
+    List<MsgData> getHistoryMsg(String userId, String sessionId, SessionType sessionType,int from,int limit);
     PullOfflineMsgResponse getOfflineMsg(String userId);
 }

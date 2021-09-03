@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class HistoryRequest {
     private SessionType sessionType;
-    private int endMsgId; // 服务器消息id（不包含在查询结果中）
-    private int limitCount; //本次拉取的消息条数上限
+    private String sessionId;
+    private int from;
+    private int limit; //本次拉取的消息条数上限
 }

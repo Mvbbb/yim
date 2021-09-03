@@ -15,5 +15,5 @@ public class GroupVO implements Serializable {
     private String avatar;
     private String ownerUid;
     private int userCnt;
-    private List<User> members;
+    private List<UserVO> members;
 }
