@@ -39,6 +39,7 @@ public class StatusHandler {
             connectionPool.addUserChannel(channel,userId);
             sendDataToUserHandler.sendAckToUser(userId,"Connect success");
             userStatusService.userOnline(userId,WsServerConfig.port);
+
         }else{
 
             logger.error("user token is wrong {}",token);

@@ -67,18 +67,7 @@ public class MsgServiceImpl implements MsgService{
                     }else{
                         return false;
                     }
-                }).collect(Collectors.toList()).stream().map((msgRecv -> {
-                    MsgData msgData = new MsgData();
-                    msgData.setData(msgRecv.getMsgData());
-                    msgData.setServerMsgId(msgRecv.getMsgId());
-                    msgData.setFromUserId(msgRecv.getMsgFrom());
-                    msgData.setSessionType(SessionType.GROUP);
-                    msgData.setToSessionId(msgRecv.getGroupId());
-                    msgData.setRecvUserId(userId);
-                    msgData.setMsgType(msgRecv.getMsgType() == 0 ? MsgType.TEXT : MsgType.FILE);
-                    msgData.setTimestamp(msgRecv.getTimestamp());
-                    return msgData;
-                })).collect(Collectors.toList());
+                }).collect(Collectors.toList()).stream().map((BeanConvertor::msgRecvToMsgData)).collect(Collectors.toList());
                 offlineSessionMsg.setSessionType(SessionType.GROUP);
                 offlineSessionMsg.setMsgs(groupMsgData);
                 offlineSessionMsg.setCnt(groupMsgData.size());
@@ -98,17 +87,7 @@ public class MsgServiceImpl implements MsgService{
                 friendSessionMsgs.setSessionType(SessionType.SINGLE);
                 List<MsgData> friendMsgs = msgRecvs.stream().filter((msgRecv -> {
                     return msgRecv.getGroupId()==null&&msgRecv.getMsgFrom().equals(fromId);
-                })).collect(Collectors.toList()).stream().map(msgRecv -> {
-                    MsgData msgData = new MsgData();
-                    msgData.setServerMsgId(msgRecv.getMsgId());
-                    msgData.setFromUserId(fromId);
-                    msgData.setSessionType(SessionType.SINGLE);
-                    msgData.setToSessionId(userId);
-                    msgData.setMsgType(msgRecv.getMsgType() == 0 ? MsgType.TEXT : MsgType.FILE);
-                    msgData.setData(msgRecv.getMsgData());
-                    msgData.setTimestamp(msgRecv.getTimestamp());
-                    return msgData;
-                }).collect(Collectors.toList());
+                })).collect(Collectors.toList()).stream().map(BeanConvertor::msgRecvToMsgData).collect(Collectors.toList());
                 friendSessionMsgs.setMsgs(friendMsgs);
                 friendSessionMsgs.setCnt(friendMsgs.size());
                 friendSessionMsgs.setTimestamp(friendMsgs.get(friendMsgs.size()-1).getTimestamp());

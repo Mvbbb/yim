@@ -3,11 +3,13 @@ package com.mvbbb.yim.common.protoc;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import lombok.Data;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@ToString
 public class MsgData implements Serializable {
     private String clientMsgId;
     private long serverMsgId;

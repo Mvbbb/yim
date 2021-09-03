@@ -36,9 +36,8 @@ public class UserStatusServiceImpl implements UserStatusService{
     public void userOnline(String userId,int port) {
         String wsServerIp = RpcContext.getContext().getRemoteAddress().getAddress().getHostAddress();
         WsServerRoute wsServerRoute = new WsServerRoute(wsServerIp, port);
-        String routeToWsSever = JSONObject.toJSONString(wsServerRoute);
         logger.info("add ws route to redis {}:{}",wsServerRoute.getIp(),wsServerRoute.getPort());
-        redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId,routeToWsSever);
+        redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId,wsServerRoute);
     }
 
     @Override

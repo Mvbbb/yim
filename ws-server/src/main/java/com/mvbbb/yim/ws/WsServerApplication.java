@@ -19,14 +19,13 @@ public class WsServerApplication implements CommandLineRunner {
     }
 
     @Resource
-    RedisTemplate<Object,Object> redisTemplate;
+    ConsumeMsgTask consumeMsgTask;
 
     @Override
     public void run(String... args) throws Exception {
         new Thread(()->{
             new WebSocketServer(WsServerConfig.port).startWebSocketServer();
         }).start();
-        ConsumeMsgTask consumeMsgTask = new ConsumeMsgTask(redisTemplate);
         new Thread(consumeMsgTask).start();
     }
 }

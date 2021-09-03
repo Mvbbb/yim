@@ -1,7 +1,7 @@
 package com.mvbbb.yim.ws;
 
 
-import com.mvbbb.yim.ws.handler.CloseChannelHandler;
+import com.mvbbb.yim.ws.handler.ChannelStatusHandler;
 import com.mvbbb.yim.ws.handler.RecFrameHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -24,6 +24,6 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(new WebSocketServerProtocolHandler("/"));
         pipeline.addLast(new RecFrameHandler());
-        pipeline.addLast(new CloseChannelHandler());
+        pipeline.addLast(new ChannelStatusHandler());
     }
 }

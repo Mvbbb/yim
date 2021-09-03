@@ -10,6 +10,7 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.mq.MqManager;
+import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.msg.service.RouteService;
 import com.mvbbb.yim.msg.service.UserStatusService;
 import org.slf4j.Logger;
@@ -31,19 +32,14 @@ public class MsgHandler {
     @Resource
     UserGroupRelationMapper userGroupRelationMapper;
     @Resource
-    RedisTemplate<Object,Object> redisTemplate;
-    @Resource
     MsgRecvMapper msgRecvMapper;
     @Resource
     RouteService routeService;
-
+    @Resource
     MqManager mqManager;
 
 
     public void sendSingleMsg(MsgData msgData) {
-        if(mqManager==null){
-            mqManager = new MqManager(redisTemplate);
-        }
 
         String toUserId = msgData.getRecvUserId();
 
@@ -73,15 +69,7 @@ public class MsgHandler {
     }
 
     public void saveMsg(MsgData msgData){
-        MsgRecv msgRecv = new MsgRecv();
-        msgRecv.setMsgId(msgData.getServerMsgId());
-        msgRecv.setMsgFrom(msgData.getFromUserId());
-        msgRecv.setMsgTo(msgData.getRecvUserId());
-        msgRecv.setGroupId(msgData.getSessionType()==SessionType.GROUP?msgData.getToSessionId():null);
-        msgRecv.setMsgType(msgData.getMsgType()== MsgType.TEXT?0:1);
-        msgRecv.setTimestamp(msgData.getTimestamp());
-        msgRecv.setMsgData(msgData.getData());
-        msgRecv.setDeleted(false);
+        MsgRecv msgRecv = BeanConvertor.msgDataToMsgRecv(msgData);
         msgRecvMapper.insert(msgRecv);
     }
 }

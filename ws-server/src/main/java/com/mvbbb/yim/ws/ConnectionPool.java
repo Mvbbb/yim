@@ -2,6 +2,7 @@ package com.mvbbb.yim.ws;
 
 import io.netty.channel.Channel;
 
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionPool {

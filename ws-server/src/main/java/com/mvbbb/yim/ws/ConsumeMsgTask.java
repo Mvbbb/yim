@@ -9,17 +9,18 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
+@Component
 public class ConsumeMsgTask implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(ConsumeMsgTask.class);
 
+    @Resource
     MqManager mqManager;
     ConnectionPool connectionPool = ConnectionPool.getInstance();
-
-    public ConsumeMsgTask(RedisTemplate<Object,Object> redisTemplate) {
-        this.mqManager = new MqManager(redisTemplate);
-    }
 
     @Override
     public void run() {
@@ -37,7 +38,8 @@ public class ConsumeMsgTask implements Runnable {
                 String recvUserId = msgData.getRecvUserId();
                 Channel channel = connectionPool.findChannel(recvUserId);
                 if(channel==null){
-                    logger.error("channel for user [{}] not found",recvUserId);
+                    logger.error("channel for user not found, put this msg to mq. user: [{}], msg: [{}]",recvUserId,msgData);
+                    mqManager.reDeliver(msgData);
                 }else{
                     String msg = JSONObject.toJSONString(msgData);
                     TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);

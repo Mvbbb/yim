@@ -24,7 +24,8 @@ public class RouteService {
     }
 
     public WsServerRoute getUserWsServer(String userId){
-        WsServerRoute wsServerRoute = JSONObject.parseObject(((String) redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId)),WsServerRoute.class);
+//        WsServerRoute wsServerRoute = JSONObject.parseObject(((String) redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId)),WsServerRoute.class);
+        WsServerRoute wsServerRoute = ((WsServerRoute) redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId));
         if(null == wsServerRoute){
             logger.error("user: [{}] not connect to WsServer",userId);
         }
