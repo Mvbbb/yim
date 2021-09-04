@@ -1,12 +1,12 @@
 package com.mvbbb.yim.ws;
 
+import com.mvbbb.yim.ws.task.ConsumeMsgTask;
+import com.mvbbb.yim.ws.task.ReportWsTask;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 
@@ -20,6 +20,8 @@ public class WsServerApplication implements CommandLineRunner {
 
     @Resource
     ConsumeMsgTask consumeMsgTask;
+    @Resource
+    ReportWsTask reportWsTask;
 
     @Override
     public void run(String... args) throws Exception {
@@ -27,5 +29,6 @@ public class WsServerApplication implements CommandLineRunner {
             new WebSocketServer(WsServerConfig.port).startWebSocketServer();
         }).start();
         new Thread(consumeMsgTask).start();
+        new Thread(reportWsTask).start();
     }
 }

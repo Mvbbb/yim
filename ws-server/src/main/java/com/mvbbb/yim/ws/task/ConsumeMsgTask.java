@@ -1,14 +1,15 @@
-package com.mvbbb.yim.ws;
+package com.mvbbb.yim.ws.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.mq.MqManager;
+import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.WsServerConfig;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
