@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MainController {
 
-    @DubboReference
+    @DubboReference(check = false)
     AuthService authService;
 
-    @DubboReference
+    @DubboReference(check = false)
     UserService userService;
 
     @RequestMapping(path = "/auth/echo",method = RequestMethod.GET)

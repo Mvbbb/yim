@@ -20,9 +20,9 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    @DubboReference
+    @DubboReference(check = false)
     AuthService authService;
-    @DubboReference
+    @DubboReference(check = false)
     UserService userService;
 
     // todo 提高粒度

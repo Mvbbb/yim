@@ -39,6 +39,7 @@ public class MsgHandler {
     MqManager mqManager;
 
 
+
     public void sendSingleMsg(MsgData msgData) {
 
         String toUserId = msgData.getRecvUserId();
@@ -46,6 +47,7 @@ public class MsgHandler {
         if(!userStatusService.isUserOnline(toUserId)){
             // 写入离线消息
             logger.error("user [{}] not online, save to offline table",toUserId);
+            userStatusService.offlineMsgOccur(toUserId);
             saveMsg(msgData);
         }else{
             // 写入消息投递队列

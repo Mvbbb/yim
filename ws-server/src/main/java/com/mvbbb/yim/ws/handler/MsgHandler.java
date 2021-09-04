@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 @Component
 public class MsgHandler {
 
-    @DubboReference
+    @DubboReference(check = false)
     MsgService msgService;
     @Resource
     SendDataToUserHandler sendDataToUserHandler;

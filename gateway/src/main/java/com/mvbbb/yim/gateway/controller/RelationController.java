@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 public class RelationController {
 
-    @DubboReference
+    @DubboReference(check = false)
     RelationService relationService;
 
 

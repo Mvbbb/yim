@@ -12,4 +12,5 @@ import java.io.Serializable;
 public class WsServerRoute implements Serializable {
     private String ip;
     private int port;
+    private int rpcPort;
 }

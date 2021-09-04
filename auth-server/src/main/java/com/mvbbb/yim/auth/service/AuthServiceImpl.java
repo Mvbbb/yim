@@ -5,6 +5,8 @@ import com.mvbbb.yim.common.constant.RedisConstant;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.mapper.UserMapper;
 import com.mvbbb.yim.common.util.GenRandomUtil;
+import com.mvbbb.yim.logic.service.UserStatusService;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,9 @@ public class AuthServiceImpl implements AuthService {
     UserMapper userMapper;
     @Resource
     RedisTemplate<Object,Object> redisTemplate;
+    @DubboReference(check = false)
+    UserStatusService userStatusService;
+
 
 
     // TODO set ttl for token and refresh
@@ -43,6 +48,14 @@ public class AuthServiceImpl implements AuthService {
             logger.error("wrong password. userId: [{}], password: [{}]",userId,password);
             return null;
         }
+        // 判断用户是否已经登录
+        boolean userOnline = userStatusService.isUserOnline(userId);
+        if(userOnline){
+            logger.error("用户被挤下线 userId: {}",userId);
+            redisTemplate.delete(RedisConstant.USER_TOKEN_PREFIX+userId);
+            userStatusService.kickout(userId);
+        }
+
         String token = UUID.randomUUID().toString().substring(0,8);
         //重新登录之前的 token 会失效
         redisTemplate.opsForValue().set(RedisConstant.USER_TOKEN_PREFIX+userId,token);

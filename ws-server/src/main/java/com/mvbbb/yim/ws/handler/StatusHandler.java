@@ -23,9 +23,9 @@ public class StatusHandler {
     Logger logger = LoggerFactory.getLogger(StatusHandler.class);
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    @DubboReference
+    @DubboReference(check = false)
     private AuthService authService;
-    @DubboReference
+    @DubboReference(check = false)
     private UserStatusService userStatusService;
     @Resource
     SendDataToUserHandler sendDataToUserHandler;
@@ -35,14 +35,20 @@ public class StatusHandler {
         String token = authRequest.getToken();
         boolean tokenValid = this.checkToken(userId, token);
         if(tokenValid){
-            logger.info("add user {} channel {}",userId,channel);
-            connectionPool.addUserChannel(channel,userId);
-            sendDataToUserHandler.sendAckToUser(userId,"Connect success");
-            userStatusService.userOnline(userId,WsServerConfig.port);
-
+            if(!userStatusService.isOfflineMsgPoolOver(userId)){
+                logger.error("离线消息还没拉取完毕，无法建立长连接 userId: [{}]",userId);
+                sendDataToUserHandler.send(channel,"离线消息还没拉取完毕，建立ws连接失败");
+                connectionPool.removeConnection(channel,userId);
+                channel.close();
+            }else{
+                logger.info("add user {} channel {}",userId,channel);
+                connectionPool.addUserChannel(channel,userId);
+                sendDataToUserHandler.sendAckToUser(userId,"Connect success");
+                userStatusService.userOnline(userId,WsServerConfig.port,WsServerConfig.rpcPort);
+            }
         }else{
 
-            logger.error("user token is wrong {}",token);
+            logger.error("user token is wrong token:{}",token);
             sendDataToUserHandler.sendAckToUser(userId,"Wrong token");
             channel.close();
         }

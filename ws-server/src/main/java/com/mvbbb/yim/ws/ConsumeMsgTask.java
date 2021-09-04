@@ -26,7 +26,7 @@ public class ConsumeMsgTask implements Runnable {
     public void run() {
         logger.info("start listen mq");
         while(true){
-            WsServerRoute wsServerRoute = new WsServerRoute(WsServerConfig.host,WsServerConfig.port);
+            WsServerRoute wsServerRoute = new WsServerRoute(WsServerConfig.host,WsServerConfig.port,WsServerConfig.rpcPort);
             MsgData msgData = mqManager.consume(wsServerRoute);
             if(msgData==null){
                 try {

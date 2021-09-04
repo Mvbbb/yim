@@ -21,7 +21,7 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
     private final Logger logger = LoggerFactory.getLogger(ChannelStatusHandler.class);
 
     ConnectionPool connectionPool = ConnectionPool.getInstance();
-    @DubboReference
+    @DubboReference(check = false)
     UserStatusService userStatusService;
 
     private static ChannelStatusHandler closeChannelHandler;

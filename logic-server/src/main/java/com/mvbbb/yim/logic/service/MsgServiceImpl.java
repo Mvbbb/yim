@@ -11,6 +11,7 @@ import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.util.BeanConvertor;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
@@ -25,6 +26,8 @@ public class MsgServiceImpl implements MsgService{
     MsgRecvMapper msgRecvMapper;
     @Resource
     MsgSendMapper msgSendMapper;
+    @DubboReference(check = false)
+    UserStatusService userStatusService;
 
     @Override
     public List<MsgData> getHistoryMsg(String userId, String sessionId, SessionType sessionType,int from,int limit) {
@@ -94,6 +97,7 @@ public class MsgServiceImpl implements MsgService{
                 pullOfflineMsgResponse.getSessionsMsgs().add(friendSessionMsgs);
             }
         });
+        userStatusService.offlineMsgPoolOver(userId);
         return pullOfflineMsgResponse;
     }
 }

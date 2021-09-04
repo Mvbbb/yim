@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 
 public final class WsServerConfig {
     public static final int port = Integer.parseInt(System.getenv("server-port"));
+    public static final int rpcPort = Integer.parseInt(System.getProperty("dubbo.protocol.port"));
     public static String host = null;
 
     static {

@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 public class MsgController {
 
-    @DubboReference
+    @DubboReference(check = false)
     MsgService msgService;
 
     @RequestMapping(path = "/message/history",method = RequestMethod.GET)
@@ -34,4 +34,11 @@ public class MsgController {
         PullOfflineMsgResponse offlineMsg = msgService.getOfflineMsg(userId);
         return GenericResponse.success(offlineMsg);
     }
+
+//    @RequestMapping(path = "/message/recent",method = RequestMethod.GET)
+//    public GenericResponse<> getRecentMsg(GenericRequest<Object> request){
+//        String userId = request.getUserId();
+//
+//    }
+
 }

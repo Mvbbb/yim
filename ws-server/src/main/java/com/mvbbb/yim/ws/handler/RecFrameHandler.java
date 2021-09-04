@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 @Component
 public class RecFrameHandler  extends SimpleChannelInboundHandler<WebSocketFrame> {
-    @DubboReference
+    @DubboReference(check = false)
     MsgService msgService;
     @Resource
     StatusHandler statusHandler;
