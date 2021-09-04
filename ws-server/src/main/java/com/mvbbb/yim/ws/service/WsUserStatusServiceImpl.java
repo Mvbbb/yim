@@ -2,6 +2,7 @@ package com.mvbbb.yim.ws.service;
 
 import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.handler.SendDataToUserHandler;
+import com.mvbbb.yim.ws.handler.StatusHandler;
 import io.netty.channel.Channel;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
 
     @Resource
     SendDataToUserHandler sendDataToUserHandler;
+    @Resource
+    StatusHandler statusHandler;
 
     @Override
     public void kickout(String userId) {
@@ -37,5 +40,15 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void userOffline(String userId) {
+        Channel channel = connectionPool.findChannel(userId);
+        if(channel==null){
+            logger.error("channel is null");
+            return ;
+        }
+        statusHandler.bye(channel,userId);
     }
 }

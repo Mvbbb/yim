@@ -64,12 +64,16 @@ public class StatusHandler {
         boolean tokenValid = checkToken(userId, token);
         if(!tokenValid){
             logger.error("token invalid user : {}",userId);
-
             return ;
         }
+        this.bye(channel,userId);
+    }
+
+    public void bye(Channel channel,String userId){
+        userStatusService.userOffline(userId);
+        sendDataToUserHandler.send(channel,"断开连接");
         logger.info("user {} close channel {}",userId,channel);
         connectionPool.removeConnection(channel,userId);
-        userStatusService.userOffline(userId);
         channel.close();
     }
 }
