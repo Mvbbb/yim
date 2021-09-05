@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class HistoryRequest {
+
     private SessionType sessionType;
     private String sessionId;
     private int from;

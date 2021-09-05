@@ -12,12 +12,8 @@ public class RegistryTask implements Runnable{
     @Resource
     private ZkService zkService;
 
-    @Resource
-    private WsServerConfig wsServerConfig;
-
     @Override
     public void run() {
         zkService.start();
-        zkService.reportStatus();
     }
 }

@@ -1,6 +1,6 @@
 package com.mvbbb.yim.gateway;
 
-import com.mvbbb.yim.gateway.service.ZkService;
+import com.mvbbb.yim.gateway.service.RegisterService;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +18,7 @@ public class GatewayApplication implements CommandLineRunner {
     }
 
     @Resource
-    ZkService zkService;
+    RegisterService zkService;
 
     @Override
     public void run(String... args) throws Exception {

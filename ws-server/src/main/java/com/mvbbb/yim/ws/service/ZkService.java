@@ -40,6 +40,7 @@ public class ZkService {
                         case CONNECTED:
                             logger.info("成功与 zookeeper 建立连接。 {}",wsServerConfig.getZkAddr());
                             createNode();
+                            reportStatus();
                             break;
                         case SUSPENDED:
                             logger.error("与 zookeeper 连接断开。 {}",wsServerConfig.getZkAddr());
@@ -98,8 +99,6 @@ public class ZkService {
         }
     }
 
-    //todo 优化上报逻辑
-    private int prevConnectionCnt = 0;
 
     public void reportStatus(){
         new Thread(()->{
@@ -107,20 +106,20 @@ public class ZkService {
                 try {
                     String path = ZkConstant.ZK_ROOT + "/" + wsServerConfig.getHost() + ":" + wsServerConfig.getPort();
                     int connectionCnt = connectionPool.getConnectionCnt();
-                    if(prevConnectionCnt!=connectionCnt){
-                        prevConnectionCnt = connectionCnt;
-                        WsStatus wsStatus = new WsStatus();
-                        wsStatus.setWsAddr("ws://" + wsServerConfig.getHost() + ":" + wsServerConfig.getPort());
-                        wsStatus.setConnectionCnt(connectionCnt);
-                        String status = JSONObject.toJSONString(wsStatus);
-                        try {
-                            if (client.checkExists().forPath(path) != null) {
-                                logger.info("上报 ws 连接状态");
-                                client.setData().forPath(path, status.getBytes());
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    WsStatus wsStatus = new WsStatus();
+                    wsStatus.setWsAddr("ws://" + wsServerConfig.getHost() + ":" + wsServerConfig.getPort());
+                    wsStatus.setConnectionCnt(connectionCnt);
+                    String status = JSONObject.toJSONString(wsStatus);
+                    try {
+                        if (client.checkExists().forPath(path) != null) {
+                            logger.info("上报 ws 连接状态 {}",status);
+                            client.setData().forPath(path, status.getBytes());
+                        }else{
+                            logger.error("zookeeper 中本 server 临时节点丢失，重新创建节点中");
+                            createNode();
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {

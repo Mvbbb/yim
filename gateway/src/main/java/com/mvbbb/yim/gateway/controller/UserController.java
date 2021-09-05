@@ -11,8 +11,9 @@ import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
 import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
 import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
-import com.mvbbb.yim.gateway.service.ZkService;
+import com.mvbbb.yim.gateway.service.RegisterService;
 import com.mvbbb.yim.logic.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +29,9 @@ public class UserController {
     @DubboReference(check = false)
     UserService userService;
     @Resource
-    ZkService zkService;
+    RegisterService zkService;
 
+    @ApiOperation("登录")
     @RequestMapping(path = "/login",method = RequestMethod.POST)
     public GenericResponse<AuthWsInfoResponse> login(@RequestBody LoginRequest loginRequest){
         String token = authService.checkLogin(loginRequest.getUserId(), loginRequest.getPassword());
@@ -44,6 +46,7 @@ public class UserController {
         return GenericResponse.success(authWsInfoResponse);
     }
 
+    @ApiOperation("重新获取 ws 服务器地址")
     @RequestMapping(path = "/reconnect",method = RequestMethod.POST)
     public GenericResponse<String> reconnect(@RequestBody AuthRequest authRequest){
         AuthEnum authEnum = authService.checkToken(authRequest.getUserId(), authRequest.getToken());
@@ -56,6 +59,7 @@ public class UserController {
     }
 
 
+    @ApiOperation("注册")
     @RequestMapping(path = "/register",method = RequestMethod.POST)
     public GenericResponse<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
         User user = authService.register(registerRequest.getUsername(), registerRequest.getPassword());
@@ -67,12 +71,14 @@ public class UserController {
     }
 
 
+    @ApiOperation("退出登录")
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
     public GenericResponse<Object> logout(@RequestBody GenericRequest<Object> request) {
         AuthEnum authRes = authService.logout(request.getUserId(), request.getToken());
         return authRes==AuthEnum.SUCCESS?GenericResponse.success():GenericResponse.failed(ResCode.FAILED);
     }
 
+    @ApiOperation("查看所有 user")
     @RequestMapping(path = "/user/all",method = RequestMethod.GET)
     public GenericResponse<List<User>> allUser(){
         List<User> users = userService.listAllUser();
@@ -80,6 +86,7 @@ public class UserController {
     }
 
 
+    @ApiOperation("获取 user 信息")
     @RequestMapping(path = "/user/info",method = RequestMethod.GET)
     public GenericResponse<User> userInfo(@RequestBody GenericRequest<String > request){
         String userId = request.getData();
@@ -87,6 +94,7 @@ public class UserController {
         return GenericResponse.success(userInfo);
     }
 
+    @ApiOperation("更新头像")
     @RequestMapping(path = "/user/avatar/update",method = RequestMethod.POST)
     public GenericResponse<Object> userAvatarUpdate(@RequestBody GenericRequest<String> request){
         String userId = request.getUserId();
@@ -95,6 +103,7 @@ public class UserController {
         return GenericResponse.success();
     }
 
+    @ApiOperation("更新昵称")
     @RequestMapping(path = "/user/name/update",method = RequestMethod.POST)
     public GenericResponse<Object> userNameUpdate(@RequestBody GenericRequest<String> request){
         String userId = request.getUserId();

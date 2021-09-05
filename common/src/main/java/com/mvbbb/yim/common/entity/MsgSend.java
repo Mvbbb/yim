@@ -14,11 +14,12 @@ import java.util.Date;
 public class MsgSend implements Serializable {
     @TableId
     private String id;
-    private long msgId;
     private String clientMsgId;
+    private long serverMsgId;
     private String fromUid;
     private String toUid;
     private String groupId;
+    private int sessionType;
     private int msgType;
     private String msgData;
     private Date timestamp;

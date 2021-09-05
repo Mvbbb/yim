@@ -3,7 +3,7 @@ package com.mvbbb.yim.gateway.service;
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsStatus;
 import com.mvbbb.yim.common.constant.ZkConstant;
-import com.mvbbb.yim.gateway.GatewayConfig;
+import com.mvbbb.yim.gateway.config.GatewayConfig;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -19,13 +19,10 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * todo 监听机制降低 zookeeper 压力
- */
 @Service
-public class ZkService {
+public class RegisterService {
 
-    private final Logger logger = LoggerFactory.getLogger(ZkService.class);
+    private final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
     private CuratorFramework client;
     private TreeCache treeCache;
@@ -74,13 +71,13 @@ public class ZkService {
             return;
         }
         treeCache = TreeCache.newBuilder(client, ZkConstant.ZK_ROOT).setCacheData(true).build();
-        treeCache.getListenable().addListener((c,event)->{
-            if(event.getData()!=null){
-                System.out.println("TreeCache,type=" + event.getType() + " path=" + event.getData().getPath());
-            }else{
-                System.out.println("TreeCache,type=" + event.getType());
-            }
-        });
+//        treeCache.getListenable().addListener((c,event)->{
+//            if(event.getData()!=null){
+//                System.out.println("TreeCache,type=" + event.getType() + " path=" + event.getData().getPath());
+//            }else{
+//                System.out.println("TreeCache,type=" + event.getType());
+//            }
+//        });
         try {
             treeCache.start();
         } catch (Exception e) {

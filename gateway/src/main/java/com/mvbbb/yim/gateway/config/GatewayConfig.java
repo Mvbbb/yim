@@ -1,4 +1,4 @@
-package com.mvbbb.yim.gateway;
+package com.mvbbb.yim.gateway.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

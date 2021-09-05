@@ -32,7 +32,7 @@ public class UserStatusServiceImpl implements UserStatusService{
 
     @Resource
     RedisTemplate<Object,Object> redisTemplate;
-    @DubboReference(parameters = {"router","address"})
+    @DubboReference(parameters = {"router","address"},check = false)
     WsUserStatusService wsUserStatusService;
 
     @Override

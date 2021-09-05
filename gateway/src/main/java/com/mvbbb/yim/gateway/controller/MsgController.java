@@ -5,7 +5,9 @@ import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.HistoryRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
+import com.mvbbb.yim.common.vo.MsgVO;
 import com.mvbbb.yim.logic.service.MsgService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +19,11 @@ public class MsgController {
     @DubboReference(check = false)
     MsgService msgService;
 
+    @ApiOperation("获取历史消息")
     @RequestMapping(path = "/message/history",method = RequestMethod.GET)
-    public GenericResponse<List<MsgData>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request){
+    public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request){
         HistoryRequest historyRequest = request.getData();
-        List<MsgData> historyMsg = msgService.getHistoryMsg(request.getUserId(),
+        List<MsgVO> historyMsg = msgService.getHistoryMsg(request.getUserId(),
                 historyRequest.getSessionId(),
                 historyRequest.getSessionType(),
                 historyRequest.getFrom(),
@@ -28,6 +31,7 @@ public class MsgController {
         return GenericResponse.success(historyMsg);
     }
 
+    @ApiOperation("获取离线消息")
     @RequestMapping(path = "/message/offline", method = RequestMethod.GET)
     public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestBody GenericRequest<Object> request){
         String userId = request.getUserId();
