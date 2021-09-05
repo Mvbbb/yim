@@ -50,6 +50,11 @@ public class UserStatusServiceImpl implements UserStatusService{
     }
 
     @Override
+    public void userLogout(String userId) {
+        wsUserStatusService.userOffline(userId);
+    }
+
+    @Override
     public List<String> onlineFriends(String userId) {
         List<String> friends = friendRelationMapper.selectFriendRelation(userId).stream().map((friendRelation -> {
             return friendRelation.getUserid1().equals(userId) ? friendRelation.getUserid2() : friendRelation.getUserid1();

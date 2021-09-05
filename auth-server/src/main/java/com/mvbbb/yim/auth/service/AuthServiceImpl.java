@@ -91,6 +91,7 @@ public class AuthServiceImpl implements AuthService {
         if(validToken==AuthEnum.WRONG_TOKEN){
             return AuthEnum.WRONG_TOKEN;
         }
+        userStatusService.userLogout(userId);
         redisTemplate.delete(RedisConstant.USER_TOKEN_PREFIX + userId);
         return AuthEnum.SUCCESS;
     }

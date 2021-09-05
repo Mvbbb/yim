@@ -6,4 +6,5 @@ public final class RedisConstant {
     public static final String MQ = "mq";
     public static final String FAILED_DELIVER_MSG = "failed_deliver_msg";
     public static final String OFFLINE_MSG_NOT_POOL_OVER_PREFIX = "offline-msg-pool-over:";
+    public static final String WSES_PREFIX = "wses";
 }

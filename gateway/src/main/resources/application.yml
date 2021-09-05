@@ -1,2 +1,9 @@
 server:
   port: 7001
+
+zk:
+  addr: ubuntu:2181
+  switch: true
+  connect:
+    timeout: 15000
+  root: /ws-server

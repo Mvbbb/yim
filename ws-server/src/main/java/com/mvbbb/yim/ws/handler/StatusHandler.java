@@ -29,6 +29,8 @@ public class StatusHandler {
     private UserStatusService userStatusService;
     @Resource
     SendDataToUserHandler sendDataToUserHandler;
+    @Resource
+    WsServerConfig wsServerConfig;
 
     public void auth(Channel channel , GreetRequest authRequest) {
         String userId = authRequest.getUserId();
@@ -44,7 +46,7 @@ public class StatusHandler {
                 logger.info("add user {} channel {}",userId,channel);
                 connectionPool.addUserChannel(channel,userId);
                 sendDataToUserHandler.sendAckToUser(userId,"Connect success");
-                userStatusService.userOnline(userId,WsServerConfig.port,WsServerConfig.rpcPort);
+                userStatusService.userOnline(userId,wsServerConfig.getPort(),wsServerConfig.getRpcPort());
             }
         }else{
 

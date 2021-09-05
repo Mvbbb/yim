@@ -4,16 +4,19 @@ import com.mvbbb.yim.auth.service.AuthService;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.protoc.http.ResCode;
+import com.mvbbb.yim.common.protoc.http.request.AuthRequest;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
+import com.mvbbb.yim.common.protoc.http.response.AuthWsInfoResponse;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
 import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
-import com.mvbbb.yim.common.protoc.http.response.AuthResponse;
 import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
+import com.mvbbb.yim.gateway.service.ZkService;
 import com.mvbbb.yim.logic.service.UserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -24,19 +27,34 @@ public class UserController {
     AuthService authService;
     @DubboReference(check = false)
     UserService userService;
+    @Resource
+    ZkService zkService;
 
-    // todo 提高粒度
     @RequestMapping(path = "/login",method = RequestMethod.POST)
-    public GenericResponse<AuthResponse> login(@RequestBody LoginRequest loginRequest){
+    public GenericResponse<AuthWsInfoResponse> login(@RequestBody LoginRequest loginRequest){
         String token = authService.checkLogin(loginRequest.getUserId(), loginRequest.getPassword());
         if(token==null){
             return GenericResponse.failed(ResCode.FAILED);
         }
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setUserId(loginRequest.getUserId());
-        authResponse.setToken(token);
-        return GenericResponse.success(authResponse);
+        String wsUrl = zkService.getWsForUser();
+        AuthWsInfoResponse authWsInfoResponse = new AuthWsInfoResponse();
+        authWsInfoResponse.setUserId(loginRequest.getUserId());
+        authWsInfoResponse.setToken(token);
+        authWsInfoResponse.setWsUrl(wsUrl);
+        return GenericResponse.success(authWsInfoResponse);
     }
+
+    @RequestMapping(path = "/reconnect",method = RequestMethod.POST)
+    public GenericResponse<String> reconnect(@RequestBody AuthRequest authRequest){
+        AuthEnum authEnum = authService.checkToken(authRequest.getUserId(), authRequest.getToken());
+        if(authEnum==AuthEnum.SUCCESS){
+            String wsUrl = zkService.getWsForUser();
+            return GenericResponse.success(wsUrl);
+        }else{
+            return GenericResponse.failed(ResCode.FAILED);
+        }
+    }
+
 
     @RequestMapping(path = "/register",method = RequestMethod.POST)
     public GenericResponse<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
@@ -50,11 +68,10 @@ public class UserController {
 
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public GenericResponse<Object> logout(@RequestParam GenericRequest<Object> request) {
+    public GenericResponse<Object> logout(@RequestBody GenericRequest<Object> request) {
         AuthEnum authRes = authService.logout(request.getUserId(), request.getToken());
         return authRes==AuthEnum.SUCCESS?GenericResponse.success():GenericResponse.failed(ResCode.FAILED);
     }
-
 
     @RequestMapping(path = "/user/all",method = RequestMethod.GET)
     public GenericResponse<List<User>> allUser(){

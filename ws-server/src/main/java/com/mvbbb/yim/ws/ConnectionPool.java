@@ -22,8 +22,6 @@ public class ConnectionPool {
     private ConcurrentHashMap<String, Channel> channels = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Channel,String> userids = new ConcurrentHashMap<>();
 
-
-
     public Channel findChannel(String userid){
         return channels.get(userid);
     }
@@ -42,5 +40,8 @@ public class ConnectionPool {
         userids.remove(channel);
     }
 
+    public int getConnectionCnt(){
+        return userids.size();
+    }
 
 }

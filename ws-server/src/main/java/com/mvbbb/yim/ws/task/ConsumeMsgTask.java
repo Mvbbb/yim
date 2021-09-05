@@ -22,12 +22,14 @@ public class ConsumeMsgTask implements Runnable {
     @Resource
     MqManager mqManager;
     ConnectionPool connectionPool = ConnectionPool.getInstance();
+    @Resource
+    WsServerConfig wsServerConfig;
 
     @Override
     public void run() {
         logger.info("start listen mq");
         while(true){
-            WsServerRoute wsServerRoute = new WsServerRoute(WsServerConfig.host,WsServerConfig.port,WsServerConfig.rpcPort);
+            WsServerRoute wsServerRoute = new WsServerRoute(wsServerConfig.getHost(),wsServerConfig.getPort(),wsServerConfig.getRpcPort());
             MsgData msgData = mqManager.consume(wsServerRoute);
             if(msgData==null){
                 try {

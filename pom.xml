@@ -76,11 +76,11 @@
             <artifactId>zkclient</artifactId>
             <version>0.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>2.12.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.curator</groupId>-->
+<!--            <artifactId>curator-framework</artifactId>-->
+<!--            <version>2.12.0</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
@@ -130,7 +130,6 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>3.4.3.1</version>
             </dependency>
-
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
@@ -171,7 +170,6 @@
                 <artifactId>mybatis-plus</artifactId>
                 <version>3.4.3.1</version>
             </dependency>
-
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>

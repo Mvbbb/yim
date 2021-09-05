@@ -9,6 +9,8 @@ public interface UserStatusService {
 
     void userOffline(String userId);
 
+    void userLogout(String userId);
+
     List<String> onlineFriends(String userId);
 
     List<String> onlineGroupMembers(String groupId);

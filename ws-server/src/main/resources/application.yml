@@ -3,3 +3,10 @@ spring:
     host: ubuntu
 server:
   port: 7006
+
+zk:
+  addr: ubuntu:2181
+  switch: true
+  connect:
+    timeout: 15000
+  root: /ws-server
