@@ -11,7 +11,6 @@ import com.mvbbb.yim.msg.service.MsgService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 @Component
-public class RecFrameHandler  extends SimpleChannelInboundHandler<WebSocketFrame> {
+public class RecTextFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     @DubboReference(check = false)
     MsgService msgService;
     @Resource
@@ -29,7 +28,7 @@ public class RecFrameHandler  extends SimpleChannelInboundHandler<WebSocketFrame
     @Resource
     MsgHandler msgHandler;
 
-    private static RecFrameHandler recFrameHandler;
+    private static RecTextFrameHandler recFrameHandler;
 
     @PostConstruct
     public void init(){
@@ -37,11 +36,11 @@ public class RecFrameHandler  extends SimpleChannelInboundHandler<WebSocketFrame
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, WebSocketFrame frame) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame frame) throws Exception {
 
-        Logger logger = LoggerFactory.getLogger(RecFrameHandler.class);
+        Logger logger = LoggerFactory.getLogger(RecTextFrameHandler.class);
 
-        String msgText = ((TextWebSocketFrame) frame).text();
+        String msgText = frame.text();
         JSONObject jsonObject = JSONObject.parseObject(msgText);
 
         CmdIdEnum cmdId = CmdIdEnum.valueOf(jsonObject.getString("cmdId"));

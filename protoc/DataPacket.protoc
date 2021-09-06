@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option java_package = "com.mvbbb.yim.common.protoc";
+option java_outer_classname = "Protobuf";
+
+message DataPacket{
+
+   int32 headFlat = 1;
+   int32 version = 2;
+   CmdType cmd = 3;
+   MsgType msgType = 4;
+   int32 logId = 5;
+   int32 sequenceId = 6;
+
+  oneof Data{
+    MsgVO msgVO = 10;
+    MsgData msgData = 11;
+    Greet greet = 12;
+    Bye bye = 13;
+    Ack ack = 14;
+  }
+}
+
+message MsgVO{
+  string clientMsgId = 1;
+  int64 serverMsgId =2 ;
+  string fromUid = 3;
+  string groupId = 4;
+  SessionType sessionType = 5;
+  MsgType msgType = 6;
+  string data = 7;
+  int64 timestamp = 8;
+}
+
+message MsgData{
+  string clientMsgId = 1;
+  int64 serverMsgId = 2;
+  string fromUserId = 3;
+  SessionType sessionType =4 ;
+  string toSessionId =5;
+  string recvUserId = 6;
+  MsgType msgType = 7;
+  string data = 8;
+  int64 timestamp = 9;
+}
+
+message Greet{
+  string userId = 1;
+  string token = 2;
+}
+
+message Bye{
+}
+
+message Ack{
+  string clientMsgId = 1;
+  int64 serverMsgId = 2;
+  string msg = 3;
+}
+
+enum SessionType{
+  GROUP = 0;
+  SINGLE = 1;
+}
+
+enum MsgType{
+  TEXT = 0;
+  FILE = 1;
+}
+
+enum CmdType{
+  GREET = 0;
+  BYE = 1;
+  MSG_DATA = 2;
+  ACK = 3;
+}
+
