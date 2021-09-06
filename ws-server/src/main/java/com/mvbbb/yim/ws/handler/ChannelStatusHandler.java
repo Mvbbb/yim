@@ -39,7 +39,7 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
         if(userId!=null){
             connectionPool.removeConnection(channel,userId);
             closeChannelHandler.userStatusService.userOffline(userId);
-            logger.error("user close the websocket connection. userId：[{}],channel: [{}]",userId,channel);
+            logger.error("用户断开 socket 连接. userId：[{}],channel: [{}]",userId,channel);
         }
     }
 
@@ -52,7 +52,7 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
                 String user = connectionPool.getUseridByChannel(ctx.channel());
                 if(user==null){
                     try {
-                        logger.error("channel timeout , close this channel : [{}]",ctx.channel());
+                        logger.error("长时间没有发送认证消息，自动关闭 channel。channel : [{}]",ctx.channel());
                         ctx.channel().close().sync();
                     } catch (InterruptedException e) {
                         e.printStackTrace();

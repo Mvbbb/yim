@@ -34,10 +34,10 @@ public class AuthServiceImpl implements AuthService {
     public AuthEnum checkToken(String userId, String token) {
         String rToken  = ((String) redisTemplate.opsForValue().get(RedisConstant.USER_TOKEN_PREFIX + userId));
         if (rToken!=null&&rToken.equals(token)) {
-            logger.info("correct token. userId: [{}]",userId);
+            logger.info("token 校验跳过. userId: [{}]",userId);
             return AuthEnum.SUCCESS;
         }
-        logger.error("error token. userId: [{}], token: [{}]",userId,token);
+        logger.error("token 校验失败. userId: [{}], token: [{}]",userId,token);
         return AuthEnum.WRONG_TOKEN;
     }
 
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
     public String checkLogin(String userId, String password) {
         User user = userMapper.selectById(userId);
         if(!user.getPassword().equals(password)){
-            logger.error("wrong password. userId: [{}], password: [{}]",userId,password);
+            logger.error("密码错误. userId: [{}], password: [{}]",userId,password);
             return null;
         }
         // 判断用户是否已经登录
@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         String token = UUID.randomUUID().toString().substring(0,8);
         //重新登录之前的 token 会失效
         redisTemplate.opsForValue().set(RedisConstant.USER_TOKEN_PREFIX+userId,token);
-        logger.info("issue token to user. userId: [{}], token: [{}]",userId,token);
+        logger.info("签发 token 给用户. userId: [{}], token: [{}]",userId,token);
         return token;
     }
 
@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthEnum changePassword(String userId, String oldPassword, String newPassword) {
         User user = userMapper.selectById(userId);
         if(!user.getPassword().equals(oldPassword)){
-            logger.error("wrong password. userId: [{}], password: [{}]",userId,oldPassword);
+            logger.error("密码错误. userId: [{}], password: [{}]",userId,oldPassword);
             return AuthEnum.WRONG_PASSWORD;
         }
         int i = userMapper.updatePassword(userId, oldPassword, newPassword);

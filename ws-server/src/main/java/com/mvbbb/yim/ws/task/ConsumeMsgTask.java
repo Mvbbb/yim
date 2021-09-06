@@ -41,13 +41,13 @@ public class ConsumeMsgTask implements Runnable {
                 String recvUserId = msgData.getRecvUserId();
                 Channel channel = connectionPool.findChannel(recvUserId);
                 if(channel==null){
-                    logger.error("channel for user not found, put this msg to mq. user: [{}], msg: [{}]",recvUserId,msgData);
+                    logger.error("指定用户的 channel 没找到，将消息投放到消息队列中. user: [{}], msg: [{}]",recvUserId,msgData);
                     mqManager.reDeliver(msgData);
                 }else{
                     String msg = JSONObject.toJSONString(msgData);
                     TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
                     channel.writeAndFlush(textWebSocketFrame);
-                    logger.info("send msg to user [{}]",recvUserId);
+                    logger.info("发送消息给用户 [{}]",recvUserId);
                 }
             }
         }
