@@ -1,4 +1,12 @@
-![img.png](doc/img/logo.png)
+<div align="center">
+    <a href=""> <img src="./doc/img/logo.png" style="width:200px"></a>
+</div>
+
+<div align="center">
+    <a href=""> <img alt="GitHub stars" src="https://img.shields.io/github/stars/mvbbb/yim?style=social"></a>
+    <a href=""> <img alt="GitHub forks" src="https://img.shields.io/github/forks/mvbbb/yim?style=social"></a>
+    <a href=""> <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/mvbbb/yim?style=social"></a>
+</div>
 
 # 简介
 
@@ -50,7 +58,7 @@
 
 **所有模块均可水平扩展。**
 
-![](doc/img/架构图.jpg)
+![](doc/img/架构图.png)
 
 # 时序图
 
