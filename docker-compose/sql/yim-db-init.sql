@@ -1,10 +1,12 @@
+create database yim;
+use yim;
 /*
  Navicat Premium Data Transfer
 
- Source Server         : ubuntu
+ Source Server         : yim-redis
  Source Server Type    : MySQL
  Source Server Version : 50735
- Source Host           : ubuntu:3306
+ Source Host           : yim-mysql:3306
  Source Schema         : yim
 
  Target Server Type    : MySQL

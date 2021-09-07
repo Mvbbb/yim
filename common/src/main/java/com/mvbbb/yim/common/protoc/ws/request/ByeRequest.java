@@ -4,6 +4,4 @@ import lombok.Data;
 
 @Data
 public class ByeRequest {
-    private String userId;
-    private String token;
 }

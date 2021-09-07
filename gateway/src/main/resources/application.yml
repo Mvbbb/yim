@@ -5,7 +5,7 @@ swagger:
   enable: true
 
 zk:
-  addr: ubuntu:2181
+  addr: yim-zookeeper:2181
   switch: true
   connect:
     timeout: 15000

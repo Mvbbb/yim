@@ -1,0 +1,153 @@
+version: '3'
+
+services:
+
+  yim-redis:
+    image: redis
+    container_name: yim-redis
+    networks:
+      - yim-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis/conf/redis.conf:/etc/redis/redis.conf
+      - ./data/redis/data:/data
+
+  yim-mysql:
+    image: mysql:5.7
+    container_name: yim-mysql
+    networks:
+      - yim-network
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - ./sql:/docker-entrypoint-initdb.d/
+
+  yim-zookeeper:
+    image: zookeeper
+    container_name: yim-zookeeper
+    networks:
+      - yim-network
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  yim-gateway-7001:
+    image: williamyeh/java8
+    container_name: yim-gateway-7001
+    networks:
+      - yim-network
+    ports:
+      - "7001:7001"
+    volumes:
+      - ./jars/yim-gateway-7001:/yim-gateway-7001
+      - ./log:/log
+    entrypoint: ["java","-jar","/yim-gateway-7001/gateway-1.0-SNAPSHOT.jar"]
+
+  yim-nginx:
+    image: nginx
+    container_name: yim-nginx
+    networks:
+      - yim-network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/nginx/conf:/etc/nginx
+      - ./data/nginx/data:/usr/share/nginx/html
+      - ./data/nginx/log:/var/log/nginx
+    environment:
+      - TZ="Asia/Shanghai"
+
+  yim-auth-server-7002:
+    image: williamyeh/java8
+    container_name: yim-auth-server-7002
+    networks:
+      - yim-network
+    ports:
+      - "7002:7002"
+    volumes:
+      - ./jars/yim-auth-server-7002:/yim-auth-server-7002
+      - ./log:/log
+    entrypoint: [ "java","-jar","/yim-auth-server-7002/auth-server-1.0-SNAPSHOT.jar" ]
+
+  yim-logic-server-7003:
+    image: williamyeh/java8
+    container_name: yim-logic-server-7003
+    networks:
+      - yim-network
+    ports:
+      - "7003:7003"
+    volumes:
+      - ./jars/yim-logic-server-7003:/yim-logic-server-7003
+      - ./log:/log
+    entrypoint: [ "java","-jar","/yim-logic-server-7003/logic-server-1.0-SNAPSHOT.jar" ]
+
+  yim-msg-server-7005:
+    image: williamyeh/java8
+    container_name: yim-msg-server-7005
+    networks:
+      - yim-network
+    ports:
+      - "7005:7005"
+    volumes:
+      - ./jars/yim-msg-server-7005:/yim-msg-server-7005
+      - ./log:/log
+    entrypoint: [ "java","-jar","/yim-msg-server-7005/msg-server-1.0-SNAPSHOT.jar" ]
+
+  yim-ws-server-7100:
+    image: williamyeh/java8
+    container_name: yim-ws-server-7100
+    networks:
+      - yim-network
+    ports:
+      - "7100:7100"
+      - "20888:20888"
+    volumes:
+      - ./jars/yim-ws-server-7100:/yim-ws-server-7100
+      - ./log:/log
+    environment:
+      - server-port=7100
+      - dubbo.protocol.port=20888
+    entrypoint: [ "java","-jar","/yim-ws-server-7100/ws-server-1.0-SNAPSHOT.jar"]
+
+  yim-ws-server-7101:
+    image: williamyeh/java8
+    container_name: yim-ws-server-7101
+    networks:
+      - yim-network
+    ports:
+      - "7101:7101"
+      - "20889:20889"
+    volumes:
+      - ./jars/yim-ws-server-7101:/yim-ws-server-7101
+      - ./log:/log
+    environment:
+      - server-port=7101
+      - dubbo.protocol.port=20889
+    entrypoint: [ "java","-jar","/yim-ws-server-7101/ws-server-1.0-SNAPSHOT.jar"]
+
+  yim-ws-server-7102:
+    image: williamyeh/java8
+    container_name: yim-ws-server-7102
+    networks:
+      - yim-network
+    ports:
+      - "7102:7102"
+      - "20887:20887"
+    volumes:
+      - ./jars/yim-ws-server-7102:/yim-ws-server-7102
+      - ./log:/log
+    environment:
+      - server-port=7102
+      - dubbo.protocol.port=20887
+    entrypoint: [ "java","-jar","/yim-ws-server-7102/ws-server-1.0-SNAPSHOT.jar"]
+
+networks:
+  yim-network:
+    driver: bridge

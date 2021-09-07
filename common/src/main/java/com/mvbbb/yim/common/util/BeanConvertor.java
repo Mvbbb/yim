@@ -2,10 +2,16 @@ package com.mvbbb.yim.common.util;
 
 import com.mvbbb.yim.common.entity.MsgRecv;
 import com.mvbbb.yim.common.entity.MsgSend;
+import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
+import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
+import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.vo.MsgVO;
+
+import java.util.Date;
 
 public final class BeanConvertor {
 
@@ -77,5 +83,77 @@ public final class BeanConvertor {
         msgRecv.setMsgData(msgData.getData());
         msgRecv.setDeleted(false);
         return msgRecv;
+    }
+
+    public static GreetRequest protocToGreetRequest(Protobuf.Greet greet){
+        GreetRequest greetRequest = new GreetRequest();
+        greetRequest.setUserId(greet.getUserId());
+        greetRequest.setToken(greet.getToken());;
+        return greetRequest;
+    }
+
+    public static MsgData protocToMsgData(Protobuf.MsgData dataPacket){
+        MsgData msgData = new MsgData();
+        msgData.setClientMsgId(dataPacket.getClientMsgId());
+        msgData.setServerMsgId(dataPacket.getServerMsgId());
+        msgData.setFromUserId(dataPacket.getFromUserId());
+        Protobuf.SessionType sessionType = dataPacket.getSessionType();
+        switch (sessionType){
+            case SINGLE:
+                msgData.setSessionType(SessionType.SINGLE);
+                break;
+            case GROUP:
+                msgData.setSessionType(SessionType.GROUP);
+        }
+        msgData.setToSessionId(dataPacket.getToSessionId());
+        msgData.setRecvUserId(dataPacket.getRecvUserId());
+        Protobuf.MsgType msgType = dataPacket.getMsgType();
+        switch (msgType){
+            case TEXT:
+                msgData.setMsgType(MsgType.TEXT);
+                break;
+            case FILE:
+                msgData.setMsgType(MsgType.FILE);
+                break;
+        }
+        msgData.setData(dataPacket.getData());
+        msgData.setTimestamp(new Date(dataPacket.getTimestamp()));
+        return msgData;
+    }
+
+
+    public static ByeRequest protocToBye(Protobuf.Bye bye) {
+        return new ByeRequest();
+    }
+
+    public static Protobuf.Ack protocFromAck(Ack ack){
+        Protobuf.Ack.Builder ackBuilder = Protobuf.Ack.newBuilder();
+        ackBuilder.setClientMsgId(ack.getClientMsgId());
+        ackBuilder.setServerMsgId(ack.getServerMsgId());
+        ackBuilder.setMsg(ack.getMsg());
+        return ackBuilder.build();
+    }
+
+    public static Protobuf.MsgVO protoFromMsgData(MsgData msgData){
+        Protobuf.MsgVO.Builder msgVoBuilder = Protobuf.MsgVO.newBuilder();
+        msgVoBuilder.setClientMsgId(msgData.getClientMsgId());
+        msgVoBuilder.setServerMsgId(msgData.getServerMsgId());
+        msgVoBuilder.setFromUid(msgData.getFromUserId());
+        if(msgData.getSessionType()==SessionType.GROUP){
+            msgVoBuilder.setGroupId(msgData.getToSessionId());
+        }
+        switch (msgData.getSessionType()) {
+            case GROUP:
+                msgVoBuilder.setSessionType(Protobuf.SessionType.GROUP);
+                msgVoBuilder.setGroupId(msgData.getToSessionId());
+                break;
+            case SINGLE:
+                msgVoBuilder.setSessionType(Protobuf.SessionType.SINGLE);
+                break;
+            default:break;
+        }
+        msgVoBuilder.setData(msgData.getData());
+        msgVoBuilder.setTimestamp(msgData.getTimestamp().getTime());
+        return msgVoBuilder.build();
     }
 }

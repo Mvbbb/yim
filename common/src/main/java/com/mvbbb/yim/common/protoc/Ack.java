@@ -9,10 +9,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Ack implements Serializable {
     private String clientMsgId;
-    private String serverMsgId;
+    private long serverMsgId;
     private String msg;
 
     public Ack(String msg) {
-        this(null,null,msg);
+        this(null,0,msg);
     }
 }

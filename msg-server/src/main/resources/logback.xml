@@ -18,11 +18,11 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%logger] [tr=%X{TRACE_ID:-0}] %msg %n</pattern>
         </encoder>
 
-        <file>../logs/msg-server.log</file>
+        <file>log/msg-server.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover with gz -->
-            <fileNamePattern>${log.path}/msg-server-%d{yyyy_MM_dd}.log</fileNamePattern>
+            <fileNamePattern>log/msg-server-%d{yyyy_MM_dd}.log</fileNamePattern>
             <!-- keep 30 days' max -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
