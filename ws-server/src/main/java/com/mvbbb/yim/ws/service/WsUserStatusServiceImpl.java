@@ -1,8 +1,6 @@
 package com.mvbbb.yim.ws.service;
 
 import com.mvbbb.yim.ws.ConnectionPool;
-import com.mvbbb.yim.ws.handler.SendDataToUserHandler;
-import com.mvbbb.yim.ws.handler.StatusHandler;
 import io.netty.channel.Channel;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
@@ -19,9 +17,9 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @Resource
-    SendDataToUserHandler sendDataToUserHandler;
+    SendDataToUserService sendDataToUserHandler;
     @Resource
-    StatusHandler statusHandler;
+    StatusService statusHandler;
 
     @Override
     public void kickout(String userId) {

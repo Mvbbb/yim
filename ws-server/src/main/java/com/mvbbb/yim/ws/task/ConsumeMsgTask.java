@@ -4,10 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.mq.MqManager;
+import com.mvbbb.yim.common.protoc.Protobuf;
+import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.ProtobufDataPacketUtil;
 import com.mvbbb.yim.ws.WsServerConfig;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import org.apache.dubbo.common.serialize.protobuf.support.ProtobufUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,9 +48,13 @@ public class ConsumeMsgTask implements Runnable {
                     logger.error("指定用户的 channel 没找到，将消息投放到消息队列中. user: [{}], msg: [{}]",recvUserId,msgData);
                     mqManager.reDeliver(msgData);
                 }else{
+                    //发送 json 文本
                     String msg = JSONObject.toJSONString(msgData);
                     TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
                     channel.writeAndFlush(textWebSocketFrame);
+
+//                    Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildMsgData(msgData);
+//                    channel.writeAndFlush(dataPacket);
                     logger.info("发送消息给用户 [{}]",recvUserId);
                 }
             }

@@ -1,7 +1,6 @@
-package com.mvbbb.yim.ws.handler;
+package com.mvbbb.yim.ws.service;
 
 import com.mvbbb.yim.auth.service.AuthService;
-import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
@@ -18,9 +17,9 @@ import javax.annotation.Resource;
 
 
 @Service
-public class StatusHandler {
+public class StatusService {
 
-    Logger logger = LoggerFactory.getLogger(StatusHandler.class);
+    Logger logger = LoggerFactory.getLogger(StatusService.class);
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @DubboReference(check = false)
@@ -28,7 +27,7 @@ public class StatusHandler {
     @DubboReference(check = false)
     private UserStatusService userStatusService;
     @Resource
-    SendDataToUserHandler sendDataToUserHandler;
+    SendDataToUserService sendDataToUserHandler;
     @Resource
     WsServerConfig wsServerConfig;
 
@@ -50,7 +49,7 @@ public class StatusHandler {
             }
         }else{
 
-            logger.error("user token is wrong token:{}",token);
+            logger.error("用户 token 错误，关闭连接中:{}",token);
             sendDataToUserHandler.sendAckToUser(userId,"Wrong token");
             channel.close();
         }
@@ -61,13 +60,7 @@ public class StatusHandler {
     }
 
     public void bye(Channel channel, ByeRequest byeRequestDataPacketData) {
-        String userId = byeRequestDataPacketData.getUserId();
-        String token = byeRequestDataPacketData.getToken();
-        boolean tokenValid = checkToken(userId, token);
-        if(!tokenValid){
-            logger.error("token invalid user : {}",userId);
-            return ;
-        }
+        String userId = connectionPool.getUseridByChannel(channel);
         this.bye(channel,userId);
     }
 

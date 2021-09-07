@@ -18,7 +18,7 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%logger] [tr=%X{TRACE_ID:-0}] %msg %n</pattern>
         </encoder>
 
-        <file>../logs/ws-server-${server-port}.log</file>
+        <file>log/ws-server-${server-port}.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover with gz -->

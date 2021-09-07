@@ -4,7 +4,7 @@ package com;
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
-import com.mvbbb.yim.common.protoc.ws.CmdIdEnum;
+import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
@@ -19,7 +19,7 @@ public class test {
         GreetRequest authRequest = new GreetRequest();
         authRequest.setToken("token");
         authRequest.setUserId("1");
-        authRequestDataPacket.setCmdId(CmdIdEnum.GREET_REQ);
+        authRequestDataPacket.setCmdId(CmdType.GREET);
         authRequestDataPacket.setData(authRequest);
         String s = JSONObject.toJSONString(authRequestDataPacket);
         System.out.println(s);
@@ -30,10 +30,8 @@ public class test {
 
         DataPacket<ByeRequest> byeRequestDataPacket = new DataPacket<>();
         ByeRequest byeRequest = new ByeRequest();
-        byeRequest.setToken("token");
-        byeRequest.setUserId("1");
         byeRequestDataPacket.setData(byeRequest);
-        byeRequestDataPacket.setCmdId(CmdIdEnum.BYE_REQ);
+        byeRequestDataPacket.setCmdId(CmdType.BYE);
         String s = JSONObject.toJSONString(byeRequestDataPacket);
         System.out.println(s);
     }
@@ -50,7 +48,7 @@ public class test {
         msgData.setToSessionId("2");
         msgData.setFromUserId("1");
         msgDataDataPacket.setData(msgData);
-        msgDataDataPacket.setCmdId(CmdIdEnum.MSG_DATA);
+        msgDataDataPacket.setCmdId(CmdType.MSG_DATA);
         String s = JSONObject.toJSONString(msgDataDataPacket);
         System.out.println(s);
     }
@@ -67,7 +65,7 @@ public class test {
         msgData.setToSessionId("1");
         msgData.setFromUserId("1");
         msgDataDataPacket.setData(msgData);
-        msgDataDataPacket.setCmdId(CmdIdEnum.MSG_DATA);
+        msgDataDataPacket.setCmdId(CmdType.MSG_DATA);
         String s = JSONObject.toJSONString(msgDataDataPacket);
         System.out.println(s);
     }

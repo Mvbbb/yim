@@ -21,13 +21,12 @@ public final class WsServerConfig {
 
     @PostConstruct
     public void init(){
-        port = Integer.parseInt(System.getProperty("server-port"));
-        rpcPort = Integer.parseInt(System.getProperty("dubbo.protocol.port"));
+        port = Integer.parseInt(System.getenv("server-port"));
+        rpcPort = Integer.parseInt(System.getenv("dubbo.protocol.port"));
         try {
             host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
-import com.mvbbb.yim.common.protoc.ws.CmdIdEnum;
+import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.msg.service.MsgService;
+import com.mvbbb.yim.ws.service.MsgTransfer;
+import com.mvbbb.yim.ws.service.StatusService;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -20,15 +23,20 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 @Component
-public class RecTextFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+@ChannelHandler.Sharable
+public class RecTextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+
+    Logger logger = LoggerFactory.getLogger(RecTextWebSocketFrameHandler.class);
+
     @DubboReference(check = false)
     MsgService msgService;
     @Resource
-    StatusHandler statusHandler;
+    StatusService statusHandler;
     @Resource
-    MsgHandler msgHandler;
+    MsgTransfer msgHandler;
 
-    private static RecTextFrameHandler recFrameHandler;
+    private static RecTextWebSocketFrameHandler recFrameHandler;
+
 
     @PostConstruct
     public void init(){
@@ -38,21 +46,19 @@ public class RecTextFrameHandler extends SimpleChannelInboundHandler<TextWebSock
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame frame) throws Exception {
 
-        Logger logger = LoggerFactory.getLogger(RecTextFrameHandler.class);
-
         String msgText = frame.text();
         JSONObject jsonObject = JSONObject.parseObject(msgText);
 
-        CmdIdEnum cmdId = CmdIdEnum.valueOf(jsonObject.getString("cmdId"));
+        CmdType cmdId = CmdType.valueOf(jsonObject.getString("cmdId"));
         switch (cmdId){
-            case GREET_REQ:
+            case GREET:
                 // greet request
                 DataPacket<GreetRequest> msgDataDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<GreetRequest>>() {
                 });
                 GreetRequest authRequest = msgDataDataPacket.getData();
                 recFrameHandler.statusHandler.auth(channelHandlerContext.channel(),authRequest);
                 break;
-            case BYE_REQ:
+            case BYE:
                 DataPacket<ByeRequest> byeRequestDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<ByeRequest>>() {
                 });
                 ByeRequest byeRequestDataPacketData = byeRequestDataPacket.getData();
@@ -64,7 +70,7 @@ public class RecTextFrameHandler extends SimpleChannelInboundHandler<TextWebSock
                 });
                 recFrameHandler.msgHandler.sendMsg(msgDataDataPacket1.getData());
                 break;
-            case MSG_DATA_ACK:
+            case ACK:
                 // todo
                 break;
             default: break;
