@@ -69,9 +69,10 @@
 部署步骤如下：
 
 1. Clone 本项目，不用修改任何配置信息
-3. 在 common 模块执行 `mvn clean install  -Dmaven.test.skip=true`
-4. 在其余的每个模块执行 `mvn clean package  -Dmaven.test.skip=true`
-5. 将得到的 jar 包放到 docker-compose/jars 下的相应目录
+2. 在 common 模块执行 `mvn clean install  -Dmaven.test.skip=true`
+3. 在其余的每个模块执行 `mvn clean package  -Dmaven.test.skip=true`
+4. 执行 docker-compose/mkdirs.sh 脚本创建用于 docker 挂载的文件夹
+5. 将打包得到的 jar 包拷贝到 docker-compose/jars 下的相应目录
 6. 在 docker-compose 目录下执行 `docker-compose up -d`
 
 # 性能测试

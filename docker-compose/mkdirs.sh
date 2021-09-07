@@ -1,0 +1,11 @@
+mkdir -p docker-compose/data/mysql/data
+mkdir -p docker-compose/data/mysql/log
+mkdir -p docker-compose/data/nginx/html
+mkdir -p docker-compose/data/nginx/log
+mkdir -p docker-compose/jars/yim-auth-server-7002
+mkdir -p docker-compose/jars/yim-gateway-7001
+mkdir -p docker-compose/jars/yim-msg-server-7005
+mkdir -p docker-compose/jars/yim-logic-server-7003
+mkdir -p docker-compose/jars/yim-ws-server-7100
+mkdir -p docker-compose/jars/yim-ws-server-7101
+mkdir -p docker-compose/jars/yim-ws-server-7102
