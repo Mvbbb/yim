@@ -34,13 +34,13 @@
 - [x] 使用 Dubbo 作为跨节点通信框架
 - [x] 使用 Zookeeper 实现 WebSocket Server 的服务注册与发现，实现基于 WebSocket Server 状态的负载均衡选择器
 - [x] 使用 Redis 维护用户路由、用户状态信息
+- [x] 使用 Nginx 作 Gateway 的反向代理、负载均衡
 - [ ] Netty 开发 WebSocket 服务端，实现百万连接
 - [ ] 消息传输时进行加密
 - [ ] 高可靠性、顺序性、重复性消息传输保障
 - [ ] 高性能分布式 ID 生成
 - [ ] 自定义协议配合 Protobuf 实现高扩展性、高性能协议
 - [ ] 自动短线重连，心跳检查
-- [ ] 使用 Nginx 作 Gateway 的反向代理、负载均衡
 - [ ] 使用 kafka 作为消息中间件
 
 # 功能演示
@@ -64,16 +64,11 @@
 
 # 服务部署
 
-使用 Docker-compose 的方式部署，实例部署方案:
-
-```
-nginx*1，mysql*1，redis*1，zookeeper*1，auth-server*1，gateway*1，logic-server*1，msg-server*1，ws-server*3
-```
+使用 Docker-compose 的方式部署，实例部署方案: **nginx*1，mysql*1，redis*1，zookeeper*1，auth-server*1，gateway*1，logic-server*1，msg-server*1，ws-server*3**。
 
 部署步骤如下：
 
-1. Clone 本项目
-2. 修改项目中的 redis，mysql，zookeeper 连接地址
+1. Clone 本项目，不用修改任何配置信息
 3. 在 common 模块执行 `mvn clean install  -Dmaven.test.skip=true`
 4. 在其余的每个模块执行 `mvn clean package  -Dmaven.test.skip=true`
 5. 将得到的 jar 包放到 docker-compose/jars 下的相应目录
