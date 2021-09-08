@@ -1,7 +1,8 @@
 package com.mvbbb.yim.msg;
 
-import com.mvbbb.yim.common.mq.MqManager;
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.mq.MqManager;
+import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.msg.service.MsgService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ public class RedeliverTask implements Runnable{
     MqManager mqManager;
     @Resource
     MsgService msgService;
+//    @Resource
+//    RedisStreamManager redisStreamManager;
 
     @Override
     public void run() {

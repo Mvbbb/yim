@@ -1,6 +1,5 @@
 package com.mvbbb.yim.ws;
 
-import com.mvbbb.yim.ws.task.ConsumeMsgTask;
 import com.mvbbb.yim.ws.task.RegistryTask;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws","com.mvbbb.yim.common"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws","com.mvbbb.yim.common","com.mvbbb.yim.mq"})
 @EnableDubbo
 @EnableScheduling
 @PropertySource({"classpath:/dubbo-consumer.properties","classpath:/dubbo-provider.properties"})
@@ -20,8 +19,8 @@ public class WsServerApplication implements CommandLineRunner {
         SpringApplication.run(WsServerApplication.class,args);
     }
 
-    @Resource
-    ConsumeMsgTask consumeMsgTask;
+//    @Resource
+//    ConsumeMsgTask consumeMsgTask;
     @Resource
     WsServerConfig wsServerConfig;
     @Resource
@@ -32,7 +31,7 @@ public class WsServerApplication implements CommandLineRunner {
         new Thread(()->{
             new WebSocketServer(wsServerConfig.getPort()).startWebSocketServer();
         }).start();
-        new Thread(consumeMsgTask).start();
+//        new Thread(consumeMsgTask).start();
         new Thread(registryTask).start();
     }
 }

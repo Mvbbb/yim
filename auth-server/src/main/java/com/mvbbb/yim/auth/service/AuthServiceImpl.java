@@ -11,6 +11,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.UUID;
@@ -22,11 +23,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Resource
     UserMapper userMapper;
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
     @DubboReference(check = false)
     UserStatusService userStatusService;
-
 
 
     // TODO set ttl for token and refresh

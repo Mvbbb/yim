@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 
+/**
+ * TODO 添加心跳保活机制
+ */
 @Service
 public class StatusService {
 

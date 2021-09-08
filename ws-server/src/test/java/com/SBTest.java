@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 @ComponentScan(basePackages = {"com.mvbbb.yim"})
 public class SBTest {
 
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
 
     @Test

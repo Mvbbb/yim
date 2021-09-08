@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     UserMapper userMapper;
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
 
 

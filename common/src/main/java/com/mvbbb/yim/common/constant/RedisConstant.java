@@ -6,4 +6,11 @@ public final class RedisConstant {
     public static final String MQ = "mq";
     public static final String FAILED_DELIVER_MSG = "failed_deliver_msg";
     public static final String OFFLINE_MSG_NOT_POOL_OVER_PREFIX = "offline-msg-pool-over:";
+
+    public static final String STREAM_FAILED_MSG = "stream:failed-msg";
+    public static final String STREAM_DELIVER_WS_PREFIX = "stream:ws:";
+    public static final String STREAM_DELIVER_WS_CONSUMER_GROUP_PREFIX = "stream:ws-consumer-group:";
+    public static final String STREAM_DELIVER_WS_CONSUMER_PREFIX = "stream:ws-consumer:";
+    public static final String STREAM_FAILED_MSG_CONSUMER_GROUP_NAME = "stream:failed-msg-consumer-group";
+    public static final String STREAM_FAILED_MSG_CONSUMER_NAME = "stream:failed-msg-consumer";
 }

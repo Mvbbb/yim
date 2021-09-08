@@ -30,7 +30,7 @@ public class UserStatusServiceImpl implements UserStatusService{
     @Resource
     FriendRelationMapper friendRelationMapper;
 
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
     @DubboReference(parameters = {"router","address"},check = false)
     WsUserStatusService wsUserStatusService;

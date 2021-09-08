@@ -2,12 +2,14 @@ package com.mvbbb.yim.common.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mvbbb.yim.common.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
     @Update("update yim_user set password = ${newPassword} where user")
     int changePassword(String userId,String oldPassword,String newPassword);

@@ -16,7 +16,7 @@ public class RouteService {
 
     static Logger logger = LoggerFactory.getLogger(RouteService.class);
 
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
 
     public RouteService(RedisTemplate<Object,Object> redisTemplate) {

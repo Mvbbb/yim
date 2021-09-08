@@ -1,5 +1,6 @@
 package com.mvbbb.yim.ws;
 
+import com.mvbbb.yim.common.constant.RedisConstant;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,11 @@ public final class WsServerConfig {
     private String zkAddr;
     @Value("${zk.connect.timeout}")
     private int zkConnectTimeout;
+    private String redisStreamKey;
+    // 消费组名称
+    private String redisStreamConsumerGroupName;
+    // 消费者名称
+    private String redisStreamConsumerName;
 
     @PostConstruct
     public void init(){
@@ -28,5 +34,8 @@ public final class WsServerConfig {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        redisStreamKey =  RedisConstant.STREAM_DELIVER_WS_PREFIX + host + ":" + port;
+        redisStreamConsumerGroupName = RedisConstant.STREAM_DELIVER_WS_CONSUMER_GROUP_PREFIX + host + ":" + port;
+        redisStreamConsumerName = RedisConstant.STREAM_DELIVER_WS_CONSUMER_PREFIX + host + ":" + port;
     }
 }

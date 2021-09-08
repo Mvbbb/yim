@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.msg","com.mvbbb.yim.common"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.msg","com.mvbbb.yim.common","com.mvbbb.yim.mq"})
 @EnableDubbo
 @PropertySource("classpath:/dubbo-provider.properties")
 @MapperScan("com.mvbbb.yim.common.mapper")
@@ -20,11 +20,11 @@ public class MsgServerApplication implements CommandLineRunner {
         SpringApplication.run(MsgServerApplication.class,args);
     }
 
-    @Resource
-    RedeliverTask redeliverTask;
+//    @Resource
+//    RedeliverTask redeliverTask;
 
     @Override
     public void run(String... args) throws Exception {
-        new Thread(redeliverTask).start();
+//        new Thread(redeliverTask).start();
     }
 }

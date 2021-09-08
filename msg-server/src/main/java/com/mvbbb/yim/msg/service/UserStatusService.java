@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 @Service
 public class  UserStatusService{
 
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
 
     public boolean isUserOnline(String userId){

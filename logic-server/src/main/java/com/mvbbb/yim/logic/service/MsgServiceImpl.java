@@ -13,6 +13,8 @@ import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.common.vo.MsgVO;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 
 @DubboService
 public class MsgServiceImpl implements MsgService{
+
+    private static final Logger logger = LoggerFactory.getLogger(MsgServiceImpl.class);
 
     @Resource
     MsgRecvMapper msgRecvMapper;
@@ -94,6 +98,7 @@ public class MsgServiceImpl implements MsgService{
             }
         });
         userStatusService.offlineMsgPoolOver(userId);
+        logger.info("{}",pullOfflineMsgResponse);
         return pullOfflineMsgResponse;
     }
 }

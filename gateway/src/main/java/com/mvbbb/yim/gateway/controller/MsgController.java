@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class MsgController {
 
-    @DubboReference(check = false)
+    @DubboReference(check = false,retries = 0)
     MsgService msgService;
 
     @ApiOperation("获取历史消息")

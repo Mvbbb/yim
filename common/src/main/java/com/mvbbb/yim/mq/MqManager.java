@@ -1,4 +1,4 @@
-package com.mvbbb.yim.common.mq;
+package com.mvbbb.yim.mq;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsServerRoute;
@@ -11,10 +11,11 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
+@Deprecated
 @Service
 public class MqManager {
 
-    @Resource
+    @Resource(name = "jsonRedisTemplate")
     RedisTemplate<Object,Object> redisTemplate;
 
     public void produce(WsServerRoute route, MsgData msgData){
