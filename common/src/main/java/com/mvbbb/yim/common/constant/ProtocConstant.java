@@ -1,4 +1,4 @@
-package com.mvbbb.yim.common.config;
+package com.mvbbb.yim.common.constant;
 
 public class ProtocConstant {
     public static final int HEAD = 0x37;

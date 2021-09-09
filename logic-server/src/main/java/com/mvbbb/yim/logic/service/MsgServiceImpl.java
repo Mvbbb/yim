@@ -33,6 +33,15 @@ public class MsgServiceImpl implements MsgService{
     @DubboReference(check = false)
     UserStatusService userStatusService;
 
+    /**
+     * 拉取一个会话的历史消息
+     * @param userId 用户 id
+     * @param sessionId 群聊或者好友 id
+     * @param sessionType 群聊/私聊
+     * @param from 群聊 id/好友id
+     * @param limit 限制拉取条数
+     * @return 本会话的历史消息
+     */
     @Override
     public List<MsgVO> getHistoryMsg(String userId, String sessionId, SessionType sessionType, int from, int limit) {
         List<MsgVO> res = null;

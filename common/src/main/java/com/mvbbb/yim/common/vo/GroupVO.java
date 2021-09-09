@@ -10,7 +10,6 @@ import java.util.List;
 public class GroupVO implements Serializable {
 
     private String groupId;
-
     private String groupName;
     private String avatar;
     private String ownerUid;

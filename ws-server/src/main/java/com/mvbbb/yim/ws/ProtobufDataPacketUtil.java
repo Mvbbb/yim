@@ -1,6 +1,6 @@
 package com.mvbbb.yim.ws;
 
-import com.mvbbb.yim.common.config.ProtocConstant;
+import com.mvbbb.yim.common.constant.ProtocConstant;
 import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.Protobuf;

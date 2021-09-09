@@ -17,7 +17,7 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
     ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @Resource
-    SendDataToUserService sendDataToUserHandler;
+    MsgSendService sendDataToUserHandler;
     @Resource
     StatusService statusHandler;
 

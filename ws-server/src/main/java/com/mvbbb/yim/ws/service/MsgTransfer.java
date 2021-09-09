@@ -3,7 +3,6 @@ package com.mvbbb.yim.ws.service;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.util.SnowflakeIdWorker;
 import com.mvbbb.yim.msg.service.MsgService;
-import com.mvbbb.yim.ws.service.SendDataToUserService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,7 @@ public class MsgTransfer {
     @DubboReference(check = false)
     MsgService msgService;
     @Resource
-    SendDataToUserService sendDataToUserHandler;
+    MsgSendService sendDataToUserHandler;
 
     public void sendMsg(MsgData msgData){
         sendDataToUserHandler.sendAckToUser(msgData.getFromUserId(),"Ws Server receive msg");

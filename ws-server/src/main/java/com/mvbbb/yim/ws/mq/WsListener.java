@@ -25,6 +25,9 @@ public class WsListener implements StreamListener<String, ObjectRecord<String, M
     @Resource
     RedisStreamManager redisStreamManager;
 
+    /**
+     * 从 redis stream 中读取到消息
+     */
     @Override
     public void onMessage(ObjectRecord<String, MsgData> message) {
         // 消息ID

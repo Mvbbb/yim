@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 
 
 /**
+ * 管理 Channel 状态
  * TODO 添加心跳保活机制
  */
 @Service
@@ -30,13 +31,13 @@ public class StatusService {
     @DubboReference(check = false)
     private UserStatusService userStatusService;
     @Resource
-    SendDataToUserService sendDataToUserHandler;
+    MsgSendService sendDataToUserHandler;
     @Resource
     WsServerConfig wsServerConfig;
 
-    public void auth(Channel channel , GreetRequest authRequest) {
-        String userId = authRequest.getUserId();
-        String token = authRequest.getToken();
+    public void greet(Channel channel , GreetRequest greetRequest) {
+        String userId = greetRequest.getUserId();
+        String token = greetRequest.getToken();
         boolean tokenValid = this.checkToken(userId, token);
         if(tokenValid){
             if(!userStatusService.isOfflineMsgPoolOver(userId)){

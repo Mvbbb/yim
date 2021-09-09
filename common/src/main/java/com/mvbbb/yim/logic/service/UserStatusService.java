@@ -21,5 +21,5 @@ public interface UserStatusService {
     void offlineMsgPoolOver(String userId);
     boolean isOfflineMsgPoolOver(String userId);
 
-    public void kickout(String userId);
+    void kickout(String userId);
 }

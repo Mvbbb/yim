@@ -1,10 +1,8 @@
 package com.mvbbb.yim.ws;
 
 
-import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.ws.handler.ChannelStatusHandler;
-import com.mvbbb.yim.ws.handler.DataPacketHandler;
-import com.mvbbb.yim.ws.handler.RecTextWebSocketFrameHandler;
+import com.mvbbb.yim.ws.handler.JsonDataPacketHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -25,7 +23,7 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(new WebSocketServerProtocolHandler("/"));
         //使用 json 方式
-        pipeline.addLast(new RecTextWebSocketFrameHandler());
+        pipeline.addLast(new JsonDataPacketHandler());
 
         // 使用 protobuf 方式
 //        pipeline.addLast(new ProtobufVarint32FrameDecoder());

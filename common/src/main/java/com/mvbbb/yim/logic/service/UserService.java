@@ -2,16 +2,17 @@ package com.mvbbb.yim.logic.service;
 
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.entity.User;
+import com.mvbbb.yim.common.vo.UserVO;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<User> listAllUser();
+    List<UserVO> listAllUser();
 
-    User getUserInfo(String userId);
+    UserVO getUserInfo(String userId);
 
-    User updateUserAvatar(String userId,String avatar);
+    UserVO updateUserAvatar(String userId,String avatar);
 
-    User updateUserName(String userId,String username);
+    UserVO updateUserName(String userId,String username);
 }

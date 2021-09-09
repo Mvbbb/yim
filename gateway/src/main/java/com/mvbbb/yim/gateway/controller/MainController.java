@@ -2,6 +2,7 @@ package com.mvbbb.yim.gateway.controller;
 
 import com.mvbbb.yim.auth.service.AuthService;
 import com.mvbbb.yim.common.entity.User;
+import com.mvbbb.yim.common.vo.UserVO;
 import com.mvbbb.yim.logic.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -29,7 +30,7 @@ public class MainController {
     @RequestMapping(path = "/logic/echo",method = RequestMethod.GET)
     @ApiOperation("测试 logic 服务是否联通")
     public String echoLogicServer(){
-        User userInfo = userService.getUserInfo("1");
+        UserVO userInfo = userService.getUserInfo("1");
         return userInfo.toString();
     }
 }

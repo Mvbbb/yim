@@ -25,6 +25,7 @@ public class FailMsgListener implements StreamListener<String, ObjectRecord<Stri
         MsgData msgData = message.getValue();
         logger.info("从 redis stream 中读取到发送失败的消息。 stream: {}, id: {}, msgData: {}",stream,id,msgData);
         // 这个消息是投放给用户的消息，只需要再发送一次
+        // FIXME 重发失败机制完善
         msgHandler.sendSingleMsg(msgData);
     }
 }

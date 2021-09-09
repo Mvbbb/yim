@@ -32,12 +32,8 @@ public class MsgHandler {
     MsgRecvMapper msgRecvMapper;
     @Resource
     RouteService routeService;
-//    @Resource
-//    MqManager mqManager;
     @Resource
     RedisStreamManager redisStreamManager;
-
-
 
     public void sendSingleMsg(MsgData msgData) {
 

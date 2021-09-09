@@ -19,8 +19,6 @@ public class WsServerApplication implements CommandLineRunner {
         SpringApplication.run(WsServerApplication.class,args);
     }
 
-//    @Resource
-//    ConsumeMsgTask consumeMsgTask;
     @Resource
     WsServerConfig wsServerConfig;
     @Resource
@@ -31,7 +29,6 @@ public class WsServerApplication implements CommandLineRunner {
         new Thread(()->{
             new WebSocketServer(wsServerConfig.getPort()).startWebSocketServer();
         }).start();
-//        new Thread(consumeMsgTask).start();
         new Thread(registryTask).start();
     }
 }

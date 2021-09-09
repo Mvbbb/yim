@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * WS 的路由信息
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

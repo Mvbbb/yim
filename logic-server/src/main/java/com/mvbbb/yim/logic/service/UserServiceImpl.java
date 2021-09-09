@@ -1,50 +1,61 @@
 package com.mvbbb.yim.logic.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.constant.RedisConstant;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.mapper.UserMapper;
+import com.mvbbb.yim.common.vo.UserVO;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @DubboService
 public class UserServiceImpl implements UserService {
 
     @Resource
     UserMapper userMapper;
-    @Resource(name = "jsonRedisTemplate")
-    RedisTemplate<Object,Object> redisTemplate;
+    @Resource
+    UserStatusService userStatusService;
 
 
     @Override
-    public List<User> listAllUser() {
-        return userMapper.selectAllUser();
+    public List<UserVO> listAllUser() {
+
+       return userMapper.selectAllUser().stream().map((user -> {
+            UserVO userVO = new UserVO();
+            BeanUtil.copyProperties(user,userVO);
+            boolean userOnline = userStatusService.isUserOnline(user.getUserId());
+            userVO.setOnline(userOnline);
+            return userVO;
+        })).collect(Collectors.toList());
     }
 
     @Override
-    public User getUserInfo(String userId) {
+    public UserVO getUserInfo(String userId) {
         User user = userMapper.selectById(userId);
-        if(user==null){
-            throw new RuntimeException();
-        }
-        return user;
+        UserVO userVO = new UserVO();
+        BeanUtil.copyProperties(user,userVO);
+        boolean userOnline = userStatusService.isUserOnline(user.getUserId());
+        userVO.setOnline(userOnline);
+        return userVO;
     }
 
     @Override
-    public User updateUserAvatar(String userId, String avatar) {
+    public UserVO updateUserAvatar(String userId, String avatar) {
         userMapper.updateAvatar(userId,avatar);
-        return userMapper.selectById(userId);
+        return getUserInfo(userId);
     }
 
     @Override
-    public User updateUserName(String userId, String username) {
+    public UserVO updateUserName(String userId, String username) {
         userMapper.updateUsername(userId,username);
-        return userMapper.selectById(userId);
+        return getUserInfo(userId);
     }
 
 }

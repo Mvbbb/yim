@@ -11,6 +11,7 @@ import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
 import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
 import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
+import com.mvbbb.yim.common.vo.UserVO;
 import com.mvbbb.yim.gateway.service.RegisterService;
 import com.mvbbb.yim.logic.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -80,17 +81,17 @@ public class UserController {
 
     @ApiOperation("查看所有 user")
     @RequestMapping(path = "/user/all",method = RequestMethod.GET)
-    public GenericResponse<List<User>> allUser(){
-        List<User> users = userService.listAllUser();
+    public GenericResponse<List<UserVO>> allUser(){
+        List<UserVO> users = userService.listAllUser();
         return GenericResponse.success(users);
     }
 
 
     @ApiOperation("获取 user 信息")
     @RequestMapping(path = "/user/info",method = RequestMethod.GET)
-    public GenericResponse<User> userInfo(@RequestBody GenericRequest<String > request){
+    public GenericResponse<UserVO> userInfo(@RequestBody GenericRequest<String > request){
         String userId = request.getData();
-        User userInfo = userService.getUserInfo(userId);
+        UserVO userInfo = userService.getUserInfo(userId);
         return GenericResponse.success(userInfo);
     }
 

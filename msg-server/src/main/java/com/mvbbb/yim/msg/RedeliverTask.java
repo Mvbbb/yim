@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+@Deprecated
 @Component
 public class RedeliverTask implements Runnable{
 

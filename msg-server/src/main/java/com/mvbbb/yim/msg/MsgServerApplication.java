@@ -15,16 +15,8 @@ import javax.annotation.Resource;
 @EnableDubbo
 @PropertySource("classpath:/dubbo-provider.properties")
 @MapperScan("com.mvbbb.yim.common.mapper")
-public class MsgServerApplication implements CommandLineRunner {
+public class MsgServerApplication{
     public static void main(String[] args) {
         SpringApplication.run(MsgServerApplication.class,args);
-    }
-
-//    @Resource
-//    RedeliverTask redeliverTask;
-
-    @Override
-    public void run(String... args) throws Exception {
-//        new Thread(redeliverTask).start();
     }
 }

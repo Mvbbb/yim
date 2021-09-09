@@ -19,16 +19,16 @@ import javax.annotation.Resource;
 
 @Component
 @ChannelHandler.Sharable
-public class DataPacketHandler extends SimpleChannelInboundHandler<Protobuf.DataPacket> {
+public class ProtobufDataPacketHandler extends SimpleChannelInboundHandler<Protobuf.DataPacket> {
 
-    Logger logger = LoggerFactory.getLogger(DataPacketHandler.class);
+    Logger logger = LoggerFactory.getLogger(ProtobufDataPacketHandler.class);
 
     @Resource
     StatusService statusHandler;
     @Resource
     MsgTransfer msgHandler;
 
-    private static DataPacketHandler dataPacketHandler;
+    private static ProtobufDataPacketHandler dataPacketHandler;
 
 
     @PostConstruct
@@ -53,7 +53,7 @@ public class DataPacketHandler extends SimpleChannelInboundHandler<Protobuf.Data
             case GREET:
                 logger.info("receive greet");
                 GreetRequest greetRequest = BeanConvertor.protocToGreetRequest(dataPacket.getGreet());
-                dataPacketHandler.statusHandler.auth(ctx.channel(), greetRequest);
+                dataPacketHandler.statusHandler.greet(ctx.channel(), greetRequest);
                 break;
             case MSG_DATA:
                 logger.info("receive msg data");
