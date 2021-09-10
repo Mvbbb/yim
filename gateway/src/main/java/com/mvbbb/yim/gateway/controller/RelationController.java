@@ -41,7 +41,7 @@ public class RelationController {
         String userId = request.getUserId();
         String friendId = request.getData();
 
-        relationService.addFriend(userId,friendId);
+        relationService.addFriend(userId, friendId);
 
         return GenericResponse.success();
     }
@@ -51,7 +51,7 @@ public class RelationController {
     public GenericResponse<Object> deleteFriend(@RequestBody GenericRequest<String> request) {
         String userId = request.getUserId();
         String friendId = request.getData();
-        relationService.deleteFriend(userId,friendId);
+        relationService.deleteFriend(userId, friendId);
         return GenericResponse.success();
     }
 
@@ -97,7 +97,7 @@ public class RelationController {
     public GenericResponse<Object> groupQuit(@RequestBody GenericRequest<String> request) {
         String userId = request.getUserId();
         String groupId = request.getData();
-        relationService.quitGroup(userId,groupId);
+        relationService.quitGroup(userId, groupId);
         return GenericResponse.success();
     }
 
@@ -124,7 +124,7 @@ public class RelationController {
 
     @ApiOperation("查看群组信息")
     @RequestMapping(path = "/group/info", method = RequestMethod.GET)
-    public GenericResponse<GroupVO> groupInfo(@RequestBody GenericRequest<String> request){
+    public GenericResponse<GroupVO> groupInfo(@RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
         GroupVO groupVO = relationService.getGroupInfo(groupId);
         return GenericResponse.success(groupVO);
@@ -136,7 +136,7 @@ public class RelationController {
         String groupId = request.getData();
         String userId = request.getUserId();
         boolean success = relationService.dissolutionGroup(userId, groupId);
-        return success?GenericResponse.success():GenericResponse.failed(ResCode.FAILED);
+        return success ? GenericResponse.success() : GenericResponse.failed(ResCode.FAILED);
     }
 
 }

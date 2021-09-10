@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserVO> listAllUser() {
-
        return userMapper.selectAllUser().stream().map((user -> {
             UserVO userVO = new UserVO();
             BeanUtil.copyProperties(user,userVO);

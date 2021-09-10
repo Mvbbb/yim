@@ -22,6 +22,9 @@ import javax.annotation.Resource;
 import java.util.List;
 
 
+/**
+ * 使用注解对 接口进行权限校验
+ */
 @RestController
 public class UserController {
 

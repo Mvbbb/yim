@@ -10,3 +10,7 @@ zk:
   connect:
     timeout: 15000
   root: /ws-server
+
+dubbo:
+  application:
+    logger: slf4j
