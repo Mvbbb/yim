@@ -58,17 +58,17 @@ public class RelationController {
 
     @ApiOperation("查看自己加入的群组")
     @RequestMapping(path = "/group/list", method = RequestMethod.GET)
-    public GenericResponse<List<Group>> groupList(@RequestBody GenericRequest<Object> request) {
+    public GenericResponse<List<GroupVO>> groupList(@RequestBody GenericRequest<Object> request) {
         String userId = request.getUserId();
-        List<Group> groups = relationService.listGroup(userId);
+        List<GroupVO> groups = relationService.listGroup(userId);
         return GenericResponse.success(groups);
     }
 
 
     @ApiOperation("查看全部群组")
     @RequestMapping(path = "/group/list/all", method = RequestMethod.GET)
-    public GenericResponse<List<Group>> groupAllList(@RequestBody GenericRequest<Object> request) {
-        List<Group> groups = relationService.listAllGroup();
+    public GenericResponse<List<GroupVO>> groupAllList(@RequestBody GenericRequest<Object> request) {
+        List<GroupVO> groups = relationService.listAllGroup();
         return GenericResponse.success(groups);
     }
 

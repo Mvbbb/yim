@@ -1,5 +1,6 @@
 package com.mvbbb.yim.gateway.exception;
 
+import com.mvbbb.yim.common.exception.IMException;
 import com.mvbbb.yim.common.protoc.http.ResCode;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import org.slf4j.Logger;
@@ -18,7 +19,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = IMException.class)
     public GenericResponse<Object> exception(IMException imException, HttpServletRequest request){
         logger.error("出现异常。 url：{}，IMException：{}",request.getRequestURI(),imException.getResultCode());
-        return GenericResponse.failed(imException.getResultCode());
+        ResCode resultCode = imException.getResultCode();
+        if(resultCode==null){
+            return GenericResponse.failed(imException.getMessage());
+        }
+        return GenericResponse.failed(resultCode);
     }
 
     @ExceptionHandler(value = RuntimeException.class)

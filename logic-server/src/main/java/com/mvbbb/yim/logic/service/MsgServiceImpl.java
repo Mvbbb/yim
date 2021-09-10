@@ -59,6 +59,11 @@ public class MsgServiceImpl implements MsgService{
         return res;
     }
 
+    /**
+     * 拉取离线消息
+     * @param userId 用户id
+     * @return
+     */
     @Override
     public PullOfflineMsgResponse getOfflineMsg(String userId) {
         List<MsgRecv> msgRecvs = msgRecvMapper.selectList(new LambdaQueryWrapper<MsgRecv>().eq(MsgRecv::getToUid, userId).eq(MsgRecv::isDelivered,false));

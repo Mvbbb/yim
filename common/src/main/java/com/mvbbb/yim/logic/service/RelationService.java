@@ -14,7 +14,7 @@ public interface RelationService {
 
     void deleteFriend(String userId,String friendId);
 
-    List<Group> listGroup(String userId);
+    List<GroupVO> listGroup(String userId);
 
     GroupVO joinGroup(String userId, String groupId);
 
@@ -30,7 +30,7 @@ public interface RelationService {
 
     boolean dissolutionGroup(String userId,String groupId);
 
-    List<Group> listAllGroup();
+    List<GroupVO> listAllGroup();
 
 
 }

@@ -14,10 +14,6 @@ public class GenericResponse <T> {
     private T data;
     private Date timestamp;
 
-//    public static <T> GenericResponse<T> success(ResCode resCode,T date){
-//        return new GenericResponse<>(resCode.getCode(),resCode.getMsg(),date,new Date(System.currentTimeMillis()));
-//    }
-
     public static GenericResponse<Object> success(){
         return new GenericResponse<>(ResCode.SUCCESS.getCode(), ResCode.SUCCESS.getMsg(), null,new Date(System.currentTimeMillis()));
     }
@@ -31,5 +27,9 @@ public class GenericResponse <T> {
     }
     public static <T> GenericResponse<T> failed(ResCode err){
         return new GenericResponse<>(err.getCode(),err.getMsg(),null,new Date(System.currentTimeMillis()));
+    }
+
+    public static <T> GenericResponse<T> failed(String msg){
+        return new GenericResponse<>(400,msg,null,new Date(System.currentTimeMillis()));
     }
 }

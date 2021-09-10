@@ -15,4 +15,7 @@ public interface FriendRelationMapper extends BaseMapper<FriendRelation> {
 
     @Delete("delete from yim_friend_relation where (user_id_1 = ${userId1} and user_id_2 = ${userId2}) or (user_id_2 = ${userId1} and user_id_1 = ${userId2})")
     int deleteFriendRelation(@Param("userId1") String userId1,@Param("userId2") String userId2);
+
+    @Select(("select * from yim_friend_relation where (user_id_1 = ${userId1} and user_id_2 = ${userId2}) or (user_id_2 = ${userId1} and user_id_1 = ${userId2})"))
+    FriendRelation findFriendRelation(@Param("user_id_1") String useId1,@Param("user_id_2") String userId2);
 }

@@ -6,6 +6,7 @@ import com.mvbbb.yim.common.entity.FriendRelation;
 import com.mvbbb.yim.common.entity.Group;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.entity.UserGroupRelation;
+import com.mvbbb.yim.common.exception.IMException;
 import com.mvbbb.yim.common.mapper.FriendRelationMapper;
 import com.mvbbb.yim.common.mapper.GroupMapper;
 import com.mvbbb.yim.common.mapper.UserGroupRelationMapper;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,12 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public void addFriend(String userId, String friendId) {
-        FriendRelation friendRelation = new FriendRelation();
+        FriendRelation friendRelation = null;
+        friendRelation = friendRelationMapper.findFriendRelation(userId,friendId);
+        if(friendRelation!=null){
+            throw new IMException("已经是好友了，不能重复添加");
+        }
+        friendRelation = new FriendRelation();
         friendRelation.setUserid1(userId);
         friendRelation.setUserid2(friendId);
         friendRelationMapper.insert(friendRelation);
@@ -58,15 +65,25 @@ public class RelationServiceImpl implements RelationService{
     }
 
     @Override
-    public List<Group> listGroup(String userId) {
+    public List<GroupVO> listGroup(String userId) {
         List<String> groupIds = groupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getUserId, userId))
                 .stream().map(UserGroupRelation::getGroupId).collect(Collectors.toList());
-        return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId)).collect(Collectors.toList());
+        return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId))
+                .map((group -> {
+                    GroupVO groupVO = new GroupVO();
+                    BeanUtil.copyProperties(group,groupVO);
+                    return groupVO;
+                })).collect(Collectors.toList());
     }
 
     @Override
     public GroupVO joinGroup(String userId, String groupId) {
-        UserGroupRelation userGroupRelation = new UserGroupRelation();
+        UserGroupRelation userGroupRelation = null;
+        userGroupRelation = groupRelationMapper.findGroupRelation(userId,groupId);
+        if(userGroupRelation!=null){
+            throw new IMException("已经是群成员了，不能重复添加");
+        }
+        userGroupRelation = new UserGroupRelation();
         userGroupRelation.setGroupId(groupId);
         userGroupRelation.setUserId(userId);
         userGroupRelation.setLastAckedMsgid(0);
@@ -77,6 +94,13 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public GroupVO createGroup(String userId, String groupName, List<String> members) {
+        if(members==null){
+            members = new ArrayList<>();
+        }
+        members.add(userId);
+        // 去重
+        members = members.stream().distinct().collect(Collectors.toList());
+
         Group group = new Group();
         group.setGroupId(GenRandomUtil.genGroupid());
         group.setGroupName(groupName);
@@ -84,11 +108,6 @@ public class RelationServiceImpl implements RelationService{
         group.setOwnerUid(userId);
         group.setUserCnt(members.size()+1);
         groupMapper.insert(group);
-        UserGroupRelation ownerGroupRelation = new UserGroupRelation();
-        ownerGroupRelation.setGroupId(group.getGroupId());
-        ownerGroupRelation.setUserId(userId);
-        ownerGroupRelation.setLastAckedMsgid(-1);
-        groupRelationMapper.insert(ownerGroupRelation);
         members.forEach((memberId)->{
             User user = userMapper.selectById(memberId);
             if(user==null){
@@ -111,6 +130,10 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public GroupVO kickoutGroupMember(String groupId, String userId) {
+        UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
+        if(groupRelation==null){
+            throw new IMException("该用户不是群成员，无法踢人");
+        }
         int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId).eq(UserGroupRelation::getUserId, userId));
         groupMapper.removeOneMember(groupId);
         return getGroupInfo(groupId);
@@ -148,13 +171,19 @@ public class RelationServiceImpl implements RelationService{
             logger.error("group not exist. group: [{}]",groupId);
             return false;
         }
+        // 删除所有群成员
         int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId));
+        // 解散群
         int delete1 = groupMapper.delete(new LambdaQueryWrapper<Group>().eq(Group::getGroupId, groupId));
         return true;
     }
 
     @Override
-    public List<Group> listAllGroup() {
-        return groupMapper.selectAll();
+    public List<GroupVO> listAllGroup() {
+        return groupMapper.selectAll().stream().map((group -> {
+            GroupVO groupVO = new GroupVO();
+            BeanUtil.copyProperties(group,groupVO);
+            return groupVO;
+        })).collect(Collectors.toList());
     }
 }

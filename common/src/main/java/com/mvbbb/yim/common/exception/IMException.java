@@ -1,4 +1,4 @@
-package com.mvbbb.yim.gateway.exception;
+package com.mvbbb.yim.common.exception;
 
 import com.mvbbb.yim.common.protoc.http.ResCode;
 import lombok.Data;
@@ -13,6 +13,9 @@ public class IMException extends RuntimeException{
 
     protected Object data;
 
+    public IMException(String message) {
+        super(message);
+    }
 
     public ResCode getResultCode() {
         return resultCode;
