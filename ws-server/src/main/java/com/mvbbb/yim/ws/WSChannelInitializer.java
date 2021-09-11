@@ -10,6 +10,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -32,6 +35,7 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 //        pipeline.addLast(new ProtobufEncoder());
 //        pipeline.addLast(new DataPacketHandler());
 
+        pipeline.addLast(new IdleStateHandler(WsServerConfig.READ_IDEL_TIME_OUT,WsServerConfig.WRITE_IDEL_TIME_OUT,WsServerConfig.ALL_IDEL_TIME_OUT, TimeUnit.MINUTES));
         pipeline.addLast(new ChannelStatusHandler());
     }
 }

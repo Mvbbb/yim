@@ -9,11 +9,12 @@ import java.util.Date;
 
 /**
  * 服务器向用户推送的消息
+ * todo servermsgId 统一数据类型
  */
 @Data
 public class MsgVO implements Serializable {
     private String clientMsgId;
-    private long serverMsgId;
+    private String serverMsgId;
     private String fromUid;
     private String groupId;
     private SessionType sessionType;

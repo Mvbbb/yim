@@ -2,11 +2,13 @@ package com.mvbbb.yim.ws.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
+import com.mvbbb.yim.ws.service.AckService;
 import com.mvbbb.yim.ws.service.MsgTransfer;
 import com.mvbbb.yim.ws.service.StatusService;
 import io.netty.channel.ChannelHandler;
@@ -30,6 +32,8 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
     StatusService statusHandler;
     @Resource
     MsgTransfer msgHandler;
+    @Resource
+    AckService ackService;
 
     private static JsonDataPacketHandler dataPacketHandler;
 
@@ -67,7 +71,9 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
                 dataPacketHandler.msgHandler.sendMsg(msgDataDataPacket1.getData());
                 break;
             case ACK:
-                // todo
+                DataPacket<Ack> ackDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<Ack>>() {
+                });
+                dataPacketHandler.ackService.recvAck(ackDataPacket.getData());
                 break;
             default: break;
         }

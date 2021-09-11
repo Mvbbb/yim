@@ -18,7 +18,6 @@ public class MsgServiceImpl implements MsgService {
     @Resource
     MsgSendMapper msgSendMapper;
 
-
     @Override
     public void handlerMsgData(MsgData msgData) {
         // 持久化消息
@@ -36,5 +35,9 @@ public class MsgServiceImpl implements MsgService {
             default:
                 break;
         }
+    }
+
+    public void failedMsg(MsgData msgData){
+
     }
 }

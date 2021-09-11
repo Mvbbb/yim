@@ -2,6 +2,7 @@ package com;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
@@ -67,6 +68,19 @@ public class test {
         msgDataDataPacket.setData(msgData);
         msgDataDataPacket.setCmdId(CmdType.MSG_DATA);
         String s = JSONObject.toJSONString(msgDataDataPacket);
+        System.out.println(s);
+    }
+
+    @Test
+    public void test5(){
+        DataPacket<Ack> ackDataPacket = new DataPacket<>();
+        ackDataPacket.setCmdId(CmdType.ACK);
+        Ack ack = new Ack();
+        ack.setServerMsgId(596648053055881200l);
+        ack.setUserId("2");
+        ack.setClientMsgId("1");
+        ackDataPacket.setData(ack);
+        String s = JSONObject.toJSONString(ackDataPacket);
         System.out.println(s);
     }
 }

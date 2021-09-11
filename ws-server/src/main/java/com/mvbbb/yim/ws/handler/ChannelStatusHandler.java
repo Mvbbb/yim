@@ -6,6 +6,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,5 +64,26 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         }, 10000);
+    }
+
+    /**
+     * TODO client 与 server 心跳机制
+     */
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if(evt instanceof IdleStateEvent){
+            switch (((IdleStateEvent) evt).state()){
+                case ALL_IDLE:
+                    logger.info("超时, channel: {}",ctx.channel());
+                    break;
+                case READER_IDLE:
+                    logger.info("客户端读超时, channel: {}",ctx.channel());
+                    break;
+                case WRITER_IDLE:
+                    logger.info("客户端写超时, channel: {}",ctx.channel());
+                    break;
+                default:break;
+            }
+        }
     }
 }

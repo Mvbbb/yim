@@ -34,13 +34,12 @@ public class RedisStreamManager {
     }
 
     /**
-     * 将发送失败的消息重新投放到消息队列中
      * @param msgData 失败的消息
      */
-    public void reDeliver(MsgData msgData){
+    public void failedDeliveredMsg(MsgData msgData){
         String key = RedisConstant.STREAM_FAILED_MSG;
         ObjectRecord<String, MsgData> record = Record.of(msgData).withStreamKey(key);
         stringRedisTemplate.opsForStream().add(record);
-        logger.error("投放消息到失败队列中 {}",msgData);
+        logger.error("消息发送失败，存入离线消息表 {}",msgData);
     }
 }

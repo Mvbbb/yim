@@ -25,6 +25,10 @@ public final class WsServerConfig {
     // 消费者名称
     private String redisStreamConsumerName;
 
+    public static final int READ_IDEL_TIME_OUT = 4; // 读超时
+    public static final int WRITE_IDEL_TIME_OUT = 5;// 写超时
+    public static final int ALL_IDEL_TIME_OUT = 7; // 所有超时
+
     @PostConstruct
     public void init(){
         port = Integer.parseInt(System.getenv("server-port"));

@@ -55,7 +55,8 @@ message Bye{
 message Ack{
   string clientMsgId = 1;
   int64 serverMsgId = 2;
-  string msg = 3;
+  string userId = 3;
+  string msg = 4;
 }
 
 enum SessionType{

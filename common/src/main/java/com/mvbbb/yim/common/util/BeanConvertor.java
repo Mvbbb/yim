@@ -33,7 +33,7 @@ public final class BeanConvertor {
     public static MsgVO msgSendToMsgVO(MsgSend msgSend){
         MsgVO msgVO = new MsgVO();
         msgVO.setClientMsgId(msgSend.getClientMsgId());
-        msgVO.setServerMsgId(msgSend.getServerMsgId());
+        msgVO.setServerMsgId(String.valueOf(msgSend.getServerMsgId()));
         msgVO.setFromUid(msgSend.getFromUid());
         msgVO.setGroupId(msgSend.getGroupId());
         msgVO.setSessionType(SessionType.getType(msgSend.getSessionType()));
@@ -46,7 +46,7 @@ public final class BeanConvertor {
     public static MsgVO msgRecvToMsgVO(MsgRecv msgRecv){
         MsgVO msgVO = new MsgVO();
         msgVO.setClientMsgId(msgRecv.getClientMsgId());
-        msgVO.setServerMsgId(msgRecv.getServerMsgId());
+        msgVO.setServerMsgId(String.valueOf(msgRecv.getServerMsgId()));
         msgVO.setFromUid(msgRecv.getFromUid());
         msgVO.setGroupId(msgRecv.getGroupId());
         msgVO.setSessionType(SessionType.getType(msgRecv.getSessionType()));
@@ -155,5 +155,26 @@ public final class BeanConvertor {
         msgVoBuilder.setData(msgData.getData());
         msgVoBuilder.setTimestamp(msgData.getTimestamp().getTime());
         return msgVoBuilder.build();
+    }
+
+    public static MsgVO msgDataToMsgVO(MsgData msgData) {
+        MsgVO msgVO = new MsgVO();
+        msgVO.setClientMsgId(msgData.getClientMsgId());
+        msgVO.setServerMsgId(String.valueOf((msgData.getServerMsgId())));
+        msgVO.setFromUid(msgData.getFromUserId());
+        switch (msgData.getSessionType()) {
+            case GROUP:
+                msgVO.setSessionType(SessionType.GROUP);
+                msgVO.setGroupId(msgData.getToSessionId());
+                break;
+            case SINGLE:
+                msgVO.setSessionType(SessionType.SINGLE);
+                break;
+            default:break;
+        }
+        msgVO.setMsgType(msgData.getMsgType());
+        msgVO.setMsgData(msgData.getData());
+        msgVO.setTimestamp(msgData.getTimestamp());
+        return msgVO;
     }
 }
