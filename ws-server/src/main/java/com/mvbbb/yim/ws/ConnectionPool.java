@@ -2,7 +2,6 @@ package com.mvbbb.yim.ws;
 
 import io.netty.channel.Channel;
 
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionPool {
@@ -42,6 +41,24 @@ public class ConnectionPool {
 
     public int getConnectionCnt(){
         return userids.size();
+    }
+
+    public void closeConnection(Channel channel){
+        try {
+            channel.close().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkToClose(Channel channel){
+        if(connectionPool.getUseridByChannel(channel)==null){
+            try {
+                channel.close().sync();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

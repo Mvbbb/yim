@@ -8,6 +8,7 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
+import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.service.AckService;
 import com.mvbbb.yim.ws.service.MsgTransfer;
 import com.mvbbb.yim.ws.service.StatusService;
@@ -28,6 +29,7 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
 
     Logger logger = LoggerFactory.getLogger(JsonDataPacketHandler.class);
 
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
     @Resource
     StatusService statusHandler;
     @Resource
@@ -53,12 +55,15 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
         switch (cmdId){
             case GREET:
                 // greet request
+                logger.info("receive greet");
                 DataPacket<GreetRequest> msgDataDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<GreetRequest>>() {
                 });
                 GreetRequest authRequest = msgDataDataPacket.getData();
                 dataPacketHandler.statusHandler.greet(channelHandlerContext.channel(),authRequest);
                 break;
             case BYE:
+                logger.info("receive bye");
+                connectionPool.checkToClose(channelHandlerContext.channel());
                 DataPacket<ByeRequest> byeRequestDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<ByeRequest>>() {
                 });
                 ByeRequest byeRequestDataPacketData = byeRequestDataPacket.getData();
@@ -66,11 +71,16 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
                 break;
             case MSG_DATA:
                 //msg data
+                logger.info("receive msg data");
+                connectionPool.checkToClose(channelHandlerContext.channel());
                 DataPacket<MsgData> msgDataDataPacket1 = JSONObject.parseObject(msgText, new TypeReference<DataPacket<MsgData>>() {
                 });
+                // TODO 消息去重
                 dataPacketHandler.msgHandler.sendMsg(msgDataDataPacket1.getData());
                 break;
             case ACK:
+                logger.info("receive ack");
+                connectionPool.checkToClose(channelHandlerContext.channel());
                 DataPacket<Ack> ackDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<Ack>>() {
                 });
                 dataPacketHandler.ackService.recvAck(ackDataPacket.getData());

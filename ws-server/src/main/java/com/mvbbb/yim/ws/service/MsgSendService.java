@@ -38,7 +38,7 @@ public class MsgSendService {
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10,10,10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(),new ThreadPoolExecutor.CallerRunsPolicy());
     @Resource
     RedisStreamManager redisStreamManager;
-    @DubboReference
+    @DubboReference(check = false)
     UserStatusService userStatusService;
 
     public void sendAckToUser(String userId, String msg){

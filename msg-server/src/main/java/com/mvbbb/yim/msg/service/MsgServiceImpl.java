@@ -36,8 +36,4 @@ public class MsgServiceImpl implements MsgService {
                 break;
         }
     }
-
-    public void failedMsg(MsgData msgData){
-
-    }
 }
