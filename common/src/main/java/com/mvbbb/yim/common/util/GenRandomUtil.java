@@ -1,5 +1,7 @@
 package com.mvbbb.yim.common.util;
 
+import cn.hutool.core.util.RandomUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,23 +13,14 @@ public class GenRandomUtil {
         return msgIdAdder.addAndGet(1);
     }
 
-
-    private static final AtomicLong userIdAdder = new AtomicLong();
-    static{
-        userIdAdder.addAndGet(new Random().nextInt(100));
-    }
     public static String genUserid() {
-        long userid = userIdAdder.addAndGet(1);
-        return String.valueOf(userid);
+        int id = RandomUtil.randomInt(100000, 999999);
+        return String.valueOf(id);
     }
 
-    private static final AtomicLong groupIdAdder = new AtomicLong();
-    static {
-        groupIdAdder.addAndGet(new Random().nextInt(100));
-    }
     public static String genGroupid(){
-        long groupid = groupIdAdder.addAndGet(1);
-        return String.valueOf(groupid);
+        int id = RandomUtil.randomInt(100000, 999999);
+        return String.valueOf(id);
     }
 
     private static List<String> avatars = new ArrayList<>();

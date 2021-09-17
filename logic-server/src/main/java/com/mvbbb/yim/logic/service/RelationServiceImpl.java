@@ -102,7 +102,23 @@ public class RelationServiceImpl implements RelationService{
         members = members.stream().distinct().collect(Collectors.toList());
 
         Group group = new Group();
-        group.setGroupId(GenRandomUtil.genGroupid());
+
+        String groupId = null;
+        int retry = 0;
+        while (true){
+             groupId = GenRandomUtil.genUserid();
+            Group existGroup = groupMapper.selectById(groupId);
+            if(existGroup != null){
+                retry++;
+                if(retry==3){
+                    throw new IMException("无法分配id，系统故障，联系管理员");
+                }
+            }else{
+                break;
+            }
+        }
+
+        group.setGroupId(groupId);
         group.setGroupName(groupName);
         group.setAvatar(GenRandomUtil.randomAvatar());
         group.setOwnerUid(userId);
@@ -147,8 +163,14 @@ public class RelationServiceImpl implements RelationService{
     @Override
     public GroupVO getGroupInfo(String groupId) {
 
+        if(groupId==null){
+            throw new IMException("必须指定 groupId");
+        }
         GroupVO groupVO = new GroupVO();
         Group group = groupMapper.selectById(groupId);
+        if(group==null){
+            throw new IMException("群聊不存在"+groupId);
+        }
 
         // 查询群组内的所有成员id，包含群主
         List<String> userIds = groupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))
@@ -159,6 +181,10 @@ public class RelationServiceImpl implements RelationService{
             BeanUtil.copyProperties(user,userVO);
             return userVO;
         }).collect(Collectors.toList());
+        groupVO.setGroupId(group.getGroupId());
+        groupVO.setGroupName(group.getGroupName());
+        groupVO.setAvatar(group.getAvatar());
+        groupVO.setOwnerUid(group.getOwnerUid());
         groupVO.setUserCnt(members.size());
         groupVO.setMembers(members);
         return groupVO;

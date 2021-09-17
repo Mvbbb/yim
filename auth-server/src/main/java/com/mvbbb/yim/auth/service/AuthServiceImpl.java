@@ -1,5 +1,6 @@
 package com.mvbbb.yim.auth.service;
 
+import com.mvbbb.yim.common.exception.IMException;
 import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.constant.RedisConstant;
 import com.mvbbb.yim.common.entity.User;
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthEnum checkToken(String userId, String token) {
         String rToken  = ((String) redisTemplate.opsForValue().get(RedisConstant.USER_TOKEN_PREFIX + userId));
         if (rToken!=null&&rToken.equals(token)) {
-            logger.info("token 校验跳过. userId: [{}]",userId);
+            logger.info("token 通过. userId: [{}]",userId);
             return AuthEnum.SUCCESS;
         }
         logger.error("token 校验失败. userId: [{}], token: [{}]",userId,token);
@@ -77,10 +78,30 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User register(String username, String password) {
         User user = new User();
-        user.setUserId(GenRandomUtil.genUserid());
         user.setPassword(password);
         user.setAvatar(GenRandomUtil.randomAvatar());
+
+        if(userMapper.selectByUsername(username)!=null){
+            throw new IMException("用户名被占用");
+        };
+
         user.setUsername(username);
+        // 随机id可能重复，导致无法
+        String userId = null;
+        int retry = 0;
+        while (true){
+            userId = GenRandomUtil.genUserid();
+            User existUser = userMapper.selectById(userId);
+            if(existUser != null){
+                retry++;
+                if(retry==3){
+                    throw new IMException("无法分配id，系统故障，联系管理员");
+                }
+            }else{
+                break;
+            }
+        }
+        user.setUserId(userId);
         userMapper.insert(user);
         return user;
     }
