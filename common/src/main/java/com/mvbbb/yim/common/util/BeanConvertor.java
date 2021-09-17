@@ -16,7 +16,7 @@ import java.util.Date;
 public final class BeanConvertor {
 
     @Deprecated
-    public static MsgData msgSendToMsgData(String userId,MsgSend msgSend, SessionType sessionType){
+    public static MsgData msgSendToMsgData(String userId, MsgSend msgSend, SessionType sessionType) {
         MsgData msgData = new MsgData();
         msgData.setClientMsgId(msgSend.getClientMsgId());
         msgData.setServerMsgId(msgSend.getServerMsgId());
@@ -30,7 +30,7 @@ public final class BeanConvertor {
         return msgData;
     }
 
-    public static MsgVO msgSendToMsgVO(MsgSend msgSend){
+    public static MsgVO msgSendToMsgVO(MsgSend msgSend) {
         MsgVO msgVO = new MsgVO();
         msgVO.setClientMsgId(msgSend.getClientMsgId());
         msgVO.setServerMsgId(String.valueOf(msgSend.getServerMsgId()));
@@ -43,7 +43,7 @@ public final class BeanConvertor {
         return msgVO;
     }
 
-    public static MsgVO msgRecvToMsgVO(MsgRecv msgRecv){
+    public static MsgVO msgRecvToMsgVO(MsgRecv msgRecv) {
         MsgVO msgVO = new MsgVO();
         msgVO.setClientMsgId(msgRecv.getClientMsgId());
         msgVO.setServerMsgId(String.valueOf(msgRecv.getServerMsgId()));
@@ -62,8 +62,8 @@ public final class BeanConvertor {
         msgSend.setServerMsgId(msgData.getServerMsgId());
         msgSend.setClientMsgId(msgData.getClientMsgId());
         msgSend.setFromUid(msgData.getFromUserId());
-        msgSend.setToUid(msgData.getSessionType()== SessionType.SINGLE?msgData.getToSessionId():null);
-        msgSend.setGroupId(msgData.getSessionType()==SessionType.GROUP?msgData.getToSessionId():null);
+        msgSend.setToUid(msgData.getSessionType() == SessionType.SINGLE ? msgData.getToSessionId() : null);
+        msgSend.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getToSessionId() : null);
         msgSend.setMsgType(msgSend.getMsgType());
         msgSend.setMsgData(msgData.getData());
         msgSend.setTimestamp(msgData.getTimestamp());
@@ -77,28 +77,29 @@ public final class BeanConvertor {
         msgRecv.setServerMsgId(msgData.getServerMsgId());
         msgRecv.setFromUid(msgData.getFromUserId());
         msgRecv.setToUid(msgData.getRecvUserId());
-        msgRecv.setGroupId(msgData.getSessionType()==SessionType.GROUP?msgData.getToSessionId():null);
-        msgRecv.setMsgType(msgData.getMsgType()== MsgType.TEXT?0:1);
+        msgRecv.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getToSessionId() : null);
+        msgRecv.setMsgType(msgData.getMsgType() == MsgType.TEXT ? 0 : 1);
         msgRecv.setTimestamp(msgData.getTimestamp());
         msgRecv.setMsgData(msgData.getData());
         msgRecv.setDeleted(false);
         return msgRecv;
     }
 
-    public static GreetRequest protocToGreetRequest(Protobuf.Greet greet){
+    public static GreetRequest protocToGreetRequest(Protobuf.Greet greet) {
         GreetRequest greetRequest = new GreetRequest();
         greetRequest.setUserId(greet.getUserId());
-        greetRequest.setToken(greet.getToken());;
+        greetRequest.setToken(greet.getToken());
+        ;
         return greetRequest;
     }
 
-    public static MsgData protocToMsgData(Protobuf.MsgData dataPacket){
+    public static MsgData protocToMsgData(Protobuf.MsgData dataPacket) {
         MsgData msgData = new MsgData();
         msgData.setClientMsgId(dataPacket.getClientMsgId());
         msgData.setServerMsgId(dataPacket.getServerMsgId());
         msgData.setFromUserId(dataPacket.getFromUserId());
         Protobuf.SessionType sessionType = dataPacket.getSessionType();
-        switch (sessionType){
+        switch (sessionType) {
             case SINGLE:
                 msgData.setSessionType(SessionType.SINGLE);
                 break;
@@ -108,7 +109,7 @@ public final class BeanConvertor {
         msgData.setToSessionId(dataPacket.getToSessionId());
         msgData.setRecvUserId(dataPacket.getRecvUserId());
         Protobuf.MsgType msgType = dataPacket.getMsgType();
-        switch (msgType){
+        switch (msgType) {
             case TEXT:
                 msgData.setMsgType(MsgType.TEXT);
                 break;
@@ -126,7 +127,7 @@ public final class BeanConvertor {
         return new ByeRequest();
     }
 
-    public static Protobuf.Ack protocFromAck(Ack ack){
+    public static Protobuf.Ack protocFromAck(Ack ack) {
         Protobuf.Ack.Builder ackBuilder = Protobuf.Ack.newBuilder();
         ackBuilder.setClientMsgId(ack.getClientMsgId());
         ackBuilder.setServerMsgId(ack.getServerMsgId());
@@ -134,12 +135,12 @@ public final class BeanConvertor {
         return ackBuilder.build();
     }
 
-    public static Protobuf.MsgVO protoFromMsgData(MsgData msgData){
+    public static Protobuf.MsgVO protoFromMsgData(MsgData msgData) {
         Protobuf.MsgVO.Builder msgVoBuilder = Protobuf.MsgVO.newBuilder();
         msgVoBuilder.setClientMsgId(msgData.getClientMsgId());
         msgVoBuilder.setServerMsgId(msgData.getServerMsgId());
         msgVoBuilder.setFromUid(msgData.getFromUserId());
-        if(msgData.getSessionType()==SessionType.GROUP){
+        if (msgData.getSessionType() == SessionType.GROUP) {
             msgVoBuilder.setGroupId(msgData.getToSessionId());
         }
         switch (msgData.getSessionType()) {
@@ -150,7 +151,8 @@ public final class BeanConvertor {
             case SINGLE:
                 msgVoBuilder.setSessionType(Protobuf.SessionType.SINGLE);
                 break;
-            default:break;
+            default:
+                break;
         }
         msgVoBuilder.setData(msgData.getData());
         msgVoBuilder.setTimestamp(msgData.getTimestamp().getTime());
@@ -170,7 +172,8 @@ public final class BeanConvertor {
             case SINGLE:
                 msgVO.setSessionType(SessionType.SINGLE);
                 break;
-            default:break;
+            default:
+                break;
         }
         msgVO.setMsgType(msgData.getMsgType());
         msgVO.setMsgData(msgData.getData());

@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 
 
 @DubboService
-public class WsUserStatusServiceImpl implements WsUserStatusService{
+public class WsUserStatusServiceImpl implements WsUserStatusService {
 
     private static final Logger logger = LoggerFactory.getLogger(WsUserStatusServiceImpl.class);
 
@@ -24,14 +24,14 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
     @Override
     public void kickout(String userId) {
         Channel channel = connectionPool.findChannel(userId);
-        if(channel==null){
+        if (channel == null) {
             logger.error("channel is null");
-            return ;
+            return;
         }
 
-        sendDataToUserHandler.send(channel,"异地登录，本机下线");
-        connectionPool.removeConnection(channel,userId);
-        logger.error("user channel was removed from connection pool, because another login event. userId: [{}], channel: [{}]",userId,channel);
+        sendDataToUserHandler.send(channel, "异地登录，本机下线");
+        connectionPool.removeConnection(channel, userId);
+        logger.error("user channel was removed from connection pool, because another login event. userId: [{}], channel: [{}]", userId, channel);
 
         try {
             channel.close().sync();
@@ -43,10 +43,10 @@ public class WsUserStatusServiceImpl implements WsUserStatusService{
     @Override
     public void userOffline(String userId) {
         Channel channel = connectionPool.findChannel(userId);
-        if(channel==null){
+        if (channel == null) {
             logger.error("channel is null");
-            return ;
+            return;
         }
-        statusHandler.bye(channel,userId);
+        statusHandler.bye(channel, userId);
     }
 }

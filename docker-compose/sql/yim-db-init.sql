@@ -1,2 +1,4 @@
-create database yim;
-use yim;
+create
+database yim;
+use
+yim;

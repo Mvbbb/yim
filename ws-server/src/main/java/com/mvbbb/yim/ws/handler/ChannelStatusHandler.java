@@ -6,7 +6,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
@@ -16,22 +15,19 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @ChannelHandler.Sharable
 public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
 
+    private static ChannelStatusHandler closeChannelHandler;
     private final Logger logger = LoggerFactory.getLogger(ChannelStatusHandler.class);
-
     ConnectionPool connectionPool = ConnectionPool.getInstance();
     @DubboReference(check = false)
     UserStatusService userStatusService;
 
-    private static ChannelStatusHandler closeChannelHandler;
-
     @PostConstruct
-    public void init(){
+    public void init() {
         closeChannelHandler = this;
     }
 
@@ -40,10 +36,10 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         String userId = connectionPool.getUseridByChannel(channel);
-        if(userId!=null){
-            connectionPool.removeConnection(channel,userId);
+        if (userId != null) {
+            connectionPool.removeConnection(channel, userId);
             closeChannelHandler.userStatusService.userOffline(userId);
-            logger.error("用户断开 socket 连接. userId：[{}],channel: [{}]",userId,channel);
+            logger.error("用户断开 socket 连接. userId：[{}],channel: [{}]", userId, channel);
         }
     }
 
@@ -54,9 +50,9 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
             @Override
             public void run() {
                 String user = connectionPool.getUseridByChannel(ctx.channel());
-                if(user==null){
+                if (user == null) {
                     try {
-                        logger.error("长时间没有发送认证消息，自动关闭 channel。channel : [{}]",ctx.channel());
+                        logger.error("长时间没有发送认证消息，自动关闭 channel。channel : [{}]", ctx.channel());
                         ctx.channel().close().sync();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -71,18 +67,19 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if(evt instanceof IdleStateEvent){
-            switch (((IdleStateEvent) evt).state()){
+        if (evt instanceof IdleStateEvent) {
+            switch (((IdleStateEvent) evt).state()) {
                 case ALL_IDLE:
-                    logger.info("超时, channel: {}",ctx.channel());
+                    logger.info("超时, channel: {}", ctx.channel());
                     break;
                 case READER_IDLE:
-                    logger.info("客户端读超时, channel: {}",ctx.channel());
+                    logger.info("客户端读超时, channel: {}", ctx.channel());
                     break;
                 case WRITER_IDLE:
-                    logger.info("客户端写超时, channel: {}",ctx.channel());
+                    logger.info("客户端写超时, channel: {}", ctx.channel());
                     break;
-                default:break;
+                default:
+                    break;
             }
         }
     }

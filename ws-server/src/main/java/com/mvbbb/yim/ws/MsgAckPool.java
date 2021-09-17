@@ -6,23 +6,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MsgAckPool {
     private static MsgAckPool msgAckPool;
-    public static synchronized MsgAckPool getInstance(){
-        if(msgAckPool == null){
+    private ConcurrentHashMap<String, WrappedMsg> map = new ConcurrentHashMap<>();
+
+    private MsgAckPool() {
+    }
+
+    public static synchronized MsgAckPool getInstance() {
+        if (msgAckPool == null) {
             msgAckPool = new MsgAckPool();
         }
         return msgAckPool;
     }
 
-    private MsgAckPool() {}
-
-    private ConcurrentHashMap<String,WrappedMsg> map = new ConcurrentHashMap<>();
-
-    public WrappedMsg getWrappedMsg(MsgData msgData){
+    public WrappedMsg getWrappedMsg(MsgData msgData) {
         String key = msgData.getServerMsgId() + ":" + msgData.getRecvUserId();
         return map.get(key);
     }
 
-    public void acked(String key){
+    public void acked(String key) {
         map.remove(key);
     }
 
@@ -32,6 +33,6 @@ public class MsgAckPool {
         wrappedMsg.setMsgData(msgData);
         // todo times remove
         wrappedMsg.setSendTimes(0);
-        map.put(key,wrappedMsg);
+        map.put(key, wrappedMsg);
     }
 }

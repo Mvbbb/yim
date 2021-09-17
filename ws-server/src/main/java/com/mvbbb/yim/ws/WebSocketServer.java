@@ -1,7 +1,7 @@
 package com.mvbbb.yim.ws;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -19,7 +19,7 @@ public class WebSocketServer {
         this.port = port;
     }
 
-    void startWebSocketServer(){
+    void startWebSocketServer() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap()

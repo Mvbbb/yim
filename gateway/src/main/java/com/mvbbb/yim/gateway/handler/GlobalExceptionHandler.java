@@ -17,24 +17,24 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(value = IMException.class)
-    public GenericResponse<Object> exception(IMException imException, HttpServletRequest request){
-        logger.error("出现异常。 url：{}，IMException：{}",request.getRequestURI(),imException.getResultCode());
+    public GenericResponse<Object> exception(IMException imException, HttpServletRequest request) {
+        logger.error("出现异常。 url：{}，IMException：{}", request.getRequestURI(), imException.getResultCode());
         ResCode resultCode = imException.getResultCode();
-        if(resultCode==null){
+        if (resultCode == null) {
             return GenericResponse.failed(imException.getMessage());
         }
         return GenericResponse.failed(resultCode);
     }
 
     @ExceptionHandler(value = RuntimeException.class)
-    public GenericResponse<Object> handlerRuntimeException(RuntimeException e, HttpServletRequest request){
+    public GenericResponse<Object> handlerRuntimeException(RuntimeException e, HttpServletRequest request) {
         e.printStackTrace();
-        logger.error("服务器内部错误。url: {}",request.getRequestURI());
+        logger.error("服务器内部错误。url: {}", request.getRequestURI());
         return GenericResponse.failed(ResCode.SYSTEM_ERROR);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public void handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request){
+    public void handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
 
     }
 }

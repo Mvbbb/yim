@@ -8,14 +8,14 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
-import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
+import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import org.junit.Test;
 
 public class test {
 
     @Test
-    public void test1(){
+    public void test1() {
         DataPacket<GreetRequest> authRequestDataPacket = new DataPacket<>();
         GreetRequest authRequest = new GreetRequest();
         authRequest.setToken("token");
@@ -27,7 +27,7 @@ public class test {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
 
         DataPacket<ByeRequest> byeRequestDataPacket = new DataPacket<>();
         ByeRequest byeRequest = new ByeRequest();
@@ -39,7 +39,7 @@ public class test {
 
     // 私聊消息
     @Test
-    public void test3(){
+    public void test3() {
         DataPacket<MsgData> msgDataDataPacket = new DataPacket<>();
         MsgData msgData = new MsgData();
         msgData.setData("你好");
@@ -56,7 +56,7 @@ public class test {
 
     // 群聊消息
     @Test
-    public void test4(){
+    public void test4() {
         DataPacket<MsgData> msgDataDataPacket = new DataPacket<>();
         MsgData msgData = new MsgData();
         msgData.setData("群聊消息测试");
@@ -72,7 +72,7 @@ public class test {
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         DataPacket<Ack> ackDataPacket = new DataPacket<>();
         ackDataPacket.setCmdId(CmdType.ACK);
         Ack ack = new Ack();

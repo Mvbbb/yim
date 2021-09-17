@@ -14,24 +14,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 public class RegisterService {
 
     private final Logger logger = LoggerFactory.getLogger(RegisterService.class);
-
-    private CuratorFramework client;
-    private TreeCache treeCache;
-
     private final Random random = new Random();
-
     @Resource
     GatewayConfig gatewayConfig;
-
+    private CuratorFramework client;
+    private TreeCache treeCache;
 
     public void createClient() {
 
@@ -50,24 +47,27 @@ public class RegisterService {
 
     /**
      * 为用户选择一个连接数最小的 wsserver
+     *
      * @return
      */
-    public String getWsForUser(){
+    public String getWsForUser() {
         Map<String, ChildData> datas = treeCache.getCurrentChildren(ZkConstant.ZK_ROOT);
         List<WsStatus> wses = datas.values().stream().map((childData -> {
             String status = new String(childData.getData());
             return JSONObject.parseObject(status, WsStatus.class);
         })).collect(Collectors.toList());
-        if(wses.size()==0){
+        if (wses.size() == 0) {
             logger.error("no ws server available");
             return null;
         }
-        wses.sort((w1,w2)->{return w1.getConnectionCnt()-w2.getConnectionCnt();});
+        wses.sort((w1, w2) -> {
+            return w1.getConnectionCnt() - w2.getConnectionCnt();
+        });
         return wses.get(0).getWsAddr();
     }
 
-    public void cache(){
-        if(treeCache!=null){
+    public void cache() {
+        if (treeCache != null) {
             return;
         }
         treeCache = TreeCache.newBuilder(client, ZkConstant.ZK_ROOT).setCacheData(true).build();

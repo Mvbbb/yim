@@ -25,81 +25,68 @@ public class SnowflakeIdWorker {
 
     static Logger logger = LoggerFactory.getLogger(SnowflakeIdWorker.class);
     // ==============================Fields===========================================
-    /**
-     * 开始时间截 (2015-01-01)
-     */
-    private final long twepoch = 1489111610226L;
-
-    /**
-     * 机器id所占的位数
-     */
-    private final long workerIdBits = 5L;
-
-    /**
-     * 数据标识id所占的位数
-     */
-    private final long dataCenterIdBits = 5L;
-
-    /**
-     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
-     */
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-
-    /**
-     * 支持的最大数据标识id，结果是31
-     */
-    private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);
-
-    /**
-     * 序列在id中占的位数
-     */
-    private final long sequenceBits = 12L;
-
-    /**
-     * 机器ID向左移12位
-     */
-    private final long workerIdShift = sequenceBits;
-
-    /**
-     * 数据标识id向左移17位(12+5)
-     */
-    private final long dataCenterIdShift = sequenceBits + workerIdBits;
-
-    /**
-     * 时间截向左移22位(5+5+12)
-     */
-    private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
-
-    /**
-     * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
-     */
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
-
-    /**
-     * 工作机器ID(0~31)
-     */
-    private long workerId;
-
-    /**
-     * 数据中心ID(0~31)
-     */
-    private long dataCenterId;
-
-    /**
-     * 毫秒内序列(0~4095)
-     */
-    private long sequence = 0L;
-
-    /**
-     * 上次生成ID的时间截
-     */
-    private long lastTimestamp = -1L;
-
     private static SnowflakeIdWorker idWorker;
 
     static {
         idWorker = new SnowflakeIdWorker(getWorkId(), getDataCenterId());
     }
+
+    /**
+     * 开始时间截 (2015-01-01)
+     */
+    private final long twepoch = 1489111610226L;
+    /**
+     * 机器id所占的位数
+     */
+    private final long workerIdBits = 5L;
+    /**
+     * 数据标识id所占的位数
+     */
+    private final long dataCenterIdBits = 5L;
+    /**
+     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
+     */
+    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+    /**
+     * 支持的最大数据标识id，结果是31
+     */
+    private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);
+    /**
+     * 序列在id中占的位数
+     */
+    private final long sequenceBits = 12L;
+    /**
+     * 机器ID向左移12位
+     */
+    private final long workerIdShift = sequenceBits;
+    /**
+     * 数据标识id向左移17位(12+5)
+     */
+    private final long dataCenterIdShift = sequenceBits + workerIdBits;
+    /**
+     * 时间截向左移22位(5+5+12)
+     */
+    private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
+    /**
+     * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
+     */
+    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+    /**
+     * 工作机器ID(0~31)
+     */
+    private long workerId;
+    /**
+     * 数据中心ID(0~31)
+     */
+    private long dataCenterId;
+    /**
+     * 毫秒内序列(0~4095)
+     */
+    private long sequence = 0L;
+    /**
+     * 上次生成ID的时间截
+     */
+    private long lastTimestamp = -1L;
 
     //==============================Constructors=====================================
 
@@ -121,6 +108,61 @@ public class SnowflakeIdWorker {
     }
 
     // ==============================Methods==========================================
+
+    private static Long getWorkId() {
+        try {
+            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
+            logger.warn("workid:{}", hostAddress);
+            int[] ints = StringUtils.toCodePoints(hostAddress);
+            int sums = 0;
+            for (int b : ints) {
+                sums += b;
+            }
+            return (long) (sums % 32);
+        } catch (UnknownHostException e) {
+            // 如果获取失败，则使用随机数备用
+            return RandomUtils.nextLong(0, 31);
+        }
+    }
+
+    private static Long getDataCenterId() {
+        try {
+            String hostName = Inet4Address.getLocalHost().getHostName();
+            logger.warn("datacenterid:{}", hostName);
+            int[] ints = StringUtils.toCodePoints(hostName);
+            int sums = 0;
+            for (int b : ints) {
+                sums += b;
+            }
+            return (long) (sums % 32);
+        } catch (UnknownHostException e) {
+            // 如果获取失败，则使用随机数备用
+            return RandomUtils.nextLong(0, 31);
+        }
+    }
+
+    /**
+     * 静态工具类
+     *
+     * @return
+     */
+    public static synchronized Long generateId() {
+        long id = idWorker.nextId();
+        return id;
+    }
+
+    /**
+     * 测试
+     */
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
+        long startTime = System.nanoTime();
+        for (int i = 0; i < 50000; i++) {
+            long id = SnowflakeIdWorker.generateId();
+            System.out.println(id);
+        }
+        System.out.println((System.nanoTime() - startTime) / 1000000 + "ms");
+    }
 
     /**
      * 获得下一个ID (该方法是线程安全的)
@@ -174,6 +216,8 @@ public class SnowflakeIdWorker {
         return timestamp;
     }
 
+    //==============================Test=============================================
+
     /**
      * 返回以毫秒为单位的当前时间
      *
@@ -181,64 +225,6 @@ public class SnowflakeIdWorker {
      */
     protected long timeGen() {
         return System.currentTimeMillis();
-    }
-
-    private static Long getWorkId() {
-        try {
-            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
-            logger.warn("workid:{}", hostAddress);
-            int[] ints = StringUtils.toCodePoints(hostAddress);
-            int sums = 0;
-            for (int b : ints) {
-                sums += b;
-            }
-            return (long) (sums % 32);
-        } catch (UnknownHostException e) {
-            // 如果获取失败，则使用随机数备用
-            return RandomUtils.nextLong(0, 31);
-        }
-    }
-
-    private static Long getDataCenterId() {
-        try {
-            String hostName = Inet4Address.getLocalHost().getHostName();
-            logger.warn("datacenterid:{}", hostName);
-            int[] ints = StringUtils.toCodePoints(hostName);
-            int sums = 0;
-            for (int b : ints) {
-                sums += b;
-            }
-            return (long) (sums % 32);
-        } catch (UnknownHostException e) {
-            // 如果获取失败，则使用随机数备用
-            return RandomUtils.nextLong(0, 31);
-        }
-    }
-
-
-    /**
-     * 静态工具类
-     *
-     * @return
-     */
-    public static synchronized Long generateId() {
-        long id = idWorker.nextId();
-        return id;
-    }
-
-    //==============================Test=============================================
-
-    /**
-     * 测试
-     */
-    public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
-        long startTime = System.nanoTime();
-        for (int i = 0; i < 50000; i++) {
-            long id = SnowflakeIdWorker.generateId();
-            System.out.println(id);
-        }
-        System.out.println((System.nanoTime() - startTime) / 1000000 + "ms");
     }
 }
 

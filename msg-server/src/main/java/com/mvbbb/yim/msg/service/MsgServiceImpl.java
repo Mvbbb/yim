@@ -3,7 +3,6 @@ package com.mvbbb.yim.msg.service;
 import com.mvbbb.yim.common.entity.MsgSend;
 import com.mvbbb.yim.common.mapper.MsgSendMapper;
 import com.mvbbb.yim.common.protoc.MsgData;
-import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.msg.MsgHandler;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -24,7 +23,7 @@ public class MsgServiceImpl implements MsgService {
         MsgSend msgSend = BeanConvertor.msgDataToMsgSend(msgData);
         msgSendMapper.insert(msgSend);
         // 发送消息
-        switch (msgData.getSessionType()){
+        switch (msgData.getSessionType()) {
             case SINGLE:
                 msgData.setRecvUserId(msgData.getToSessionId());
                 msgHandler.sendSingleMsg(msgData);

@@ -9,16 +9,16 @@ import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages ={ "com.mvbbb.yim.gateway","com.mvbbb.yim.common"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.gateway", "com.mvbbb.yim.common"})
 @EnableDubbo
 @PropertySource("classpath:/dubbo-consumer.properties")
 public class GatewayApplication implements CommandLineRunner {
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class,args);
-    }
-
     @Resource
     RegisterService zkService;
+
+    public static void main(String[] args) {
+        SpringApplication.run(GatewayApplication.class, args);
+    }
 
     @Override
     public void run(String... args) throws Exception {

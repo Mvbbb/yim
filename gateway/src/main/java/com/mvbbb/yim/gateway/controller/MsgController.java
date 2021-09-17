@@ -1,28 +1,31 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.HistoryRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.vo.MsgVO;
+import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.MsgService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 public class MsgController {
 
-    @DubboReference(check = false,retries = 0)
+    @DubboReference(check = false, retries = 0)
     MsgService msgService;
 
     @ApiOperation("获取历史消息")
     @CheckAuth
-    @RequestMapping(path = "/message/history",method = RequestMethod.GET)
-    public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request){
+    @RequestMapping(path = "/message/history", method = RequestMethod.GET)
+    public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request) {
         HistoryRequest historyRequest = request.getData();
         List<MsgVO> historyMsg = msgService.getHistoryMsg(request.getUserId(),
                 historyRequest.getSessionId(),
@@ -35,7 +38,7 @@ public class MsgController {
     @ApiOperation("获取离线消息")
     @CheckAuth
     @RequestMapping(path = "/message/offline", method = RequestMethod.GET)
-    public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestBody GenericRequest<Object> request){
+    public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestBody GenericRequest<Object> request) {
         String userId = request.getUserId();
         PullOfflineMsgResponse offlineMsg = msgService.getOfflineMsg(userId);
         return GenericResponse.success(offlineMsg);

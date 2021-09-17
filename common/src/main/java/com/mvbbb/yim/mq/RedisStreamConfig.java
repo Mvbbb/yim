@@ -17,6 +17,10 @@ public class RedisStreamConfig {
 
     @Resource
     private Map<String, StreamMessageListenerContainer<String, ?>> listenerContainerMap;
+    /**
+     * 监听容器列表
+     */
+    private List<StreamMessageListenerContainer<String, ?>> containerList = new ArrayList<>();
 
     /**
      * 初始化redis stream 的消费组
@@ -24,13 +28,8 @@ public class RedisStreamConfig {
     private void initializeGroup() {
     }
 
-    /**
-     * 监听容器列表
-     */
-    private List<StreamMessageListenerContainer<String, ?>> containerList = new ArrayList<>();
-
     @Bean
-    public Subscription subscription(RedisConnectionFactory factory){
+    public Subscription subscription(RedisConnectionFactory factory) {
 
         // 初始化各个stream的消费组
         initializeGroup();

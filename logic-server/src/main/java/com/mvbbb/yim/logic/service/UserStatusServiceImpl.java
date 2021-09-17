@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DubboService
-public class UserStatusServiceImpl implements UserStatusService{
+public class UserStatusServiceImpl implements UserStatusService {
 
-    Logger logger  = LoggerFactory.getLogger(UserStatusServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(UserStatusServiceImpl.class);
 
     @Resource
     UserGroupRelationMapper userGroupRelationMapper;
@@ -31,22 +31,22 @@ public class UserStatusServiceImpl implements UserStatusService{
     FriendRelationMapper friendRelationMapper;
 
     @Resource(name = "jsonRedisTemplate")
-    RedisTemplate<Object,Object> redisTemplate;
-    @DubboReference(parameters = {"router","address"},check = false)
+    RedisTemplate<Object, Object> redisTemplate;
+    @DubboReference(parameters = {"router", "address"}, check = false)
     WsUserStatusService wsUserStatusService;
 
     @Override
-    public void userOnline(String userId,int port,int rpcPort) {
+    public void userOnline(String userId, int port, int rpcPort) {
         String wsServerIp = RpcContext.getContext().getRemoteAddress().getAddress().getHostAddress();
-        WsServerRoute wsServerRoute = new WsServerRoute(wsServerIp, port,rpcPort);
-        logger.info("add ws route to redis {}:{}",wsServerRoute.getIp(),wsServerRoute.getPort());
-        redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId,wsServerRoute);
+        WsServerRoute wsServerRoute = new WsServerRoute(wsServerIp, port, rpcPort);
+        logger.info("add ws route to redis {}:{}", wsServerRoute.getIp(), wsServerRoute.getPort());
+        redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId, wsServerRoute);
     }
 
     @Override
     public void userOffline(String userId) {
-        logger.error("user {} route removed from redis",userId);
-        redisTemplate.delete(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId);
+        logger.error("user {} route removed from redis", userId);
+        redisTemplate.delete(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId);
     }
 
     @Override
@@ -77,12 +77,12 @@ public class UserStatusServiceImpl implements UserStatusService{
 
     @Override
     public void offlineMsgPoolOver(String userId) {
-        redisTemplate.delete(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX+userId);
+        redisTemplate.delete(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX + userId);
     }
 
     @Override
     public boolean isOfflineMsgPoolOver(String userId) {
-        return redisTemplate.opsForValue().get(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX+userId)==null;
+        return redisTemplate.opsForValue().get(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX + userId) == null;
     }
 
     @Override
@@ -90,8 +90,8 @@ public class UserStatusServiceImpl implements UserStatusService{
         WsServerRoute wsServerRoute = (WsServerRoute) redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId);
         // 调用用户所在的wsserver
         Address address = new Address(wsServerRoute.getIp(), wsServerRoute.getRpcPort());
-        RpcContext.getContext().setObjectAttachment("address",address);
-        redisTemplate.delete(RedisConstant.STATUS_USER_ROUTE_PREFIX+userId);
+        RpcContext.getContext().setObjectAttachment("address", address);
+        redisTemplate.delete(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId);
         logger.info("调用 kickout");
         wsUserStatusService.kickout(userId);
     }

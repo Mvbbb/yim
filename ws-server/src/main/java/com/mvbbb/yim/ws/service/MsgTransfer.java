@@ -19,9 +19,9 @@ public class MsgTransfer {
     @Resource
     MsgSendService sendDataToUserHandler;
 
-    public void sendMsg(MsgData msgData){
+    public void sendMsg(MsgData msgData) {
         msgData.setServerMsgId(SnowflakeIdWorker.generateId());
-        sendDataToUserHandler.sendAckToUser(msgData.getFromUserId(),"Ws Server receive msg.");
+        sendDataToUserHandler.sendAckToUser(msgData.getFromUserId(), "Ws Server receive msg.");
         msgService.handlerMsgData(msgData);
     }
 }

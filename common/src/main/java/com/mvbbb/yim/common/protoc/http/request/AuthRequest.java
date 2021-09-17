@@ -1,7 +1,8 @@
 package com.mvbbb.yim.common.protoc.http.request;
 
-import javax.validation.constraints.NotNull;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class AuthRequest {

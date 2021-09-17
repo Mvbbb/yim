@@ -4,9 +4,9 @@ import lombok.ToString;
 
 @ToString
 public enum ResCode {
-    SUCCESS(200,"success"),
-    FAILED(400,"failed"),
-    SYSTEM_ERROR(500,"服务器内部错误");
+    SUCCESS(200, "success"),
+    FAILED(400, "failed"),
+    SYSTEM_ERROR(500, "服务器内部错误");
 
     private int code;
     private String msg;

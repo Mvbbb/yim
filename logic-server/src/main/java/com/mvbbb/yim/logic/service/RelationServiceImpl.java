@@ -24,9 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DubboService
-public class RelationServiceImpl implements RelationService{
+public class RelationServiceImpl implements RelationService {
 
-    private Logger logger = LoggerFactory.getLogger(RelationServiceImpl.class);
     @Resource
     FriendRelationMapper friendRelationMapper;
     @Resource
@@ -35,6 +34,7 @@ public class RelationServiceImpl implements RelationService{
     GroupMapper groupMapper;
     @Resource
     UserMapper userMapper;
+    private Logger logger = LoggerFactory.getLogger(RelationServiceImpl.class);
 
     @Override
     public List<User> listFriend(String userId) {
@@ -49,8 +49,8 @@ public class RelationServiceImpl implements RelationService{
     @Override
     public void addFriend(String userId, String friendId) {
         FriendRelation friendRelation = null;
-        friendRelation = friendRelationMapper.findFriendRelation(userId,friendId);
-        if(friendRelation!=null){
+        friendRelation = friendRelationMapper.findFriendRelation(userId, friendId);
+        if (friendRelation != null) {
             throw new IMException("已经是好友了，不能重复添加");
         }
         friendRelation = new FriendRelation();
@@ -61,7 +61,7 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public void deleteFriend(String userId, String friendId) {
-        friendRelationMapper.deleteFriendRelation(userId,friendId);
+        friendRelationMapper.deleteFriendRelation(userId, friendId);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class RelationServiceImpl implements RelationService{
         return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId))
                 .map((group -> {
                     GroupVO groupVO = new GroupVO();
-                    BeanUtil.copyProperties(group,groupVO);
+                    BeanUtil.copyProperties(group, groupVO);
                     return groupVO;
                 })).collect(Collectors.toList());
     }
@@ -79,8 +79,8 @@ public class RelationServiceImpl implements RelationService{
     @Override
     public GroupVO joinGroup(String userId, String groupId) {
         UserGroupRelation userGroupRelation = null;
-        userGroupRelation = groupRelationMapper.findGroupRelation(userId,groupId);
-        if(userGroupRelation!=null){
+        userGroupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
+        if (userGroupRelation != null) {
             throw new IMException("已经是群成员了，不能重复添加");
         }
         userGroupRelation = new UserGroupRelation();
@@ -94,7 +94,7 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public GroupVO createGroup(String userId, String groupName, List<String> members) {
-        if(members==null){
+        if (members == null) {
             members = new ArrayList<>();
         }
         members.add(userId);
@@ -105,15 +105,15 @@ public class RelationServiceImpl implements RelationService{
 
         String groupId = null;
         int retry = 0;
-        while (true){
-             groupId = GenRandomUtil.genUserid();
+        while (true) {
+            groupId = GenRandomUtil.genUserid();
             Group existGroup = groupMapper.selectById(groupId);
-            if(existGroup != null){
+            if (existGroup != null) {
                 retry++;
-                if(retry==3){
+                if (retry == 3) {
                     throw new IMException("无法分配id，系统故障，联系管理员");
                 }
-            }else{
+            } else {
                 break;
             }
         }
@@ -122,12 +122,12 @@ public class RelationServiceImpl implements RelationService{
         group.setGroupName(groupName);
         group.setAvatar(GenRandomUtil.randomAvatar());
         group.setOwnerUid(userId);
-        group.setUserCnt(members.size()+1);
+        group.setUserCnt(members.size() + 1);
         groupMapper.insert(group);
-        members.forEach((memberId)->{
+        members.forEach((memberId) -> {
             User user = userMapper.selectById(memberId);
-            if(user==null){
-                logger.error("user not exist, can not add to group. user: [{}]",user);
+            if (user == null) {
+                logger.error("user not exist, can not add to group. user: [{}]", user);
             }
             UserGroupRelation groupRelation = new UserGroupRelation();
             groupRelation.setGroupId(group.getGroupId());
@@ -147,7 +147,7 @@ public class RelationServiceImpl implements RelationService{
     @Override
     public GroupVO kickoutGroupMember(String groupId, String userId) {
         UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
-        if(groupRelation==null){
+        if (groupRelation == null) {
             throw new IMException("该用户不是群成员，无法踢人");
         }
         int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId).eq(UserGroupRelation::getUserId, userId));
@@ -157,19 +157,19 @@ public class RelationServiceImpl implements RelationService{
 
     @Override
     public GroupVO addGroupMember(String groupId, String userId) {
-        return joinGroup(userId,groupId);
+        return joinGroup(userId, groupId);
     }
 
     @Override
     public GroupVO getGroupInfo(String groupId) {
 
-        if(groupId==null){
+        if (groupId == null) {
             throw new IMException("必须指定 groupId");
         }
         GroupVO groupVO = new GroupVO();
         Group group = groupMapper.selectById(groupId);
-        if(group==null){
-            throw new IMException("群聊不存在"+groupId);
+        if (group == null) {
+            throw new IMException("群聊不存在" + groupId);
         }
 
         // 查询群组内的所有成员id，包含群主
@@ -178,7 +178,7 @@ public class RelationServiceImpl implements RelationService{
         List<UserVO> members = userIds.stream().map((memberId) -> {
             User user = userMapper.selectById(memberId);
             UserVO userVO = new UserVO();
-            BeanUtil.copyProperties(user,userVO);
+            BeanUtil.copyProperties(user, userVO);
             return userVO;
         }).collect(Collectors.toList());
         groupVO.setGroupId(group.getGroupId());
@@ -191,10 +191,10 @@ public class RelationServiceImpl implements RelationService{
     }
 
     @Override
-    public boolean dissolutionGroup(String userId,String groupId) {
-        Group group = groupMapper.selectGroup(userId,groupId);
-        if(group==null){
-            logger.error("group not exist. group: [{}]",groupId);
+    public boolean dissolutionGroup(String userId, String groupId) {
+        Group group = groupMapper.selectGroup(userId, groupId);
+        if (group == null) {
+            logger.error("group not exist. group: [{}]", groupId);
             return false;
         }
         // 删除所有群成员
@@ -208,7 +208,7 @@ public class RelationServiceImpl implements RelationService{
     public List<GroupVO> listAllGroup() {
         return groupMapper.selectAll().stream().map((group -> {
             GroupVO groupVO = new GroupVO();
-            BeanUtil.copyProperties(group,groupVO);
+            BeanUtil.copyProperties(group, groupVO);
             return groupVO;
         })).collect(Collectors.toList());
     }

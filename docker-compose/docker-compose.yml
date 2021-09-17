@@ -47,7 +47,7 @@ services:
     volumes:
       - ./jars/yim-gateway-7001:/yim-gateway-7001
       - ./log:/log
-    entrypoint: ["java","-jar","/yim-gateway-7001/gateway-1.0-SNAPSHOT.jar"]
+    entrypoint: [ "java","-jar","/yim-gateway-7001/gateway-1.0-SNAPSHOT.jar" ]
 
   yim-nginx:
     image: nginx
@@ -114,7 +114,7 @@ services:
     environment:
       - server-port=7100
       - dubbo.protocol.port=20888
-    entrypoint: [ "java","-jar","/yim-ws-server-7100/ws-server-1.0-SNAPSHOT.jar"]
+    entrypoint: [ "java","-jar","/yim-ws-server-7100/ws-server-1.0-SNAPSHOT.jar" ]
 
   yim-ws-server-7101:
     image: williamyeh/java8
@@ -130,7 +130,7 @@ services:
     environment:
       - server-port=7101
       - dubbo.protocol.port=20889
-    entrypoint: [ "java","-jar","/yim-ws-server-7101/ws-server-1.0-SNAPSHOT.jar"]
+    entrypoint: [ "java","-jar","/yim-ws-server-7101/ws-server-1.0-SNAPSHOT.jar" ]
 
   yim-ws-server-7102:
     image: williamyeh/java8
@@ -146,7 +146,7 @@ services:
     environment:
       - server-port=7102
       - dubbo.protocol.port=20887
-    entrypoint: [ "java","-jar","/yim-ws-server-7102/ws-server-1.0-SNAPSHOT.jar"]
+    entrypoint: [ "java","-jar","/yim-ws-server-7102/ws-server-1.0-SNAPSHOT.jar" ]
 
 networks:
   yim-network:

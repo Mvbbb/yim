@@ -1,12 +1,11 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.common.entity.Group;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.protoc.http.ResCode;
 import com.mvbbb.yim.common.protoc.http.request.CreateGroupRequest;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
-import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.request.GroupMemberRequest;
+import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.vo.GroupVO;
 import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.RelationService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController

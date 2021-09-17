@@ -35,7 +35,7 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 //        pipeline.addLast(new ProtobufEncoder());
 //        pipeline.addLast(new DataPacketHandler());
 
-        pipeline.addLast(new IdleStateHandler(WsServerConfig.READ_IDEL_TIME_OUT,WsServerConfig.WRITE_IDEL_TIME_OUT,WsServerConfig.ALL_IDEL_TIME_OUT, TimeUnit.MINUTES));
+        pipeline.addLast(new IdleStateHandler(WsServerConfig.READ_IDEL_TIME_OUT, WsServerConfig.WRITE_IDEL_TIME_OUT, WsServerConfig.ALL_IDEL_TIME_OUT, TimeUnit.MINUTES));
         pipeline.addLast(new ChannelStatusHandler());
     }
 }

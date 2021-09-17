@@ -6,8 +6,8 @@ import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
-import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
+import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.service.AckService;
 import com.mvbbb.yim.ws.service.MsgTransfer;
@@ -27,21 +27,18 @@ import javax.annotation.Resource;
 @ChannelHandler.Sharable
 public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
+    private static JsonDataPacketHandler dataPacketHandler;
     Logger logger = LoggerFactory.getLogger(JsonDataPacketHandler.class);
-
-    private ConnectionPool connectionPool = ConnectionPool.getInstance();
     @Resource
     StatusService statusHandler;
     @Resource
     MsgTransfer msgHandler;
     @Resource
     AckService ackService;
-
-    private static JsonDataPacketHandler dataPacketHandler;
-
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     @PostConstruct
-    public void init(){
+    public void init() {
         dataPacketHandler = this;
     }
 
@@ -52,14 +49,14 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
         JSONObject jsonObject = JSONObject.parseObject(msgText);
 
         CmdType cmdId = CmdType.valueOf(jsonObject.getString("cmdId"));
-        switch (cmdId){
+        switch (cmdId) {
             case GREET:
                 // greet request
                 logger.info("receive greet");
                 DataPacket<GreetRequest> msgDataDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<GreetRequest>>() {
                 });
                 GreetRequest authRequest = msgDataDataPacket.getData();
-                dataPacketHandler.statusHandler.greet(channelHandlerContext.channel(),authRequest);
+                dataPacketHandler.statusHandler.greet(channelHandlerContext.channel(), authRequest);
                 break;
             case BYE:
                 logger.info("receive bye");
@@ -67,7 +64,7 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
                 DataPacket<ByeRequest> byeRequestDataPacket = JSONObject.parseObject(msgText, new TypeReference<DataPacket<ByeRequest>>() {
                 });
                 ByeRequest byeRequestDataPacketData = byeRequestDataPacket.getData();
-                dataPacketHandler.statusHandler.bye(channelHandlerContext.channel(),byeRequestDataPacketData);
+                dataPacketHandler.statusHandler.bye(channelHandlerContext.channel(), byeRequestDataPacketData);
                 break;
             case MSG_DATA:
                 //msg data
@@ -85,7 +82,8 @@ public class JsonDataPacketHandler extends SimpleChannelInboundHandler<TextWebSo
                 });
                 dataPacketHandler.ackService.recvAck(ackDataPacket.getData());
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 }

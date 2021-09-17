@@ -25,6 +25,7 @@ public abstract class BaseContainer {
 
     /**
      * 生成实际的
+     *
      * @param factory 工厂
      * @return StreamMessageListenerContainer
      */
@@ -37,10 +38,12 @@ public abstract class BaseContainer {
     /**
      * 初始化redis stream 的消费组
      */
-    protected void initializeGroup() {}
+    protected void initializeGroup() {
+    }
 
     /**
      * generateContainer
+     *
      * @param factory 工厂
      * @return StreamMessageListenerContainer
      */
@@ -48,14 +51,15 @@ public abstract class BaseContainer {
 
     /**
      * 初始化stream key 的消费组
-     * @param key key
+     *
+     * @param key   key
      * @param group 消费组
      */
     protected void createConsumerGroup(String key, String group) {
         try {
             stringRedisTemplate.opsForStream().createGroup(key, group);
         } catch (RedisSystemException e) {
-            Class errorClass = e.getRootCause()==null?null:e.getRootCause().getClass();
+            Class errorClass = e.getRootCause() == null ? null : e.getRootCause().getClass();
             if (RedisBusyException.class.equals(errorClass)) {
                 logger.info("STREAM - Redis group already exists, skipping Redis group creation");
             } else if (RedisCommandExecutionException.class.equals(errorClass)) {

@@ -1,6 +1,5 @@
 package com.mvbbb.yim.common.vo;
 
-import com.mvbbb.yim.common.entity.User;
 import lombok.Data;
 
 import java.io.Serializable;

@@ -6,9 +6,9 @@ import com.mvbbb.yim.common.entity.MsgRecv;
 import com.mvbbb.yim.common.entity.UserGroupRelation;
 import com.mvbbb.yim.common.mapper.MsgRecvMapper;
 import com.mvbbb.yim.common.mapper.UserGroupRelationMapper;
-import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.util.BeanConvertor;
+import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.msg.service.RouteService;
 import com.mvbbb.yim.msg.service.UserStatusService;
 import org.slf4j.Logger;
@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class MsgHandler {
 
-    private Logger logger = LoggerFactory.getLogger(MsgHandler.class);
-
     @Resource
     UserStatusService userStatusService;
     @Resource
@@ -34,22 +32,23 @@ public class MsgHandler {
     RouteService routeService;
     @Resource
     RedisStreamManager redisStreamManager;
+    private Logger logger = LoggerFactory.getLogger(MsgHandler.class);
 
     public void sendSingleMsg(MsgData msgData) {
 
         String toUserId = msgData.getRecvUserId();
 
-        if(!userStatusService.isUserOnline(toUserId)){
+        if (!userStatusService.isUserOnline(toUserId)) {
             // 写入离线消息
-            logger.error("user [{}] not online, save to offline table",toUserId);
+            logger.error("user [{}] not online, save to offline table", toUserId);
             userStatusService.offlineMsgOccur(toUserId);
             saveMsg(msgData);
-        }else{
+        } else {
             // 写入消息投递队列
-            logger.info("produce to mq, message to user [{}]",toUserId);
+            logger.info("produce to mq, message to user [{}]", toUserId);
             WsServerRoute userWsServer = routeService.getUserWsServer(toUserId);
 //            mqManager.produce(userWsServer,msgData);
-            redisStreamManager.produce(userWsServer,msgData);
+            redisStreamManager.produce(userWsServer, msgData);
         }
     }
 
@@ -58,15 +57,15 @@ public class MsgHandler {
         String groupId = msgData.getToSessionId();
         List<String> members = userGroupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))
                 .stream().map(UserGroupRelation::getUserId).collect(Collectors.toList());
-        members.forEach((memberId)->{
-            if(memberId!=null&&!memberId.equals(msgData.getFromUserId())){
+        members.forEach((memberId) -> {
+            if (memberId != null && !memberId.equals(msgData.getFromUserId())) {
                 msgData.setRecvUserId(memberId);
                 sendSingleMsg(msgData);
             }
         });
     }
 
-    public void saveMsg(MsgData msgData){
+    public void saveMsg(MsgData msgData) {
         MsgRecv msgRecv = BeanConvertor.msgDataToMsgRecv(msgData);
         msgRecvMapper.insert(msgRecv);
     }

@@ -21,26 +21,23 @@ import javax.annotation.Resource;
 @ChannelHandler.Sharable
 public class ProtobufDataPacketHandler extends SimpleChannelInboundHandler<Protobuf.DataPacket> {
 
+    private static ProtobufDataPacketHandler dataPacketHandler;
     Logger logger = LoggerFactory.getLogger(ProtobufDataPacketHandler.class);
-
     @Resource
     StatusService statusHandler;
     @Resource
     MsgTransfer msgHandler;
 
-    private static ProtobufDataPacketHandler dataPacketHandler;
-
-
     @PostConstruct
-    public void init(){
+    public void init() {
         dataPacketHandler = this;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx,  Protobuf.DataPacket dataPacket) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Protobuf.DataPacket dataPacket) throws Exception {
         Protobuf.CmdType cmd = dataPacket.getCmd();
 
-        switch (cmd){
+        switch (cmd) {
             case ACK:
                 // todo
                 logger.info("receive ack");
@@ -48,7 +45,7 @@ public class ProtobufDataPacketHandler extends SimpleChannelInboundHandler<Proto
             case BYE:
                 logger.info("receive bye");
                 ByeRequest byeRequest = BeanConvertor.protocToBye(dataPacket.getBye());
-                dataPacketHandler.statusHandler.bye(ctx.channel(),byeRequest);
+                dataPacketHandler.statusHandler.bye(ctx.channel(), byeRequest);
                 break;
             case GREET:
                 logger.info("receive greet");
@@ -60,7 +57,8 @@ public class ProtobufDataPacketHandler extends SimpleChannelInboundHandler<Proto
                 MsgData msgData = BeanConvertor.protocToMsgData(dataPacket.getMsgData());
                 dataPacketHandler.msgHandler.sendMsg(msgData);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 }

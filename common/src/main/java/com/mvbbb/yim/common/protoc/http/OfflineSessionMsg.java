@@ -1,6 +1,5 @@
 package com.mvbbb.yim.common.protoc.http;
 
-import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.vo.MsgVO;
 import lombok.Data;

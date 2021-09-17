@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class IMException extends RuntimeException{
+public class IMException extends RuntimeException {
     private static final long serialVersionUID = 194906846739586856L;
 
     protected ResCode resultCode;

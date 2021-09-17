@@ -1,11 +1,9 @@
 package com.mvbbb.yim.logic.service;
 
-import com.mvbbb.yim.common.WsServerRoute;
-
 import java.util.List;
 
 public interface UserStatusService {
-    void userOnline(String userId,int port, int rpcPort);
+    void userOnline(String userId, int port, int rpcPort);
 
     void userOffline(String userId);
 
@@ -19,6 +17,7 @@ public interface UserStatusService {
 
 
     void offlineMsgPoolOver(String userId);
+
     boolean isOfflineMsgPoolOver(String userId);
 
     void kickout(String userId);

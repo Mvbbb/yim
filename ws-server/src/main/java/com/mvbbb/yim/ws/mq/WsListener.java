@@ -1,14 +1,11 @@
 package com.mvbbb.yim.ws.mq;
 
 
-import com.alibaba.fastjson.JSONObject;
-import com.mvbbb.yim.common.entity.MsgSend;
-import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.service.MsgSendService;
 import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
@@ -28,12 +25,11 @@ import javax.annotation.Resource;
 public class WsListener implements StreamListener<String, ObjectRecord<String, MsgData>> {
 
     private final Logger logger = LoggerFactory.getLogger(WsListener.class);
-    private ConnectionPool connectionPool = ConnectionPool.getInstance();
-
     @Resource
     RedisStreamManager redisStreamManager;
     @Resource
     MsgSendService msgSendService;
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     /**
      * 从 redis stream 中读取到消息并发送给用户
@@ -46,12 +42,12 @@ public class WsListener implements StreamListener<String, ObjectRecord<String, M
         logger.info("接收到消息 # consumer # messageId={}, stream={}, value = {}", messageId, message.getStream(), msgData);
         String recvUserId = msgData.getRecvUserId();
         Channel channel = connectionPool.findChannel(recvUserId);
-        if(channel==null){
-            logger.error("指定用户的 channel 没找到，将用户离线. user: [{}], msg: [{}]",recvUserId,msgData);
+        if (channel == null) {
+            logger.error("指定用户的 channel 没找到，将用户离线. user: [{}], msg: [{}]", recvUserId, msgData);
             redisStreamManager.failedDeliveredMsg(msgData);
-        }else{
+        } else {
             //发送 json 文本
-            msgSendService.sendMsg(channel,msgData);
+            msgSendService.sendMsg(channel, msgData);
         }
     }
 }

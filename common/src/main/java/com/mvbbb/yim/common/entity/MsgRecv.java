@@ -3,7 +3,6 @@ package com.mvbbb.yim.common.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.mvbbb.yim.common.protoc.ws.SessionType;
 import lombok.Data;
 
 import java.io.Serializable;

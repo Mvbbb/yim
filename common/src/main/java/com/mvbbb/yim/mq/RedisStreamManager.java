@@ -23,11 +23,12 @@ public class RedisStreamManager {
 
     /**
      * 将消息投放到 ws server 的消息队列中
-     * @param route ws server 的路由
+     *
+     * @param route   ws server 的路由
      * @param msgData 消息
      */
-    public void produce(WsServerRoute route, MsgData msgData){
-        String key = RedisConstant.STREAM_DELIVER_WS_PREFIX + route.getIp()+ ":" + route.getPort();
+    public void produce(WsServerRoute route, MsgData msgData) {
+        String key = RedisConstant.STREAM_DELIVER_WS_PREFIX + route.getIp() + ":" + route.getPort();
         ObjectRecord<String, MsgData> record = Record.of(msgData).withStreamKey(key);
         RecordId recordId = stringRedisTemplate.opsForStream().add(record);
         // print log
@@ -36,10 +37,10 @@ public class RedisStreamManager {
     /**
      * @param msgData 失败的消息
      */
-    public void failedDeliveredMsg(MsgData msgData){
+    public void failedDeliveredMsg(MsgData msgData) {
         String key = RedisConstant.STREAM_FAILED_MSG;
         ObjectRecord<String, MsgData> record = Record.of(msgData).withStreamKey(key);
         stringRedisTemplate.opsForStream().add(record);
-        logger.error("消息发送失败，存入离线消息表 {}",msgData);
+        logger.error("消息发送失败，存入离线消息表 {}", msgData);
     }
 }

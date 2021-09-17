@@ -8,14 +8,14 @@ import com.mvbbb.yim.common.util.BeanConvertor;
 
 public class ProtobufDataPacketUtil {
 
-    public static Protobuf.DataPacket buildMsgData(MsgData msgData){
+    public static Protobuf.DataPacket buildMsgData(MsgData msgData) {
         Protobuf.DataPacket.Builder dataPacketBuilder = genDataPacketBuilder();
         Protobuf.MsgVO msgVO = BeanConvertor.protoFromMsgData(msgData);
         dataPacketBuilder.setMsgVO(msgVO);
         return dataPacketBuilder.build();
     }
 
-    public static Protobuf.DataPacket buildAck(Ack ack){
+    public static Protobuf.DataPacket buildAck(Ack ack) {
         Protobuf.Ack.Builder ackBuilder = Protobuf.Ack.newBuilder();
         ackBuilder.setClientMsgId(ack.getClientMsgId());
         ackBuilder.setServerMsgId(ack.getServerMsgId());
@@ -25,7 +25,7 @@ public class ProtobufDataPacketUtil {
         return builder.build();
     }
 
-    private static Protobuf.DataPacket.Builder genDataPacketBuilder(){
+    private static Protobuf.DataPacket.Builder genDataPacketBuilder() {
         Protobuf.DataPacket.Builder dataPacketBuilder = Protobuf.DataPacket.newBuilder();
         dataPacketBuilder.setHeadFlat(ProtocConstant.HEAD);
         dataPacketBuilder.setVersion(ProtocConstant.VERSION);

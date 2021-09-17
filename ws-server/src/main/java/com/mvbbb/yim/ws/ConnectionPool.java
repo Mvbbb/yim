@@ -7,43 +7,42 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionPool {
 
     private static ConnectionPool connectionPool = null;
+    private ConcurrentHashMap<String, Channel> channels = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Channel, String> userids = new ConcurrentHashMap<>();
 
     public ConnectionPool() {
     }
 
-    public static synchronized ConnectionPool getInstance(){
-        if(connectionPool == null){
+    public static synchronized ConnectionPool getInstance() {
+        if (connectionPool == null) {
             connectionPool = new ConnectionPool();
         }
         return connectionPool;
     }
 
-    private ConcurrentHashMap<String, Channel> channels = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Channel,String> userids = new ConcurrentHashMap<>();
-
-    public Channel findChannel(String userid){
+    public Channel findChannel(String userid) {
         return channels.get(userid);
     }
 
-    public String getUseridByChannel(Channel channel){
+    public String getUseridByChannel(Channel channel) {
         return userids.get(channel);
     }
 
-    public void addUserChannel(Channel channel, String userid){
-        channels.put(userid,channel);
-        userids.put(channel,userid);
+    public void addUserChannel(Channel channel, String userid) {
+        channels.put(userid, channel);
+        userids.put(channel, userid);
     }
 
-    public void removeConnection(Channel channel,String userid){
+    public void removeConnection(Channel channel, String userid) {
         channels.remove(userid);
         userids.remove(channel);
     }
 
-    public int getConnectionCnt(){
+    public int getConnectionCnt() {
         return userids.size();
     }
 
-    public void closeConnection(Channel channel){
+    public void closeConnection(Channel channel) {
         try {
             channel.close().sync();
         } catch (InterruptedException e) {
@@ -51,8 +50,8 @@ public class ConnectionPool {
         }
     }
 
-    public void checkToClose(Channel channel){
-        if(connectionPool.getUseridByChannel(channel)==null){
+    public void checkToClose(Channel channel) {
+        if (connectionPool.getUseridByChannel(channel) == null) {
             try {
                 channel.close().sync();
             } catch (InterruptedException e) {

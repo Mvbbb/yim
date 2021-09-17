@@ -28,12 +28,12 @@ public class AuthAop {
     AuthService authService;
 
     @Pointcut("@within(com.mvbbb.yim.gateway.CheckAuth) || @annotation(com.mvbbb.yim.gateway.CheckAuth)")
-    public void pointCutDeclaration(){
+    public void pointCutDeclaration() {
     }
 
     @SneakyThrows
     @Before("pointCutDeclaration()")
-    public void doAuth(JoinPoint joinPoint){
+    public void doAuth(JoinPoint joinPoint) {
 
         Object[] args = joinPoint.getArgs();
 
@@ -41,41 +41,41 @@ public class AuthAop {
         Class<?> aClass = joinPoint.getTarget().getClass();
         String targetName = aClass.getSimpleName();
         String methodName = joinPoint.getSignature().getName();
-        Class[] parameterTypes = ((MethodSignature)joinPoint.getSignature()).getMethod().getParameterTypes();
-        Method method = aClass.getMethod(methodName,parameterTypes);
+        Class[] parameterTypes = ((MethodSignature) joinPoint.getSignature()).getMethod().getParameterTypes();
+        Method method = aClass.getMethod(methodName, parameterTypes);
         CheckAuth checkAuth = null;
         CheckAuth annotationOnType = aClass.getAnnotation(CheckAuth.class);
         CheckAuth annotationOnMethod = method.getAnnotation(CheckAuth.class);
-        if(annotationOnMethod!=null){
+        if (annotationOnMethod != null) {
             checkAuth = annotationOnMethod;
-        }else{
+        } else {
             checkAuth = annotationOnType;
         }
 
         // @CheckAuth check=true 的情况下才需要鉴权
-        if(checkAuth==null||!checkAuth.check()){
-            return ;
+        if (checkAuth == null || !checkAuth.check()) {
+            return;
         }
 
-        if(args==null||args.length==0){
+        if (args == null || args.length == 0) {
             throw new IMException("参数错误");
         }
         for (Object arg : args) {
-            if(arg instanceof GenericRequest){
+            if (arg instanceof GenericRequest) {
                 GenericRequest<?> request = (GenericRequest<?>) arg;
                 String userId = request.getUserId();
                 String token = request.getToken();
 
-                if(token==null||userId==null){
+                if (token == null || userId == null) {
                     throw new IMException("需要提供认证信息");
                 }
                 AuthEnum authEnum = authService.checkToken(userId, token);
-                if(authEnum==AuthEnum.WRONG_TOKEN){
+                if (authEnum == AuthEnum.WRONG_TOKEN) {
                     throw new IMException("token 错误");
-                }else if(authEnum==AuthEnum.USER_NOT_EXIST){
+                } else if (authEnum == AuthEnum.USER_NOT_EXIST) {
                     throw new IMException("用户不存在");
-                }else if(authEnum==AuthEnum.SUCCESS){
-                    logger.info("通过身份验证。 userId：{}，token：{}",userId,token);
+                } else if (authEnum == AuthEnum.SUCCESS) {
+                    logger.info("通过身份验证。 userId：{}，token：{}", userId, token);
                     return;
                 }
             }

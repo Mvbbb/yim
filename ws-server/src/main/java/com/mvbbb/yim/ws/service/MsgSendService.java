@@ -33,17 +33,17 @@ public class MsgSendService {
     private static final Logger logger = LoggerFactory.getLogger(MsgSendService.class);
 
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    private MsgAckPool msgAckPool = MsgAckPool.getInstance();
-    // FIXME
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10,10,10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(),new ThreadPoolExecutor.CallerRunsPolicy());
     @Resource
     RedisStreamManager redisStreamManager;
     @DubboReference(check = false)
     UserStatusService userStatusService;
+    private MsgAckPool msgAckPool = MsgAckPool.getInstance();
+    // FIXME
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
 
-    public void sendAckToUser(String userId, String msg){
+    public void sendAckToUser(String userId, String msg) {
         Channel channel = connectionPool.findChannel(userId);
-        if(channel==null){
+        if (channel == null) {
             logger.error("连接未建立");
             return;
         }
@@ -61,11 +61,11 @@ public class MsgSendService {
     /**
      * FIXME 添加消息下行通知协议
      */
-    public void send(Channel channel,String msg){
+    public void send(Channel channel, String msg) {
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
 //        Ack ack = new Ack(msg);
 //        Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
-        try{
+        try {
 //          channel.writeAndFlush(dataPacket).sync();
             channel.writeAndFlush(textWebSocketFrame).sync();
         } catch (InterruptedException e) {
@@ -74,14 +74,14 @@ public class MsgSendService {
     }
 
     /**
-     *  定时任务 https://www.cnkirito.moe/timer/#4-1-Timer
+     * 定时任务 https://www.cnkirito.moe/timer/#4-1-Timer
      */
-    public void sendMsg(Channel channel, MsgData msgData){
+    public void sendMsg(Channel channel, MsgData msgData) {
         MsgVO msgVO = BeanConvertor.msgDataToMsgVO(msgData);
         String msg = JSONObject.toJSONString(msgVO);
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
         channel.writeAndFlush(textWebSocketFrame);
-        logger.info("发送消息给用户 [{}]",msgData.getRecvUserId());
+        logger.info("发送消息给用户 [{}]", msgData.getRecvUserId());
 
         // TODO 使用时间轮优化
         Thread waitAckedTask = new Thread(() -> {
@@ -94,7 +94,7 @@ public class MsgSendService {
                     e.printStackTrace();
                 }
                 WrappedMsg wrappedMsg = msgAckPool.getWrappedMsg(msgData);
-                if (wrappedMsg==null) {
+                if (wrappedMsg == null) {
                     success = true;
                     break;
                 }
@@ -103,7 +103,7 @@ public class MsgSendService {
                 logger.error("没有收到用户的 ack 消息，将用户离线");
                 userStatusService.userOffline(msgData.getRecvUserId());
                 redisStreamManager.failedDeliveredMsg(msgData);
-                if(channel!=null){
+                if (channel != null) {
                     channel.close();
                 }
             }

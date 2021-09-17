@@ -13,10 +13,10 @@ import javax.annotation.Resource;
 public class SBTest {
 
     @Resource(name = "jsonRedisTemplate")
-    RedisTemplate<Object,Object> redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     @Test
-    public void test(){
-        redisTemplate.opsForValue().set("rtet",new MsgData());
+    public void test() {
+        redisTemplate.opsForValue().set("rtet", new MsgData());
     }
 }

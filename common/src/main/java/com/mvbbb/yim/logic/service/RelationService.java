@@ -1,6 +1,5 @@
 package com.mvbbb.yim.logic.service;
 
-import com.mvbbb.yim.common.entity.Group;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.vo.GroupVO;
 
@@ -10,25 +9,25 @@ public interface RelationService {
 
     List<User> listFriend(String userId);
 
-    void addFriend(String userId,String friendId);
+    void addFriend(String userId, String friendId);
 
-    void deleteFriend(String userId,String friendId);
+    void deleteFriend(String userId, String friendId);
 
     List<GroupVO> listGroup(String userId);
 
     GroupVO joinGroup(String userId, String groupId);
 
-    GroupVO createGroup(String userId,String groupName,List<String> members);
+    GroupVO createGroup(String userId, String groupName, List<String> members);
 
-    void quitGroup(String userId,String groupId);
+    void quitGroup(String userId, String groupId);
 
-    GroupVO kickoutGroupMember(String groupId,String userId);
+    GroupVO kickoutGroupMember(String groupId, String userId);
 
-    GroupVO addGroupMember(String groupId,String userId);
+    GroupVO addGroupMember(String groupId, String userId);
 
     GroupVO getGroupInfo(String groupId);
 
-    boolean dissolutionGroup(String userId,String groupId);
+    boolean dissolutionGroup(String userId, String groupId);
 
     List<GroupVO> listAllGroup();
 

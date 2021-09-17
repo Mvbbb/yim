@@ -5,12 +5,13 @@ import lombok.Data;
 
 /**
  * FIXME 完善
+ *
  * @param <T>
  */
 @Deprecated
 @Data
 public class DataPacket<T> {
+    T data;
     private int version;
     private CmdType cmdId;
-    T data;
 }

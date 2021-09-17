@@ -1,8 +1,8 @@
 package com.mvbbb.yim.common.protoc;
 
 import com.mvbbb.yim.common.protoc.ws.MsgType;
-import lombok.Data;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
+import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;

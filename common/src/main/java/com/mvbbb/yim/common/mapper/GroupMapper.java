@@ -20,5 +20,5 @@ public interface GroupMapper extends BaseMapper<Group> {
     int removeOneMember(@Param("groupId") String groupId);
 
     @Select("select * from yim_group where group_id = ${groupId} and owner_uid = ${ownerUid}")
-    Group selectGroup(@Param("ownerUid") String ownerUid,@Param("groupId") String groupId);
+    Group selectGroup(@Param("ownerUid") String ownerUid, @Param("groupId") String groupId);
 }

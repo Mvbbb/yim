@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  * 将本机状态注册到 zookeeper
  */
 @Component
-public class RegistryTask implements Runnable{
+public class RegistryTask implements Runnable {
 
 
     private static final Logger logger = LoggerFactory.getLogger(RegistryTask.class);
@@ -34,29 +34,30 @@ public class RegistryTask implements Runnable{
 
     @Override
     public void run() {
-        if(client==null){
-            RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000,3);
+        if (client == null) {
+            RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
             client = CuratorFrameworkFactory.newClient(wsServerConfig.getZkAddr(), retryPolicy);
             client.getConnectionStateListenable().addListener(new ConnectionStateListener() {
                 @Override
                 public void stateChanged(CuratorFramework client, ConnectionState newState) {
-                    switch (newState){
+                    switch (newState) {
                         case CONNECTED:
-                            logger.info("成功与 zookeeper 建立连接。 {}",wsServerConfig.getZkAddr());
+                            logger.info("成功与 zookeeper 建立连接。 {}", wsServerConfig.getZkAddr());
                             createNode();
                             reportStatus();
                             break;
                         case SUSPENDED:
-                            logger.error("与 zookeeper 连接断开。 {}",wsServerConfig.getZkAddr());
+                            logger.error("与 zookeeper 连接断开。 {}", wsServerConfig.getZkAddr());
                             break;
                         case RECONNECTED:
-                            logger.error("重新与 zookeeper 建立连接。{}",wsServerConfig.getZkAddr());
+                            logger.error("重新与 zookeeper 建立连接。{}", wsServerConfig.getZkAddr());
                             createNode();
                             break;
                         case LOST:
                             logger.error("与 zookeeper 会话过期");
                             break;
-                        default: break;
+                        default:
+                            break;
                     }
                 }
             });
@@ -64,21 +65,21 @@ public class RegistryTask implements Runnable{
         }
     }
 
-    private void createNode(){
-        String path = ZkConstant.ZK_ROOT+"/"+wsServerConfig.getHost()+":"+wsServerConfig.getPort();
+    private void createNode() {
+        String path = ZkConstant.ZK_ROOT + "/" + wsServerConfig.getHost() + ":" + wsServerConfig.getPort();
         createRootNode();
         try {
             int retry = 0;
-            while(retry<3&&client.checkExists().forPath(path)==null){
-                logger.info("第 {} 次尝试注册节点",retry);
+            while (retry < 3 && client.checkExists().forPath(path) == null) {
+                logger.info("第 {} 次尝试注册节点", retry);
                 client.create().withMode(CreateMode.EPHEMERAL).forPath(path);
-                if(client.checkExists().forPath(path)!=null){
-                    logger.info("注册 zookeeper 节点成功， path = [{}]",path);
+                if (client.checkExists().forPath(path) != null) {
+                    logger.info("注册 zookeeper 节点成功， path = [{}]", path);
                     break;
                 }
                 retry++;
             }
-            if(retry==3){
+            if (retry == 3) {
                 logger.error("节点注册失败");
             }
         } catch (Exception e) {
@@ -89,13 +90,13 @@ public class RegistryTask implements Runnable{
     private void createRootNode() {
         try {
             int retry = 0;
-            while(retry<3&&client.checkExists().forPath(ZkConstant.ZK_ROOT)==null){
+            while (retry < 3 && client.checkExists().forPath(ZkConstant.ZK_ROOT) == null) {
                 client.create().withMode(CreateMode.PERSISTENT).forPath(ZkConstant.ZK_ROOT);
                 retry++;
             }
-            if(client.checkExists().forPath(ZkConstant.ZK_ROOT)!=null){
-                logger.info("创建 根节点： {}",ZkConstant.ZK_ROOT);
-            }else{
+            if (client.checkExists().forPath(ZkConstant.ZK_ROOT) != null) {
+                logger.info("创建 根节点： {}", ZkConstant.ZK_ROOT);
+            } else {
                 logger.error("根节点创建失败");
             }
         } catch (Exception e) {
@@ -103,8 +104,8 @@ public class RegistryTask implements Runnable{
         }
     }
 
-    public void reportStatus(){
-        new Thread(()->{
+    public void reportStatus() {
+        new Thread(() -> {
             while (true) {
                 try {
                     String path = ZkConstant.ZK_ROOT + "/" + wsServerConfig.getHost() + ":" + wsServerConfig.getPort();
@@ -115,9 +116,9 @@ public class RegistryTask implements Runnable{
                     String status = JSONObject.toJSONString(wsStatus);
                     try {
                         if (client.checkExists().forPath(path) != null) {
-                            logger.info("上报 ws 连接状态 {}",status);
+                            logger.info("上报 ws 连接状态 {}", status);
                             client.setData().forPath(path, status.getBytes());
-                        }else{
+                        } else {
                             logger.error("zookeeper 中本 server 临时节点丢失，重新创建节点中");
                             createNode();
                         }

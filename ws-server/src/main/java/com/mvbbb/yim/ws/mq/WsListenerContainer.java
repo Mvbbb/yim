@@ -1,10 +1,8 @@
 package com.mvbbb.yim.ws.mq;
 
-import com.mvbbb.yim.common.constant.RedisConstant;
-import com.mvbbb.yim.mq.BaseContainer;
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.mq.BaseContainer;
 import com.mvbbb.yim.ws.WsServerConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.stream.Consumer;
@@ -33,7 +31,7 @@ public class WsListenerContainer extends BaseContainer {
     }
 
     @Bean(name = "wsContainer")
-    public StreamMessageListenerContainer<String, ObjectRecord<String, MsgData>> wsListenerContainer(RedisConnectionFactory factory){
+    public StreamMessageListenerContainer<String, ObjectRecord<String, MsgData>> wsListenerContainer(RedisConnectionFactory factory) {
         return (StreamMessageListenerContainer<String, ObjectRecord<String, MsgData>>) generate(factory);
     }
 

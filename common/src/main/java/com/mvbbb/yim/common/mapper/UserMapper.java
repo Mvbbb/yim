@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
     @Update("update yim_user set password = ${newPassword} where user")
-    int changePassword(String userId,String oldPassword,String newPassword);
+    int changePassword(String userId, String oldPassword, String newPassword);
 
     @Select("select * from yim_user")
     List<User> selectAllUser();
@@ -25,7 +25,7 @@ public interface UserMapper extends BaseMapper<User> {
     int updateUsername(String userId, @Param("username") String username);
 
     @Update("update yim_user set password = ${newPassword} where user_id = ${userId} and password = ${oldPassword}")
-    int updatePassword(@Param("userId")String userId,@Param("oldPassword")String oldPassword,@Param("newPassword")String newPassword);
+    int updatePassword(@Param("userId") String userId, @Param("oldPassword") String oldPassword, @Param("newPassword") String newPassword);
 
     @Select("select * from yim_user where username = '${username}' ")
     User selectByUsername(@Param("username") String username);

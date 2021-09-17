@@ -12,6 +12,9 @@ import java.net.UnknownHostException;
 @Data
 @Component
 public final class WsServerConfig {
+    public static final int READ_IDEL_TIME_OUT = 4; // 读超时
+    public static final int WRITE_IDEL_TIME_OUT = 5;// 写超时
+    public static final int ALL_IDEL_TIME_OUT = 7; // 所有超时
     private int port;
     private int rpcPort;
     private String host;
@@ -25,12 +28,8 @@ public final class WsServerConfig {
     // 消费者名称
     private String redisStreamConsumerName;
 
-    public static final int READ_IDEL_TIME_OUT = 4; // 读超时
-    public static final int WRITE_IDEL_TIME_OUT = 5;// 写超时
-    public static final int ALL_IDEL_TIME_OUT = 7; // 所有超时
-
     @PostConstruct
-    public void init(){
+    public void init() {
         port = Integer.parseInt(System.getenv("server-port"));
         rpcPort = Integer.parseInt(System.getenv("dubbo.protocol.port"));
         try {
@@ -38,7 +37,7 @@ public final class WsServerConfig {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        redisStreamKey =  RedisConstant.STREAM_DELIVER_WS_PREFIX + host + ":" + port;
+        redisStreamKey = RedisConstant.STREAM_DELIVER_WS_PREFIX + host + ":" + port;
         redisStreamConsumerGroupName = RedisConstant.STREAM_DELIVER_WS_CONSUMER_GROUP_PREFIX + host + ":" + port;
         redisStreamConsumerName = RedisConstant.STREAM_DELIVER_WS_CONSUMER_PREFIX + host + ":" + port;
     }
