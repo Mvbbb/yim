@@ -1,6 +1,6 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.HistoryRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
@@ -20,6 +20,7 @@ public class MsgController {
     MsgService msgService;
 
     @ApiOperation("获取历史消息")
+    @CheckAuth
     @RequestMapping(path = "/message/history",method = RequestMethod.GET)
     public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request){
         HistoryRequest historyRequest = request.getData();
@@ -32,6 +33,7 @@ public class MsgController {
     }
 
     @ApiOperation("获取离线消息")
+    @CheckAuth
     @RequestMapping(path = "/message/offline", method = RequestMethod.GET)
     public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestBody GenericRequest<Object> request){
         String userId = request.getUserId();

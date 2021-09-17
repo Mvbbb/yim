@@ -1,4 +1,4 @@
-package com.mvbbb.yim.gateway.exception;
+package com.mvbbb.yim.gateway.handler;
 
 import com.mvbbb.yim.common.exception.IMException;
 import com.mvbbb.yim.common.protoc.http.ResCode;

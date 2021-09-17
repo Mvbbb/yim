@@ -8,6 +8,7 @@ import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.request.GroupMemberRequest;
 import com.mvbbb.yim.common.vo.GroupVO;
+import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.RelationService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -20,11 +21,11 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CheckAuth
 public class RelationController {
 
     @DubboReference(check = false)
     RelationService relationService;
-
 
     @ApiOperation("获取朋友列表")
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)

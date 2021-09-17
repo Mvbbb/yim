@@ -12,6 +12,7 @@ import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
 import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
 import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
 import com.mvbbb.yim.common.vo.UserVO;
+import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.gateway.service.RegisterService;
 import com.mvbbb.yim.logic.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +27,7 @@ import java.util.List;
  * 使用注解对 接口进行权限校验
  */
 @RestController
+@CheckAuth
 public class UserController {
 
     @DubboReference(check = false)
@@ -62,8 +64,8 @@ public class UserController {
         }
     }
 
-
     @ApiOperation("注册")
+    @CheckAuth(check = false)
     @RequestMapping(path = "/register",method = RequestMethod.POST)
     public GenericResponse<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
         User user = authService.register(registerRequest.getUsername(), registerRequest.getPassword());
@@ -84,7 +86,7 @@ public class UserController {
 
     @ApiOperation("查看所有 user")
     @RequestMapping(path = "/user/all",method = RequestMethod.GET)
-    public GenericResponse<List<UserVO>> allUser(){
+    public GenericResponse<List<UserVO>> allUser(@RequestBody GenericRequest<Object> request){
         List<UserVO> users = userService.listAllUser();
         return GenericResponse.success(users);
     }
