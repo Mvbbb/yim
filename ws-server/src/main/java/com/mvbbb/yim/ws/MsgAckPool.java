@@ -11,9 +11,13 @@ public class MsgAckPool {
     private MsgAckPool() {
     }
 
-    public static synchronized MsgAckPool getInstance() {
+    public static MsgAckPool getInstance() {
         if (msgAckPool == null) {
-            msgAckPool = new MsgAckPool();
+            synchronized (MsgAckPool.class){
+                if(msgAckPool == null){
+                    msgAckPool = new MsgAckPool();
+                }
+            }
         }
         return msgAckPool;
     }

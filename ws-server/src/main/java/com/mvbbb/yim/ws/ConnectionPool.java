@@ -1,11 +1,14 @@
 package com.mvbbb.yim.ws;
 
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionPool {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionPool.class);
     private static ConnectionPool connectionPool = null;
     private ConcurrentHashMap<String, Channel> channels = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Channel, String> userids = new ConcurrentHashMap<>();
@@ -13,9 +16,13 @@ public class ConnectionPool {
     public ConnectionPool() {
     }
 
-    public static synchronized ConnectionPool getInstance() {
-        if (connectionPool == null) {
-            connectionPool = new ConnectionPool();
+    public static ConnectionPool getInstance() {
+        if(connectionPool ==null){
+            synchronized (ConnectionPool.class){
+                if (connectionPool == null) {
+                    connectionPool = new ConnectionPool();
+                }
+            }
         }
         return connectionPool;
     }
@@ -50,13 +57,21 @@ public class ConnectionPool {
         }
     }
 
-    public void checkToClose(Channel channel) {
+    /**
+     * 检查是否有不在 pool 里面的连接做出非法的请求，将其关闭
+     * @param channel
+     */
+    public boolean checkToClose(Channel channel) {
         if (connectionPool.getUseridByChannel(channel) == null) {
             try {
+                logger.error("非法请求，将关闭连接。{}",channel);
                 channel.close().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            return true;
+        }else{
+            return false;
         }
     }
 

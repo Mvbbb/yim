@@ -1,86 +1,121 @@
 package com;
 
-
 import com.alibaba.fastjson.JSONObject;
-import com.mvbbb.yim.common.protoc.Ack;
-import com.mvbbb.yim.common.protoc.DataPacket;
-import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.common.protoc.*;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
-import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import org.junit.Test;
 
-public class test {
+
+public class test{
 
     @Test
-    public void test1() {
-        DataPacket<GreetRequest> authRequestDataPacket = new DataPacket<>();
-        GreetRequest authRequest = new GreetRequest();
-        authRequest.setToken("token");
-        authRequest.setUserId("1");
-        authRequestDataPacket.setCmdId(CmdType.GREET);
-        authRequestDataPacket.setData(authRequest);
-        String s = JSONObject.toJSONString(authRequestDataPacket);
-        System.out.println(s);
-    }
+    public void test1(){
+        DataPacket<MsgData> dataPacket = new DataPacket<>();
 
-    @Test
-    public void test2() {
-
-        DataPacket<ByeRequest> byeRequestDataPacket = new DataPacket<>();
-        ByeRequest byeRequest = new ByeRequest();
-        byeRequestDataPacket.setData(byeRequest);
-        byeRequestDataPacket.setCmdId(CmdType.BYE);
-        String s = JSONObject.toJSONString(byeRequestDataPacket);
-        System.out.println(s);
-    }
-
-    // 私聊消息
-    @Test
-    public void test3() {
-        DataPacket<MsgData> msgDataDataPacket = new DataPacket<>();
         MsgData msgData = new MsgData();
-        msgData.setData("你好");
-        msgData.setMsgType(MsgType.TEXT);
+        msgData.setClientMsgId("1");
+        msgData.setServerMsgId(1);
+        msgData.setFromUserId("1");
         msgData.setSessionType(SessionType.SINGLE);
-        msgData.setClientMsgId("1");
         msgData.setToSessionId("2");
-        msgData.setFromUserId("1");
-        msgDataDataPacket.setData(msgData);
-        msgDataDataPacket.setCmdId(CmdType.MSG_DATA);
-        String s = JSONObject.toJSONString(msgDataDataPacket);
-        System.out.println(s);
-    }
-
-    // 群聊消息
-    @Test
-    public void test4() {
-        DataPacket<MsgData> msgDataDataPacket = new DataPacket<>();
-        MsgData msgData = new MsgData();
-        msgData.setData("群聊消息测试");
         msgData.setMsgType(MsgType.TEXT);
-        msgData.setSessionType(SessionType.GROUP);
-        msgData.setClientMsgId("1");
-        msgData.setToSessionId("1");
-        msgData.setFromUserId("1");
-        msgDataDataPacket.setData(msgData);
-        msgDataDataPacket.setCmdId(CmdType.MSG_DATA);
-        String s = JSONObject.toJSONString(msgDataDataPacket);
-        System.out.println(s);
+        msgData.setData("你好");
+
+        dataPacket.setVersion(1);
+        dataPacket.setCmdType(CmdType.MSG_DATA);
+        dataPacket.setLogId(1);
+        dataPacket.setSequenceId(1);
+        dataPacket.setData(msgData);
+
+        String json = JSONObject.toJSONString(dataPacket);
+        System.out.println(json);
     }
 
     @Test
-    public void test5() {
-        DataPacket<Ack> ackDataPacket = new DataPacket<>();
-        ackDataPacket.setCmdId(CmdType.ACK);
+    public void test2(){
+        DataPacket<GreetRequest> dataPacket = new DataPacket<>();
+
+        GreetRequest greetRequest = new GreetRequest();
+        greetRequest.setUserId("1");
+        greetRequest.setToken("2");
+
+        dataPacket.setCmdType(CmdType.GREET);
+        dataPacket.setVersion(1);
+        dataPacket.setLogId(1);
+        dataPacket.setSequenceId(1);
+        dataPacket.setData(greetRequest);
+
+        String json = JSONObject.toJSONString(dataPacket);
+        System.out.println(json);
+    }
+
+    @Test
+    public void test3(){
+        DataPacket<Ack> dataPacket = new DataPacket<>();
+
         Ack ack = new Ack();
-        ack.setServerMsgId(596648053055881200l);
-        ack.setUserId("2");
         ack.setClientMsgId("1");
-        ackDataPacket.setData(ack);
-        String s = JSONObject.toJSONString(ackDataPacket);
-        System.out.println(s);
+        ack.setServerMsgId(111);
+        ack.setUserId("1");
+        ack.setMsg("成功接收消息");
+
+        dataPacket.setVersion(1);
+        dataPacket.setSequenceId(1);
+        dataPacket.setCmdType(CmdType.ACK);
+        dataPacket.setLogId(1);
+        dataPacket.setData(ack);
+
+        String json = JSONObject.toJSONString(dataPacket);
+        System.out.println(json);
+    }
+
+    @Test
+    public void test4(){
+        DataPacket<Bye> dataPacket = new DataPacket<>();
+
+        Bye bye = new Bye();
+
+        dataPacket.setVersion(1);
+        dataPacket.setSequenceId(1);
+        dataPacket.setCmdType(CmdType.BYE);
+        dataPacket.setLogId(1);
+        dataPacket.setData(bye);
+
+        String json = JSONObject.toJSONString(dataPacket);
+        System.out.println(json);
+    }
+
+    @Test
+    public void test5(){
+        DataPacket<MsgData> dataPacket = new DataPacket<>();
+
+        MsgData msgData = new MsgData();
+        msgData.setClientMsgId("1");
+        msgData.setServerMsgId(1);
+        msgData.setFromUserId("1");
+        msgData.setSessionType(SessionType.GROUP);
+        msgData.setToSessionId("1");
+        msgData.setMsgType(MsgType.TEXT);
+        msgData.setData("这是一条群聊消息");
+
+        dataPacket.setVersion(1);
+        dataPacket.setCmdType(CmdType.MSG_DATA);
+        dataPacket.setLogId(1);
+        dataPacket.setSequenceId(1);
+        dataPacket.setData(msgData);
+
+        String json = JSONObject.toJSONString(dataPacket);
+        System.out.println(json);
+    }
+
+    @Test
+    public void test10(){
+        String json = "{\"cmdType\":\"ACK\",\"data\":{\"clientMsgId\":\"1\",\"msg\":\"成功接收消息\",\"serverMsgId\":1,\"userId\":\"1\"},\"headFlag\":55,\"logId\":1,\"sequenceId\":1,\"version\":1}";
+        DataPacket dataPacket = JSONObject.parseObject(json, DataPacket.class);
+        System.out.println(dataPacket.getData().getClass());
+        System.out.println(dataPacket);
     }
 }

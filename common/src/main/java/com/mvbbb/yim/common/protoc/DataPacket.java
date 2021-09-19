@@ -1,17 +1,17 @@
 package com.mvbbb.yim.common.protoc;
 
+import com.mvbbb.yim.common.constant.ProtocConstant;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import lombok.Data;
+import lombok.ToString;
 
-/**
- * FIXME 完善
- *
- * @param <T>
- */
-@Deprecated
 @Data
+@ToString
 public class DataPacket<T> {
-    T data;
+    private byte headFlag = ProtocConstant.HEAD;
     private int version;
-    private CmdType cmdId;
+    private CmdType cmdType;
+    private int logId;
+    private int sequenceId;
+    private T data;
 }

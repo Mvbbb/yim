@@ -1,6 +1,7 @@
 package com.mvbbb.yim.ws.service;
 
 import com.mvbbb.yim.auth.service.AuthService;
+import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
@@ -48,6 +49,9 @@ public class StatusService {
                 logger.info("add user {} channel {}", userId, channel);
                 connectionPool.addUserChannel(channel, userId);
                 sendDataToUserHandler.sendAckToUser(userId, "Connect success");
+                if(userStatusService.isUserOnline(userId)){
+                    logger.error("user切换 ws 服务器到本节点。 userid: {}",userId);
+                }
                 userStatusService.userOnline(userId, wsServerConfig.getPort(), wsServerConfig.getRpcPort());
             }
         } else {
@@ -72,6 +76,7 @@ public class StatusService {
         sendDataToUserHandler.send(channel, "断开连接");
         logger.info("user {} close channel {}", userId, channel);
         connectionPool.removeConnection(channel, userId);
+        connectionPool.closeConnection(channel);
         channel.close();
     }
 }

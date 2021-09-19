@@ -180,4 +180,13 @@ public final class BeanConvertor {
         msgVO.setTimestamp(msgData.getTimestamp());
         return msgVO;
     }
+
+    public static Ack protocToAck(Protobuf.Ack protobufAck) {
+        Ack ack = new Ack();
+        ack.setMsg(protobufAck.getMsg());
+        ack.setServerMsgId(protobufAck.getServerMsgId());
+        ack.setUserId(protobufAck.getUserId());
+        ack.setClientMsgId(protobufAck.getClientMsgId());
+        return ack;
+    }
 }

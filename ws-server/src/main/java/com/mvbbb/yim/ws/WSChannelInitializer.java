@@ -1,8 +1,7 @@
 package com.mvbbb.yim.ws;
 
 
-import com.mvbbb.yim.ws.handler.ChannelStatusHandler;
-import com.mvbbb.yim.ws.handler.JsonDataPacketHandler;
+import com.mvbbb.yim.ws.handler.*;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -25,15 +24,23 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new HttpObjectAggregator(65536));
 
         pipeline.addLast(new WebSocketServerProtocolHandler("/"));
+
         //使用 json 方式
-        pipeline.addLast(new JsonDataPacketHandler());
+//        pipeline.addLast(new JsonDataPacketHandler());
+        pipeline.addLast(new JsonProtocHandler());
 
         // 使用 protobuf 方式
 //        pipeline.addLast(new ProtobufVarint32FrameDecoder());
 //        pipeline.addLast(new ProtobufDecoder(Protobuf.DataPacket.getDefaultInstance()));
 //        pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
 //        pipeline.addLast(new ProtobufEncoder());
-//        pipeline.addLast(new DataPacketHandler());
+//        pipeline.addLast(new ProtobufHandler());
+
+
+        pipeline.addLast(new AckHandler());
+        pipeline.addLast(new ByeHandler());
+        pipeline.addLast(new GreetHandler());
+        pipeline.addLast(new MsgDataHandler());
 
         pipeline.addLast(new IdleStateHandler(WsServerConfig.READ_IDEL_TIME_OUT, WsServerConfig.WRITE_IDEL_TIME_OUT, WsServerConfig.ALL_IDEL_TIME_OUT, TimeUnit.MINUTES));
         pipeline.addLast(new ChannelStatusHandler());

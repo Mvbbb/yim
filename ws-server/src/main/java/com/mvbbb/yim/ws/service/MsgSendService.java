@@ -47,7 +47,9 @@ public class MsgSendService {
             logger.error("连接未建立");
             return;
         }
-        Ack ack = new Ack(msg);
+        Ack ack = new Ack();
+        ack.setUserId(userId);
+        ack.setMsg(msg);
 //      Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(JSONObject.toJSONString(ack));
         try {
