@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import java.util.Collections;
 
 
-//@Component
 @Service
 public abstract class BaseContainer {
 

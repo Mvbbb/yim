@@ -74,7 +74,6 @@ public class UserStatusServiceImpl implements UserStatusService {
         return redisTemplate.opsForValue().get(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId) != null;
     }
 
-
     @Override
     public void offlineMsgPoolOver(String userId) {
         redisTemplate.delete(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX + userId);

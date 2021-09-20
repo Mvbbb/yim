@@ -81,7 +81,6 @@ public class AuthServiceImpl implements AuthService {
         if (userMapper.selectByUsername(username) != null) {
             throw new IMException("用户名被占用");
         }
-        ;
 
         user.setUsername(username);
         // 随机id可能重复，导致无法
