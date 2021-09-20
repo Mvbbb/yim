@@ -6,6 +6,6 @@ mkdir -p docker-compose/jars/yim-auth-server-7002
 mkdir -p docker-compose/jars/yim-gateway-7001
 mkdir -p docker-compose/jars/yim-msg-server-7005
 mkdir -p docker-compose/jars/yim-logic-server-7003
-mkdir -p docker-compose/jars/yim-ws-server-7100
-mkdir -p docker-compose/jars/yim-ws-server-7101
-mkdir -p docker-compose/jars/yim-ws-server-7102
+mkdir -p docker-compose/jars/yim-ws-server-7110
+mkdir -p docker-compose/jars/yim-ws-server-7111
+mkdir -p docker-compose/jars/yim-ws-server-7112
