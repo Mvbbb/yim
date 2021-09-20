@@ -5,7 +5,7 @@ services:
   yim-redis:
     image: redis
     container_name: yim-redis
-    command: redis-server --requirepass womfoebbd
+    command: redis-server
     networks:
       - yim-network
     ports:
@@ -22,10 +22,11 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: "nifewowe4gr"
+      MYSQL_ROOT_PASSWORD: "root"
     volumes:
       - ./data/mysql/data:/var/lib/mysql
-      - ./data/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - ./data/mysql/conf:/etc/mysql
+      - ./data/mysql/log:/var/log/mysql
       - ./sql:/docker-entrypoint-initdb.d/
 
   yim-zookeeper:
@@ -101,53 +102,56 @@ services:
       - ./log:/log
     entrypoint: [ "java","-jar","/yim-msg-server-7005/msg-server-1.0-SNAPSHOT.jar" ]
 
-  yim-ws-server-7100:
+  yim-ws-server-7110:
     image: williamyeh/java8
-    container_name: yim-ws-server-7100
+    container_name: yim-ws-server-7110
     networks:
       - yim-network
     ports:
-      - "7100:7100"
+      - "7110:7110"
       - "20888:20888"
     volumes:
-      - ./jars/yim-ws-server-7100:/yim-ws-server-7100
+      - ./jars/yim-ws-server-7110:/yim-ws-server-7110
       - ./log:/log
     environment:
-      - server-port=7100
+      - server-port=7110
       - dubbo.protocol.port=20888
-    entrypoint: [ "java","-jar","/yim-ws-server-7100/ws-server-1.0-SNAPSHOT.jar" ]
+      - host.addr=115.159.148.114
+    entrypoint: [ "java","-jar","/yim-ws-server-7110/ws-server-1.0-SNAPSHOT.jar" ]
 
-  yim-ws-server-7101:
+  yim-ws-server-7111:
     image: williamyeh/java8
-    container_name: yim-ws-server-7101
+    container_name: yim-ws-server-7111
     networks:
       - yim-network
     ports:
-      - "7101:7101"
+      - "7111:7111"
       - "20889:20889"
     volumes:
-      - ./jars/yim-ws-server-7101:/yim-ws-server-7101
+      - ./jars/yim-ws-server-7111:/yim-ws-server-7111
       - ./log:/log
     environment:
-      - server-port=7101
+      - server-port=7111
       - dubbo.protocol.port=20889
-    entrypoint: [ "java","-jar","/yim-ws-server-7101/ws-server-1.0-SNAPSHOT.jar" ]
+      - host.addr=115.159.148.114
+    entrypoint: [ "java","-jar","/yim-ws-server-7111/ws-server-1.0-SNAPSHOT.jar" ]
 
-  yim-ws-server-7102:
+  yim-ws-server-7112:
     image: williamyeh/java8
-    container_name: yim-ws-server-7102
+    container_name: yim-ws-server-7112
     networks:
       - yim-network
     ports:
-      - "7102:7102"
+      - "7112:7112"
       - "20887:20887"
     volumes:
-      - ./jars/yim-ws-server-7102:/yim-ws-server-7102
+      - ./jars/yim-ws-server-7112:/yim-ws-server-7112
       - ./log:/log
     environment:
-      - server-port=7102
+      - server-port=7112
       - dubbo.protocol.port=20887
-    entrypoint: [ "java","-jar","/yim-ws-server-7102/ws-server-1.0-SNAPSHOT.jar" ]
+      - host.addr=115.159.148.114
+    entrypoint: [ "java","-jar","/yim-ws-server-7112/ws-server-1.0-SNAPSHOT.jar" ]
 
 networks:
   yim-network:

@@ -69,7 +69,7 @@
 
 部署步骤如下：
 
-1. Clone 本项目，不用修改任何配置信息
+1. Clone 本项目，调整 docker-compose.yml 配置
 2. 在 common 模块执行 `mvn clean install`
 3. 在其余的每个模块执行 `mvn clean install package '-Dmaven.test.skip=true'`
 4. 执行 docker-compose/mkdirs.sh 脚本创建用于 docker 挂载的文件夹
