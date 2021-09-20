@@ -39,6 +39,7 @@ public class UserController {
 
     @ApiOperation("登录")
     @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @CheckAuth(check = false)
     public GenericResponse<AuthWsInfoResponse> login(@RequestBody LoginRequest loginRequest) {
         String token = authService.checkLogin(loginRequest.getUserId(), loginRequest.getPassword());
         if (token == null) {

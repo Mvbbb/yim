@@ -24,25 +24,23 @@ public class RelationController {
 
     @ApiOperation("获取朋友列表")
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)
-    public GenericResponse<List<User>> friendList(@RequestHeader String userId,@RequestHeader String token) {
+    public GenericResponse<List<User>> friendList(@RequestHeader String userId, @RequestHeader String token) {
         List<User> friends = relationService.listFriend(userId);
         return GenericResponse.success(friends);
     }
 
     @ApiOperation("添加朋友")
     @RequestMapping(path = "/friend/add", method = RequestMethod.POST)
-    public GenericResponse<Object> addFriend(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
+    public GenericResponse<Object> addFriend(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
 
         String friendId = request.getData();
-
         relationService.addFriend(userId, friendId);
-
         return GenericResponse.success();
     }
 
     @ApiOperation("删除朋友")
     @RequestMapping(path = "/friend/delete", method = RequestMethod.POST)
-    public GenericResponse<Object> deleteFriend(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
+    public GenericResponse<Object> deleteFriend(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String friendId = request.getData();
         relationService.deleteFriend(userId, friendId);
         return GenericResponse.success();
@@ -51,7 +49,7 @@ public class RelationController {
 
     @ApiOperation("查看自己加入的群组")
     @RequestMapping(path = "/group/list", method = RequestMethod.GET)
-    public GenericResponse<List<GroupVO>> groupList(@RequestHeader String userId,@RequestHeader String token) {
+    public GenericResponse<List<GroupVO>> groupList(@RequestHeader String userId, @RequestHeader String token) {
         List<GroupVO> groups = relationService.listGroup(userId);
         return GenericResponse.success(groups);
     }
@@ -59,7 +57,7 @@ public class RelationController {
 
     @ApiOperation("查看全部群组")
     @RequestMapping(path = "/group/list/all", method = RequestMethod.GET)
-    public GenericResponse<List<GroupVO>> groupAllList(@RequestHeader String userId,@RequestHeader String token) {
+    public GenericResponse<List<GroupVO>> groupAllList(@RequestHeader String userId, @RequestHeader String token) {
         List<GroupVO> groups = relationService.listAllGroup();
         return GenericResponse.success(groups);
     }
@@ -84,7 +82,7 @@ public class RelationController {
 
     @ApiOperation("退出群组")
     @RequestMapping(path = "/group/quit", method = RequestMethod.POST)
-    public GenericResponse<Object> groupQuit(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
+    public GenericResponse<Object> groupQuit(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
         relationService.quitGroup(userId, groupId);
         return GenericResponse.success();
@@ -92,7 +90,7 @@ public class RelationController {
 
     @ApiOperation("踢人")
     @RequestMapping(path = "/group/member/kickout", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupMemberKickout(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<GroupMemberRequest> request) {
+    public GenericResponse<GroupVO> groupMemberKickout(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<GroupMemberRequest> request) {
 
         String groupId = request.getData().getGroupId();
         String kickoutMember = request.getData().getMemberId();
@@ -102,7 +100,7 @@ public class RelationController {
 
     @ApiOperation("添加群组成员")
     @RequestMapping(path = "/group/member/add", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupMemberAdd(@RequestHeader String userId,@RequestHeader String token, @RequestBody GenericRequest<GroupMemberRequest> request) {
+    public GenericResponse<GroupVO> groupMemberAdd(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<GroupMemberRequest> request) {
 
         String groupId = request.getData().getGroupId();
         String memberId = request.getData().getMemberId();
@@ -114,7 +112,7 @@ public class RelationController {
     @ApiOperation("查看群组信息")
     @RequestMapping(path = "/group/info", method = RequestMethod.GET)
     public GenericResponse<GroupVO> groupInfo(@RequestHeader String userId, @RequestHeader String token, @RequestParam String groupId) {
-        
+
         GroupVO groupVO = relationService.getGroupInfo(groupId);
         return GenericResponse.success(groupVO);
     }

@@ -33,7 +33,9 @@ public final class WsServerConfig {
         port = Integer.parseInt(System.getenv("server-port"));
         rpcPort = Integer.parseInt(System.getenv("dubbo.protocol.port"));
         try {
-            host = InetAddress.getLocalHost().getHostAddress();
+            String envAddress = System.getenv("host.addr");
+            String hostAddress = InetAddress.getLocalHost().getHostAddress();
+            host = envAddress==null?hostAddress:envAddress;
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

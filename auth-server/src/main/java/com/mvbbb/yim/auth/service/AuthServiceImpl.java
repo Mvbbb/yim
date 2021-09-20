@@ -99,6 +99,7 @@ public class AuthServiceImpl implements AuthService {
             }
         }
         user.setUserId(userId);
+        logger.info("用户注册成功：{}",user);
         userMapper.insert(user);
         return user;
     }

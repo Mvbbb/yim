@@ -48,6 +48,12 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public void addFriend(String userId, String friendId) {
+
+        User user = userMapper.selectById(friendId);
+        if(user==null){
+            throw new IMException("用戶不存在");
+        }
+
         FriendRelation friendRelation = null;
         friendRelation = friendRelationMapper.findFriendRelation(userId, friendId);
         if (friendRelation != null) {
@@ -66,8 +72,7 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public List<GroupVO> listGroup(String userId) {
-        List<String> groupIds = groupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getUserId, userId))
-                .stream().map(UserGroupRelation::getGroupId).collect(Collectors.toList());
+        List<String> groupIds = groupRelationMapper.findUserGroupIds(userId);
         return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId))
                 .map((group -> {
                     GroupVO groupVO = new GroupVO();
@@ -122,7 +127,7 @@ public class RelationServiceImpl implements RelationService {
         group.setGroupName(groupName);
         group.setAvatar(GenRandomUtil.randomAvatar());
         group.setOwnerUid(userId);
-        group.setUserCnt(members.size() + 1);
+        group.setUserCnt(members.size());
         groupMapper.insert(group);
         members.forEach((memberId) -> {
             User user = userMapper.selectById(memberId);
@@ -140,7 +145,11 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public void quitGroup(String userId, String groupId) {
-        int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId).eq(UserGroupRelation::getUserId, userId));
+        Group group = groupMapper.selectById(groupId);
+        if(group.getOwnerUid().equals(userId)){
+            throw new IMException("你是群主，你不能退群");
+        }
+        groupRelationMapper.deleteUserGroupRelation(userId,groupId);
         groupMapper.removeOneMember(groupId);
     }
 
@@ -157,6 +166,14 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public GroupVO addGroupMember(String groupId, String userId) {
+        User user = userMapper.selectById(userId);
+        if(user==null){
+            throw new IMException("用戶不存在");
+        }
+        Group group = groupMapper.selectById(groupId);
+        if(group==null){
+            throw new IMException("群聊不存在");
+        }
         return joinGroup(userId, groupId);
     }
 
