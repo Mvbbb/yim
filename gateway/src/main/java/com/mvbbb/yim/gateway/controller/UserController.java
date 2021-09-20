@@ -17,10 +17,7 @@ import com.mvbbb.yim.gateway.service.RegisterService;
 import com.mvbbb.yim.logic.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -57,14 +54,9 @@ public class UserController {
 
     @ApiOperation("重新获取 ws 服务器地址")
     @RequestMapping(path = "/reconnect", method = RequestMethod.POST)
-    public GenericResponse<String> reconnect(@RequestBody AuthRequest authRequest) {
-        AuthEnum authEnum = authService.checkToken(authRequest.getUserId(), authRequest.getToken());
-        if (authEnum == AuthEnum.SUCCESS) {
-            String wsUrl = zkService.getWsForUser();
-            return GenericResponse.success(wsUrl);
-        } else {
-            return GenericResponse.failed(ResCode.FAILED);
-        }
+    public GenericResponse<String> reconnect(@RequestHeader String userId,@RequestHeader String token) {
+        String wsUrl = zkService.getWsForUser();
+        return GenericResponse.success(wsUrl);
     }
 
     @ApiOperation("注册")
@@ -82,14 +74,14 @@ public class UserController {
 
     @ApiOperation("退出登录")
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public GenericResponse<Object> logout(@RequestBody GenericRequest<Object> request) {
-        AuthEnum authRes = authService.logout(request.getUserId(), request.getToken());
+    public GenericResponse<Object> logout(@RequestHeader String userId,@RequestHeader String token) {
+        AuthEnum authRes = authService.logout(userId,token);
         return authRes == AuthEnum.SUCCESS ? GenericResponse.success() : GenericResponse.failed(ResCode.FAILED);
     }
 
     @ApiOperation("查看所有 user")
     @RequestMapping(path = "/user/all", method = RequestMethod.GET)
-    public GenericResponse<List<UserVO>> allUser(@RequestBody GenericRequest<Object> request) {
+    public GenericResponse<List<UserVO>> allUser(@RequestHeader String userId,@RequestHeader String token) {
         List<UserVO> users = userService.listAllUser();
         return GenericResponse.success(users);
     }
@@ -97,16 +89,14 @@ public class UserController {
 
     @ApiOperation("获取 user 信息")
     @RequestMapping(path = "/user/info", method = RequestMethod.GET)
-    public GenericResponse<UserVO> userInfo(@RequestBody GenericRequest<String> request) {
-        String userId = request.getData();
-        UserVO userInfo = userService.getUserInfo(userId);
+    public GenericResponse<UserVO> userInfo(@RequestHeader String userId, @RequestHeader String token, @RequestParam String queryUid) {
+        UserVO userInfo = userService.getUserInfo(queryUid);
         return GenericResponse.success(userInfo);
     }
 
     @ApiOperation("更新头像")
     @RequestMapping(path = "/user/avatar/update", method = RequestMethod.POST)
-    public GenericResponse<Object> userAvatarUpdate(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<Object> userAvatarUpdate(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
         String avatar = request.getData();
         userService.updateUserAvatar(userId, avatar);
         return GenericResponse.success();
@@ -114,8 +104,7 @@ public class UserController {
 
     @ApiOperation("更新昵称")
     @RequestMapping(path = "/user/name/update", method = RequestMethod.POST)
-    public GenericResponse<Object> userNameUpdate(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<Object> userNameUpdate(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String username = request.getData();
         userService.updateUserName(userId, username);
         return GenericResponse.success();

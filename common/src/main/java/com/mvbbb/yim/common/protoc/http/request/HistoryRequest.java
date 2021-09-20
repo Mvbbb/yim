@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
+@Deprecated
 @Data
 public class HistoryRequest {
     @NotNull

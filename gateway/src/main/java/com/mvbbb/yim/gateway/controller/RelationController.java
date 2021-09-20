@@ -11,10 +11,7 @@ import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.RelationService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,17 +24,15 @@ public class RelationController {
 
     @ApiOperation("获取朋友列表")
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)
-    public GenericResponse<List<User>> friendList(@RequestBody GenericRequest<Object> request) {
-        String userId = request.getUserId();
+    public GenericResponse<List<User>> friendList(@RequestHeader String userId,@RequestHeader String token) {
         List<User> friends = relationService.listFriend(userId);
-
         return GenericResponse.success(friends);
     }
 
     @ApiOperation("添加朋友")
     @RequestMapping(path = "/friend/add", method = RequestMethod.POST)
-    public GenericResponse<Object> addFriend(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<Object> addFriend(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
+
         String friendId = request.getData();
 
         relationService.addFriend(userId, friendId);
@@ -47,8 +42,7 @@ public class RelationController {
 
     @ApiOperation("删除朋友")
     @RequestMapping(path = "/friend/delete", method = RequestMethod.POST)
-    public GenericResponse<Object> deleteFriend(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<Object> deleteFriend(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
         String friendId = request.getData();
         relationService.deleteFriend(userId, friendId);
         return GenericResponse.success();
@@ -57,8 +51,7 @@ public class RelationController {
 
     @ApiOperation("查看自己加入的群组")
     @RequestMapping(path = "/group/list", method = RequestMethod.GET)
-    public GenericResponse<List<GroupVO>> groupList(@RequestBody GenericRequest<Object> request) {
-        String userId = request.getUserId();
+    public GenericResponse<List<GroupVO>> groupList(@RequestHeader String userId,@RequestHeader String token) {
         List<GroupVO> groups = relationService.listGroup(userId);
         return GenericResponse.success(groups);
     }
@@ -66,15 +59,14 @@ public class RelationController {
 
     @ApiOperation("查看全部群组")
     @RequestMapping(path = "/group/list/all", method = RequestMethod.GET)
-    public GenericResponse<List<GroupVO>> groupAllList(@RequestBody GenericRequest<Object> request) {
+    public GenericResponse<List<GroupVO>> groupAllList(@RequestHeader String userId,@RequestHeader String token) {
         List<GroupVO> groups = relationService.listAllGroup();
         return GenericResponse.success(groups);
     }
 
     @ApiOperation("加入群组")
     @RequestMapping(path = "/group/join", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupJoin(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<GroupVO> groupJoin(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
 
         GroupVO groupVO = relationService.joinGroup(userId, groupId);
@@ -83,8 +75,7 @@ public class RelationController {
 
     @ApiOperation("创建群组")
     @RequestMapping(path = "/group/create", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupCreate(@RequestBody GenericRequest<CreateGroupRequest> request) {
-        String userId = request.getUserId();
+    public GenericResponse<GroupVO> groupCreate(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<CreateGroupRequest> request) {
         List<String> members = request.getData().getMembers();
         String groupName = request.getData().getGroupName();
         GroupVO group = relationService.createGroup(userId, groupName, members);
@@ -93,8 +84,7 @@ public class RelationController {
 
     @ApiOperation("退出群组")
     @RequestMapping(path = "/group/quit", method = RequestMethod.POST)
-    public GenericResponse<Object> groupQuit(@RequestBody GenericRequest<String> request) {
-        String userId = request.getUserId();
+    public GenericResponse<Object> groupQuit(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
         relationService.quitGroup(userId, groupId);
         return GenericResponse.success();
@@ -102,7 +92,7 @@ public class RelationController {
 
     @ApiOperation("踢人")
     @RequestMapping(path = "/group/member/kickout", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupMemberKickout(@RequestBody GenericRequest<GroupMemberRequest> request) {
+    public GenericResponse<GroupVO> groupMemberKickout(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<GroupMemberRequest> request) {
 
         String groupId = request.getData().getGroupId();
         String kickoutMember = request.getData().getMemberId();
@@ -112,7 +102,7 @@ public class RelationController {
 
     @ApiOperation("添加群组成员")
     @RequestMapping(path = "/group/member/add", method = RequestMethod.POST)
-    public GenericResponse<GroupVO> groupMemberAdd(@RequestBody GenericRequest<GroupMemberRequest> request) {
+    public GenericResponse<GroupVO> groupMemberAdd(@RequestHeader String userId,@RequestHeader String token, @RequestBody GenericRequest<GroupMemberRequest> request) {
 
         String groupId = request.getData().getGroupId();
         String memberId = request.getData().getMemberId();
@@ -123,17 +113,16 @@ public class RelationController {
 
     @ApiOperation("查看群组信息")
     @RequestMapping(path = "/group/info", method = RequestMethod.GET)
-    public GenericResponse<GroupVO> groupInfo(@RequestBody GenericRequest<String> request) {
-        String groupId = request.getData();
+    public GenericResponse<GroupVO> groupInfo(@RequestHeader String userId, @RequestHeader String token, @RequestParam String groupId) {
+        
         GroupVO groupVO = relationService.getGroupInfo(groupId);
         return GenericResponse.success(groupVO);
     }
 
     @ApiOperation("解散群组")
     @RequestMapping(path = "/group/dissolution", method = RequestMethod.POST)
-    public GenericResponse<Object> groupDissolution(@RequestBody GenericRequest<String> request) {
+    public GenericResponse<Object> groupDissolution(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String groupId = request.getData();
-        String userId = request.getUserId();
         boolean success = relationService.dissolutionGroup(userId, groupId);
         return success ? GenericResponse.success() : GenericResponse.failed(ResCode.FAILED);
     }

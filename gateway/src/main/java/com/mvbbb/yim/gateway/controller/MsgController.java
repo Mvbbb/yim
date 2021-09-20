@@ -4,15 +4,13 @@ import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.HistoryRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
+import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.vo.MsgVO;
 import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.MsgService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,21 +23,25 @@ public class MsgController {
     @ApiOperation("获取历史消息")
     @CheckAuth
     @RequestMapping(path = "/message/history", method = RequestMethod.GET)
-    public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestBody GenericRequest<HistoryRequest> request) {
-        HistoryRequest historyRequest = request.getData();
-        List<MsgVO> historyMsg = msgService.getHistoryMsg(request.getUserId(),
-                historyRequest.getSessionId(),
-                historyRequest.getSessionType(),
-                historyRequest.getFrom(),
-                historyRequest.getLimit());
+    public GenericResponse<List<MsgVO>> getHistoryMsg(@RequestHeader String userId,
+                                                      @RequestHeader String token,
+                                                      @RequestParam SessionType sessionType,
+                                                      @RequestParam String sessionId,
+                                                      @RequestParam int from,
+                                                      @RequestParam int limit) {
+
+        List<MsgVO> historyMsg = msgService.getHistoryMsg(userId,
+                sessionId,
+                sessionType,
+                from,
+                limit);
         return GenericResponse.success(historyMsg);
     }
 
     @ApiOperation("获取离线消息")
     @CheckAuth
     @RequestMapping(path = "/message/offline", method = RequestMethod.GET)
-    public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestBody GenericRequest<Object> request) {
-        String userId = request.getUserId();
+    public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestHeader String userId, @RequestHeader String token) {
         PullOfflineMsgResponse offlineMsg = msgService.getOfflineMsg(userId);
         return GenericResponse.success(offlineMsg);
     }

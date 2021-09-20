@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 public interface MsgRecvMapper extends BaseMapper<MsgRecv> {
-    @Update("update yim_msg_recv set delivered = 1 where to_uid = ${userId}")
+    @Update("update yim_msg_recv set delivered = 1 where to_uid = #{userId}")
     void delivered(@Param("userId") String userId);
 }

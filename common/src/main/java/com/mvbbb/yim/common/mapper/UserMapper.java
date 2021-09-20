@@ -11,22 +11,22 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    @Update("update yim_user set password = ${newPassword} where user")
+    @Update("update yim_user set password = #{newPassword} where user")
     int changePassword(String userId, String oldPassword, String newPassword);
 
     @Select("select * from yim_user")
     List<User> selectAllUser();
 
-    @Update("update yim_user set avatar = ${avatar} where user_id = ${userId}")
+    @Update("update yim_user set avatar = #{avatar} where user_id = #{userId}")
     int updateAvatar(@Param("userId") String userId, String avatar);
 
 
-    @Update("update yim_user set username = ${username} where user_id = ${userId}")
-    int updateUsername(String userId, @Param("username") String username);
+    @Update("update yim_user set username = #{username} where user_id = #{userId}")
+    int updateUsername(@Param("userId") String userId, @Param("username") String username);
 
-    @Update("update yim_user set password = ${newPassword} where user_id = ${userId} and password = ${oldPassword}")
+    @Update("update yim_user set password = #{newPassword} where user_id = #{userId} and password = #{oldPassword}")
     int updatePassword(@Param("userId") String userId, @Param("oldPassword") String oldPassword, @Param("newPassword") String newPassword);
 
-    @Select("select * from yim_user where username = '${username}' ")
+    @Select("select * from yim_user where username = #{username} ")
     User selectByUsername(@Param("username") String username);
 }
