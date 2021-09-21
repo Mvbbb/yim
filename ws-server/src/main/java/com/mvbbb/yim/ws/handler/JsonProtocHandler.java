@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-
 import java.util.List;
 
 @ChannelHandler.Sharable
@@ -27,7 +26,7 @@ public class JsonProtocHandler extends MessageToMessageDecoder<TextWebSocketFram
     protected void decode(ChannelHandlerContext ctx, TextWebSocketFrame textWebSocketFrame, List<Object> out) throws Exception {
 
         String jsonText = textWebSocketFrame.text();
-        logger.info("接收到 JSON 报文：{}",jsonText);
+        logger.info("接收到 JSON 报文：{}", jsonText);
         DataPacket dataPacket = JSONObject.parseObject(jsonText, DataPacket.class);
         JSONObject data = (JSONObject) dataPacket.getData();
         switch (dataPacket.getCmdType()) {
@@ -47,7 +46,8 @@ public class JsonProtocHandler extends MessageToMessageDecoder<TextWebSocketFram
                 Ack ack = data.toJavaObject(Ack.class);
                 out.add(ack);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 }

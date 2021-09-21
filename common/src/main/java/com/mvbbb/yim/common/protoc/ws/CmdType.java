@@ -5,7 +5,7 @@ public enum CmdType {
     GREET, BYE, MSG_DATA, ACK;
 
     public static byte getByte(CmdType msgData) {
-        switch (msgData){
+        switch (msgData) {
             case GREET:
                 return 1;
             case BYE:

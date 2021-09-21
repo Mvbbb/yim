@@ -4,7 +4,6 @@ import com.mvbbb.yim.auth.service.AuthService;
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.protoc.http.ResCode;
-import com.mvbbb.yim.common.protoc.http.request.AuthRequest;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.LoginRequest;
 import com.mvbbb.yim.common.protoc.http.request.RegisterRequest;
@@ -55,7 +54,7 @@ public class UserController {
 
     @ApiOperation("重新获取 ws 服务器地址")
     @RequestMapping(path = "/reconnect", method = RequestMethod.POST)
-    public GenericResponse<String> reconnect(@RequestHeader String userId,@RequestHeader String token) {
+    public GenericResponse<String> reconnect(@RequestHeader String userId, @RequestHeader String token) {
         String wsUrl = zkService.getWsForUser();
         return GenericResponse.success(wsUrl);
     }
@@ -75,14 +74,14 @@ public class UserController {
 
     @ApiOperation("退出登录")
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public GenericResponse<Object> logout(@RequestHeader String userId,@RequestHeader String token) {
-        AuthEnum authRes = authService.logout(userId,token);
+    public GenericResponse<Object> logout(@RequestHeader String userId, @RequestHeader String token) {
+        AuthEnum authRes = authService.logout(userId, token);
         return authRes == AuthEnum.SUCCESS ? GenericResponse.success() : GenericResponse.failed(ResCode.FAILED);
     }
 
     @ApiOperation("查看所有 user")
     @RequestMapping(path = "/user/all", method = RequestMethod.GET)
-    public GenericResponse<List<UserVO>> allUser(@RequestHeader String userId,@RequestHeader String token) {
+    public GenericResponse<List<UserVO>> allUser(@RequestHeader String userId, @RequestHeader String token) {
         List<UserVO> users = userService.listAllUser();
         return GenericResponse.success(users);
     }
@@ -97,7 +96,7 @@ public class UserController {
 
     @ApiOperation("更新头像")
     @RequestMapping(path = "/user/avatar/update", method = RequestMethod.POST)
-    public GenericResponse<Object> userAvatarUpdate(@RequestHeader String userId,@RequestHeader String token,  @RequestBody GenericRequest<String> request) {
+    public GenericResponse<Object> userAvatarUpdate(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<String> request) {
         String avatar = request.getData();
         userService.updateUserAvatar(userId, avatar);
         return GenericResponse.success();

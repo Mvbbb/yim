@@ -1,7 +1,5 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
-import com.mvbbb.yim.common.protoc.http.request.HistoryRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.protoc.ws.SessionType;

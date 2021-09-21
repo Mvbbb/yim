@@ -18,22 +18,21 @@ import javax.annotation.Resource;
 @ChannelHandler.Sharable
 public class ByeHandler extends SimpleChannelInboundHandler<Bye> {
     private static final Logger logger = LoggerFactory.getLogger(ByeHandler.class);
-    private static ByeHandler byeHandler;
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
-
+    private static ByeHandler byeHandler;
     @Resource
     StatusService statusService;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         byeHandler = this;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Bye msg) throws Exception {
         Channel channel = ctx.channel();
-        logger.info("收到 Bye 消息：{}",msg);
+        logger.info("收到 Bye 消息：{}", msg);
         String userId = connectionPool.getUseridByChannel(channel);
-        byeHandler.statusService.bye(ctx.channel(),userId);
+        byeHandler.statusService.bye(ctx.channel(), userId);
     }
 }

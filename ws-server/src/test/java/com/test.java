@@ -1,7 +1,10 @@
 package com;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mvbbb.yim.common.protoc.*;
+import com.mvbbb.yim.common.protoc.Ack;
+import com.mvbbb.yim.common.protoc.Bye;
+import com.mvbbb.yim.common.protoc.DataPacket;
+import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.CmdType;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
@@ -9,10 +12,10 @@ import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import org.junit.Test;
 
 
-public class test{
+public class test {
 
     @Test
-    public void test1(){
+    public void test1() {
         DataPacket<MsgData> dataPacket = new DataPacket<>();
 
         MsgData msgData = new MsgData();
@@ -35,7 +38,7 @@ public class test{
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         DataPacket<GreetRequest> dataPacket = new DataPacket<>();
 
         GreetRequest greetRequest = new GreetRequest();
@@ -53,7 +56,7 @@ public class test{
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         DataPacket<Ack> dataPacket = new DataPacket<>();
 
         Ack ack = new Ack();
@@ -73,7 +76,7 @@ public class test{
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         DataPacket<Bye> dataPacket = new DataPacket<>();
 
         Bye bye = new Bye();
@@ -89,7 +92,7 @@ public class test{
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         DataPacket<MsgData> dataPacket = new DataPacket<>();
 
         MsgData msgData = new MsgData();
@@ -112,7 +115,7 @@ public class test{
     }
 
     @Test
-    public void test10(){
+    public void test10() {
         String json = "{\"cmdType\":\"ACK\",\"data\":{\"clientMsgId\":\"1\",\"msg\":\"成功接收消息\",\"serverMsgId\":1,\"userId\":\"1\"},\"headFlag\":55,\"logId\":1,\"sequenceId\":1,\"version\":1}";
         DataPacket dataPacket = JSONObject.parseObject(json, DataPacket.class);
         System.out.println(dataPacket.getData().getClass());

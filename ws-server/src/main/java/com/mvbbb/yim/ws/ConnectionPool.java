@@ -17,8 +17,8 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        if(connectionPool ==null){
-            synchronized (ConnectionPool.class){
+        if (connectionPool == null) {
+            synchronized (ConnectionPool.class) {
                 if (connectionPool == null) {
                     connectionPool = new ConnectionPool();
                 }
@@ -59,18 +59,19 @@ public class ConnectionPool {
 
     /**
      * 检查是否有不在 pool 里面的连接做出非法的请求，将其关闭
+     *
      * @param channel
      */
     public boolean checkToClose(Channel channel) {
         if (connectionPool.getUseridByChannel(channel) == null) {
             try {
-                logger.error("非法请求，将关闭连接。{}",channel);
+                logger.error("非法请求，将关闭连接。{}", channel);
                 channel.close().sync();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return true;
-        }else{
+        } else {
             return false;
         }
     }

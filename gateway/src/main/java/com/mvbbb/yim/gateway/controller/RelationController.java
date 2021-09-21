@@ -93,8 +93,13 @@ public class RelationController {
     public GenericResponse<GroupVO> groupMemberKickout(@RequestHeader String userId, @RequestHeader String token, @RequestBody GenericRequest<GroupMemberRequest> request) {
 
         String groupId = request.getData().getGroupId();
-        String kickoutMember = request.getData().getMemberId();
-        GroupVO groupVO = relationService.kickoutGroupMember(groupId, kickoutMember);
+        String kickoutUid = request.getData().getMemberId();
+
+        if (userId.equals(kickoutUid)) {
+            return GenericResponse.failed("不能自个儿踢自己");
+        }
+
+        GroupVO groupVO = relationService.kickoutGroupMember(userId, groupId, kickoutUid);
         return GenericResponse.success(groupVO);
     }
 

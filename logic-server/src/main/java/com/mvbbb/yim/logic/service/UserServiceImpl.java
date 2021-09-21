@@ -52,4 +52,8 @@ public class UserServiceImpl implements UserService {
         return getUserInfo(userId);
     }
 
+    @Override
+    public String echo() {
+        return "Logic server is ok~";
+    }
 }

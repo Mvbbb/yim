@@ -1,8 +1,8 @@
 package com.mvbbb.yim.gateway.config;
 
 import com.mvbbb.yim.gateway.handler.AuthorizationInterceptor;
+import com.mvbbb.yim.gateway.handler.HttpRequestLogger;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -14,9 +14,12 @@ public class InterceptorRegister extends WebMvcConfigurationSupport {
 
     @Resource
     AuthorizationInterceptor authorizationInterceptor;
+    @Resource
+    HttpRequestLogger httpRequestLogger;
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(httpRequestLogger);
         registry.addInterceptor(authorizationInterceptor);
         super.addInterceptors(registry);
     }

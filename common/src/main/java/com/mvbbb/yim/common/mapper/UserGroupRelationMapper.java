@@ -13,7 +13,7 @@ public interface UserGroupRelationMapper extends BaseMapper<UserGroupRelation> {
     UserGroupRelation findGroupRelation(@Param("userId") String userId, @Param("groupId") String groupId);
 
     @Delete("delete from yim_user_group_relation where user_id = #{userId} and group_id = #{groupId}")
-    int deleteUserGroupRelation(@Param("userId") String userId,@Param("groupId") String groupId);
+    int deleteUserGroupRelation(@Param("userId") String userId, @Param("groupId") String groupId);
 
     @Select("select user_id from yim_user_group_relation where user_id = #{userId}")
     List<String> findUserGroupIds(@Param("userId") String userId);

@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String checkLogin(String userId, String password) {
         User user = userMapper.selectById(userId);
-        if (!user.getPassword().equals(password)) {
+        if (user != null && !user.getPassword().equals(password)) {
             logger.error("密码错误. userId: [{}], password: [{}]", userId, password);
             return null;
         }
@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
             }
         }
         user.setUserId(userId);
-        logger.info("用户注册成功：{}",user);
+        logger.info("用户注册成功：{}", user);
         userMapper.insert(user);
         return user;
     }

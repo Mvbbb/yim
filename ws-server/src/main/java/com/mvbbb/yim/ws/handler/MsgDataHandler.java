@@ -22,16 +22,15 @@ import javax.annotation.Resource;
 public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
 
     private static final Logger logger = LoggerFactory.getLogger(MsgDataHandler.class);
-    private static MsgDataHandler msgDataHandler;
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
-
+    private static MsgDataHandler msgDataHandler;
     @DubboReference(check = false)
     MsgService msgService;
     @Resource
     MsgSendService sendDataToUserHandler;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         msgDataHandler = this;
     }
 
@@ -39,14 +38,15 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
     protected void channelRead0(ChannelHandlerContext ctx, MsgData data) throws Exception {
 
         Channel channel = ctx.channel();
-        if(connectionPool.checkToClose(ctx.channel())){
+        if (connectionPool.checkToClose(ctx.channel())) {
             return;
-        };
+        }
+        ;
 
         String userId = connectionPool.getUseridByChannel(channel);
         data.setFromUserId(userId);
 
-        logger.info("收到 msg data 消息：{}",data);
+        logger.info("收到 msg data 消息：{}", data);
         data.setServerMsgId(SnowflakeIdWorker.generateId());
         msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "Ws Server receive msg.");
         msgDataHandler.msgService.handlerMsgData(data);

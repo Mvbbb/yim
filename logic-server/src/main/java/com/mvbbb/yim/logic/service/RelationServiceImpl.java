@@ -50,7 +50,7 @@ public class RelationServiceImpl implements RelationService {
     public void addFriend(String userId, String friendId) {
 
         User user = userMapper.selectById(friendId);
-        if(user==null){
+        if (user == null) {
             throw new IMException("用戶不存在");
         }
 
@@ -72,7 +72,7 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public List<GroupVO> listGroup(String userId) {
-        List<String> groupIds = groupRelationMapper.findUserGroupIds(userId);
+        List<String> groupIds = groupRelationMapper.findUserGroupIds(userId).stream().distinct().collect(Collectors.toList());
         return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId))
                 .map((group -> {
                     GroupVO groupVO = new GroupVO();
@@ -83,6 +83,11 @@ public class RelationServiceImpl implements RelationService {
 
     @Override
     public GroupVO joinGroup(String userId, String groupId) {
+
+        if (userMapper.selectById(userId) == null) {
+            throw new IMException("用户不存在，无法加入群聊");
+        }
+
         UserGroupRelation userGroupRelation = null;
         userGroupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
         if (userGroupRelation != null) {
@@ -146,20 +151,30 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public void quitGroup(String userId, String groupId) {
         Group group = groupMapper.selectById(groupId);
-        if(group.getOwnerUid().equals(userId)){
+        if (group.getOwnerUid().equals(userId)) {
             throw new IMException("你是群主，你不能退群");
         }
-        groupRelationMapper.deleteUserGroupRelation(userId,groupId);
+        groupRelationMapper.deleteUserGroupRelation(userId, groupId);
         groupMapper.removeOneMember(groupId);
     }
 
     @Override
-    public GroupVO kickoutGroupMember(String groupId, String userId) {
-        UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
+    public GroupVO kickoutGroupMember(String ownerId, String groupId, String kickoutUid) {
+
+        Group group = groupMapper.selectById(groupId);
+        if (group == null) {
+            throw new IMException("群聊不存在");
+        }
+        if (group.getOwnerUid() != ownerId) {
+            throw new IMException("谁给的你去权限踢人");
+        }
+
+        UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(kickoutUid, groupId);
         if (groupRelation == null) {
             throw new IMException("该用户不是群成员，无法踢人");
         }
-        int delete = groupRelationMapper.delete(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId).eq(UserGroupRelation::getUserId, userId));
+
+        int delete = groupRelationMapper.deleteUserGroupRelation(kickoutUid, groupId);
         groupMapper.removeOneMember(groupId);
         return getGroupInfo(groupId);
     }
@@ -167,11 +182,11 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public GroupVO addGroupMember(String groupId, String userId) {
         User user = userMapper.selectById(userId);
-        if(user==null){
+        if (user == null) {
             throw new IMException("用戶不存在");
         }
         Group group = groupMapper.selectById(groupId);
-        if(group==null){
+        if (group == null) {
             throw new IMException("群聊不存在");
         }
         return joinGroup(userId, groupId);

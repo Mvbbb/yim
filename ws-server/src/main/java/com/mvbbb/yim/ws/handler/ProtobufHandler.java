@@ -6,11 +6,9 @@ import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.util.BeanConvertor;
-import com.mvbbb.yim.ws.ProtobufDataPacketUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,15 +25,15 @@ public class ProtobufHandler extends MessageToMessageDecoder<Protobuf.DataPacket
     private static ProtobufHandler protobufHandler;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         protobufHandler = this;
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, Protobuf.DataPacket msg, List<Object> out) throws Exception {
-        logger.info("接收到 Protobuf 报文：{}",msg);
+        logger.info("接收到 Protobuf 报文：{}", msg);
         Protobuf.CmdType cmd = msg.getCmd();
-        switch (cmd){
+        switch (cmd) {
             case MSG_DATA:
                 Protobuf.MsgData protocBufMsgData = msg.getMsgData();
                 MsgData msgData = BeanConvertor.protocToMsgData(protocBufMsgData);
@@ -56,7 +54,8 @@ public class ProtobufHandler extends MessageToMessageDecoder<Protobuf.DataPacket
                 Ack ack = BeanConvertor.protocToAck(protobufAck);
                 out.add(ack);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 }

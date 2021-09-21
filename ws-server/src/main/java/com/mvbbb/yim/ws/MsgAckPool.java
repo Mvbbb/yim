@@ -13,8 +13,8 @@ public class MsgAckPool {
 
     public static MsgAckPool getInstance() {
         if (msgAckPool == null) {
-            synchronized (MsgAckPool.class){
-                if(msgAckPool == null){
+            synchronized (MsgAckPool.class) {
+                if (msgAckPool == null) {
                     msgAckPool = new MsgAckPool();
                 }
             }

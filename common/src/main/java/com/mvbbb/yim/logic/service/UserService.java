@@ -13,4 +13,6 @@ public interface UserService {
     UserVO updateUserAvatar(String userId, String avatar);
 
     UserVO updateUserName(String userId, String username);
+
+    String echo();
 }

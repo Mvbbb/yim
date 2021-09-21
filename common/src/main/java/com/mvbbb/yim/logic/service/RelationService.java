@@ -21,7 +21,7 @@ public interface RelationService {
 
     void quitGroup(String userId, String groupId);
 
-    GroupVO kickoutGroupMember(String groupId, String userId);
+    GroupVO kickoutGroupMember(String ownerId, String groupId, String kickoutUid);
 
     GroupVO addGroupMember(String groupId, String userId);
 

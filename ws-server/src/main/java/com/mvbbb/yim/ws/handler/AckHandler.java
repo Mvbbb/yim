@@ -1,7 +1,6 @@
 package com.mvbbb.yim.ws.handler;
 
 import com.mvbbb.yim.common.protoc.Ack;
-import com.mvbbb.yim.logic.service.UserService;
 import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.MsgAckPool;
 import com.mvbbb.yim.ws.service.MsgSendService;
@@ -29,18 +28,19 @@ public class AckHandler extends SimpleChannelInboundHandler<Ack> {
 
 
     @PostConstruct
-    public void init(){
+    public void init() {
         ackHandler = this;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Ack data) throws Exception {
 
-        if(connectionPool.checkToClose(ctx.channel())){
+        if (connectionPool.checkToClose(ctx.channel())) {
             return;
-        };
+        }
+        ;
 
-        logger.info("收到 Ack 消息：{}",data);
+        logger.info("收到 Ack 消息：{}", data);
         String key = data.getServerMsgId() + ":" + data.getUserId();
         logger.info("消息投递成功 {}", key);
         msgAckPool.acked(key);

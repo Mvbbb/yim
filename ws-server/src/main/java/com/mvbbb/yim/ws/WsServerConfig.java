@@ -35,7 +35,7 @@ public final class WsServerConfig {
         try {
             String envAddress = System.getenv("host.addr");
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            host = envAddress==null?hostAddress:envAddress;
+            host = envAddress == null ? hostAddress : envAddress;
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
