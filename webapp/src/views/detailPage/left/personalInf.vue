@@ -1,7 +1,8 @@
 <template>
 <div class="left">
   <div class="portrait">
-    <el-avatar shape="square" :size="50" :src="squareUrl"></el-avatar>
+    <el-avatar shape="square" :size="50" :src=header></el-avatar>
+
   </div>
   <div class="icon">
     <div style="padding-bottom: 10px;font-size: 30px"
@@ -17,11 +18,11 @@
 </template>
 
 <script>
-
 export default {
 name: "personalInf",
   data(){
   return {
+    header:require("../../../assets/img/header.jpg"),
     choose: '',
     list:[
       'el-icon-chat-dot-round',

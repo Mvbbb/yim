@@ -1,16 +1,22 @@
 <template>
   <el-container class="container">
 
-    <el-aside width="8%" style="background-color: black">
+    <el-aside width="8%" style="background-color: black;overflow: hidden;display: inline-block">
       <personal-inf></personal-inf>
     </el-aside>
-    <el-aside width="20%"  >
-      medium
+    <el-aside width="23.5%" >
+      <chat-list></chat-list>
     </el-aside>
     <el-container class="container2">
-      <el-header>Header</el-header>
-      <el-main>Main</el-main>
-      <el-footer>Footer</el-footer>
+      <el-header>
+        <chat-nmae></chat-nmae>
+      </el-header>
+      <el-main>
+        <chat-box></chat-box>
+      </el-main>
+      <el-footer>
+        <input-box></input-box>
+      </el-footer>
     </el-container>
   </el-container>
 
@@ -18,10 +24,18 @@
 
 <script>
 import personalInf from "./detailPage/left/personalInf";
+import chatList from "./detailPage/medium/chatList";
+import chatNmae from "./detailPage/main/chatNmae";
+import chatBox from "./detailPage/main/chatBox";
+import inputBox from "./detailPage/main/inputBox";
 export default {
 name: "Interface",
   components:{
-    personalInf
+    personalInf,
+    chatList,
+    chatNmae,
+    chatBox,
+    inputBox
   }
 }
 </script>
@@ -30,9 +44,7 @@ name: "Interface",
 .container{
   margin: 120px 200px 120px 200px;
   height: 500px;
-  /*width: 1200px;*/
   position: relative;
-  /*box-sizing: border-box;*/
 }
 .container2{
   width: 75%;
@@ -43,6 +55,10 @@ name: "Interface",
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 60px;
+}
+.el-footer{
+  height: 180px;
+  background-color: white;
 }
 
 .el-aside {
