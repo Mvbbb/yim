@@ -19,3 +19,7 @@ mybatis-plus:
 dubbo:
   application:
     logger: slf4j
+
+logging:
+  level:
+    com.mvbbb.yim.common.mapper: debug

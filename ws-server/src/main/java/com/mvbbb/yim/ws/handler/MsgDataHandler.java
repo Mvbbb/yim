@@ -2,6 +2,7 @@ package com.mvbbb.yim.ws.handler;
 
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.util.SnowflakeIdWorker;
+import com.mvbbb.yim.logic.service.RelationService;
 import com.mvbbb.yim.msg.service.MsgService;
 import com.mvbbb.yim.ws.ConnectionPool;
 import com.mvbbb.yim.ws.service.MsgSendService;
@@ -26,6 +27,8 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
     private static MsgDataHandler msgDataHandler;
     @DubboReference(check = false)
     MsgService msgService;
+    @DubboReference(check = false)
+    RelationService relationService;
     @Resource
     MsgSendService sendDataToUserHandler;
 
@@ -42,14 +45,39 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
             logger.error("请先发送 Greet 消息进行认证");
             return;
         }
-        ;
 
         String userId = connectionPool.getUseridByChannel(channel);
         data.setFromUserId(userId);
 
         logger.info("收到 msg data 消息：{}", data);
         data.setServerMsgId(SnowflakeIdWorker.generateId());
+
+        checkRelationValid(ctx.channel(),data);
+
         msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "服务器接收到消息了");
         msgDataHandler.msgService.handlerMsgData(data);
+    }
+
+    private void checkRelationValid(Channel channel,MsgData data) {
+        String fromUserId = data.getFromUserId();
+        String toSessionId = data.getToSessionId();
+        switch (data.getSessionType()){
+            case SINGLE:
+                boolean friend = relationService.isFriend(fromUserId, toSessionId);
+                if(!friend){
+                    logger.error("非法发送消息，并非朋友关系。MsgData:{}",data);
+                    msgDataHandler.sendDataToUserHandler.send(channel,"你们还不是朋友关系，不能发送消息。");
+                }
+                break;
+            case GROUP:
+                boolean member = relationService.isMember(fromUserId, toSessionId);
+                if(!member){
+                    logger.error("非法发送消息，并非群成员。MsgData：{}",data);
+                    msgDataHandler.sendDataToUserHandler.send(channel,"不是群成员，不能发送消息");
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

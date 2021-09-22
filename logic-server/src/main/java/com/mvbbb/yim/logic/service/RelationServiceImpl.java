@@ -75,7 +75,8 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public List<GroupVO> listGroup(String userId) {
         List<String> groupIds = groupRelationMapper.findUserGroupIds(userId).stream().distinct().collect(Collectors.toList());
-        return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId)).filter((group -> !group.isDeleted()))
+        return groupIds.stream()
+                .map((groupId) -> groupMapper.selectById(groupId))
                 .map((group -> {
                     GroupVO groupVO = new GroupVO();
                     BeanUtil.copyProperties(group, groupVO);
@@ -153,6 +154,9 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public void quitGroup(String userId, String groupId) {
         Group group = groupMapper.selectById(groupId);
+        if (group == null) {
+            throw new IMException("群聊不存在");
+        }
         if (group.getOwnerUid().equals(userId)) {
             throw new IMException("你是群主，你不能退群");
         }
@@ -246,5 +250,17 @@ public class RelationServiceImpl implements RelationService {
             BeanUtil.copyProperties(group, groupVO);
             return groupVO;
         })).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isFriend(String userId1, String userId2) {
+        FriendRelation friendRelation = friendRelationMapper.findFriendRelation(userId1, userId2);
+        return friendRelation!=null;
+    }
+
+    @Override
+    public boolean isMember(String userId, String groupId) {
+        UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
+        return groupRelation!=null;
     }
 }

@@ -22,6 +22,7 @@ public class MsgServiceImpl implements MsgService {
 
     @Override
     public void handlerMsgData(MsgData msgData) {
+
         // 持久化消息
         MsgSend msgSend = BeanConvertor.msgDataToMsgSend(msgData);
         logger.info("持久化消息到到表中：{}",msgData);

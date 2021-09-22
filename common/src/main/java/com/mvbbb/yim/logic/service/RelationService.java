@@ -31,5 +31,8 @@ public interface RelationService {
 
     List<GroupVO> listAllGroup();
 
+    boolean isFriend(String userId1, String userId2);
+
+    boolean isMember(String userId, String groupId);
 
 }
