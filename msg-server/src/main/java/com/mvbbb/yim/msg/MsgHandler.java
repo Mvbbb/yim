@@ -40,14 +40,13 @@ public class MsgHandler {
 
         if (!userStatusService.isUserOnline(toUserId)) {
             // 写入离线消息
-            logger.error("user [{}] not online, save to offline table", toUserId);
+            logger.error("用户 [{}] 不在线, 保存消息到离线表", toUserId);
             userStatusService.offlineMsgOccur(toUserId);
             saveMsg(msgData);
         } else {
             // 写入消息投递队列
-            logger.info("produce to mq, message to user [{}]", toUserId);
             WsServerRoute userWsServer = routeService.getUserWsServer(toUserId);
-//            mqManager.produce(userWsServer,msgData);
+            logger.info("投递消息到接收用户所在的 ws 的消息队列。ToUserId:{},WsServerRoute:{}", toUserId,userWsServer);
             redisStreamManager.produce(userWsServer, msgData);
         }
     }
@@ -59,6 +58,7 @@ public class MsgHandler {
                 .stream().map(UserGroupRelation::getUserId).collect(Collectors.toList());
         members.forEach((memberId) -> {
             if (memberId != null && !memberId.equals(msgData.getFromUserId())) {
+                logger.info("发送消息给群成员。UserId:{}",memberId);
                 msgData.setRecvUserId(memberId);
                 sendSingleMsg(msgData);
             }
@@ -66,6 +66,7 @@ public class MsgHandler {
     }
 
     public void saveMsg(MsgData msgData) {
+        logger.info("持久化消息到 msg_recv 表中。msgData:{}",msgData);
         MsgRecv msgRecv = BeanConvertor.msgDataToMsgRecv(msgData);
         msgRecvMapper.insert(msgRecv);
     }

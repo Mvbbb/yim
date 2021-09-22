@@ -18,6 +18,6 @@ public class UserGroupRelation implements Serializable {
     private String groupId;
     @TableField("last_acked_msgid")
     private long lastAckedMsgid;
-    @TableLogic
+    
     private boolean deleted;
 }

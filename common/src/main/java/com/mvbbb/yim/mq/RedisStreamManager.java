@@ -31,7 +31,6 @@ public class RedisStreamManager {
         String key = RedisConstant.STREAM_DELIVER_WS_PREFIX + route.getIp() + ":" + route.getPort();
         ObjectRecord<String, MsgData> record = Record.of(msgData).withStreamKey(key);
         RecordId recordId = stringRedisTemplate.opsForStream().add(record);
-        // print log
     }
 
     /**

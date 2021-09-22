@@ -17,6 +17,6 @@ public class User implements Serializable {
     private String username;
     private String avatar;
     private String password;
-    @TableLogic
+    
     private boolean deleted;
 }

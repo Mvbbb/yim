@@ -20,6 +20,6 @@ public class FriendRelation implements Serializable {
     @TableField("user_id_2")
     private String userid2;
 
-    @TableLogic
+    
     private boolean deleted;
 }

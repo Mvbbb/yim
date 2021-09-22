@@ -45,17 +45,17 @@ public class StatusService {
                 connectionPool.removeConnection(channel, userId);
                 channel.close();
             } else {
-                logger.info("add user {} channel {}", userId, channel);
+                logger.info("添加用户 Channel。UserId：{}，Channel：{}", userId, channel);
                 connectionPool.addUserChannel(channel, userId);
-                sendDataToUserHandler.sendAckToUser(userId, "Connect success");
+                sendDataToUserHandler.sendAckToUser(userId, "连接成功");
                 if (userStatusService.isUserOnline(userId)) {
                     logger.error("user切换 ws 服务器到本节点。 userid: {}", userId);
                 }
-                userStatusService.userOnline(userId, wsServerConfig.getPort(), wsServerConfig.getRpcPort());
+                userStatusService.userOnline(userId, wsServerConfig.getHost(), wsServerConfig.getPort(), wsServerConfig.getRpcPort());
             }
         } else {
 
-            logger.error("用户 token 错误，关闭连接中:{}", token);
+            logger.error("用户 token 错误，关闭连接中。UserId:{}，Token:{}", userId, token);
             sendDataToUserHandler.sendAckToUser(userId, "Wrong token");
             channel.close();
         }
@@ -73,7 +73,7 @@ public class StatusService {
     public void bye(Channel channel, String userId) {
         userStatusService.userOffline(userId);
         sendDataToUserHandler.send(channel, "断开连接");
-        logger.info("user {} close channel {}", userId, channel);
+        logger.info("用户关闭 Channel。UserId:{}，Channel:{}", userId, channel);
         connectionPool.removeConnection(channel, userId);
         connectionPool.closeConnection(channel);
         channel.close();

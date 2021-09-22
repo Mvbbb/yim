@@ -33,6 +33,8 @@ public class RelationServiceImpl implements RelationService {
     @Resource
     GroupMapper groupMapper;
     @Resource
+    UserStatusService userStatusService;
+    @Resource
     UserMapper userMapper;
     private Logger logger = LoggerFactory.getLogger(RelationServiceImpl.class);
 
@@ -73,7 +75,7 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public List<GroupVO> listGroup(String userId) {
         List<String> groupIds = groupRelationMapper.findUserGroupIds(userId).stream().distinct().collect(Collectors.toList());
-        return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId))
+        return groupIds.stream().map((groupId) -> groupMapper.selectById(groupId)).filter((group -> !group.isDeleted()))
                 .map((group -> {
                     GroupVO groupVO = new GroupVO();
                     BeanUtil.copyProperties(group, groupVO);
@@ -210,6 +212,7 @@ public class RelationServiceImpl implements RelationService {
         List<UserVO> members = userIds.stream().map((memberId) -> {
             User user = userMapper.selectById(memberId);
             UserVO userVO = new UserVO();
+            userVO.setOnline(userStatusService.isUserOnline(memberId));
             BeanUtil.copyProperties(user, userVO);
             return userVO;
         }).collect(Collectors.toList());

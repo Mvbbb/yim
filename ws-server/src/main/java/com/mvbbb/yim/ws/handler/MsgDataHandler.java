@@ -39,6 +39,7 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
 
         Channel channel = ctx.channel();
         if (connectionPool.checkToClose(ctx.channel())) {
+            logger.error("请先发送 Greet 消息进行认证");
             return;
         }
         ;
@@ -48,7 +49,7 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
 
         logger.info("收到 msg data 消息：{}", data);
         data.setServerMsgId(SnowflakeIdWorker.generateId());
-        msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "Ws Server receive msg.");
+        msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "服务器接收到消息了");
         msgDataHandler.msgService.handlerMsgData(data);
     }
 }

@@ -19,7 +19,7 @@ public class Group implements Serializable {
     private String avatar;
     private String ownerUid;
     private int userCnt;
-    @TableLogic
+    
     private boolean deleted;
 
 }

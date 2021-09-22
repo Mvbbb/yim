@@ -23,6 +23,6 @@ public class MsgRecv implements Serializable {
     private String msgData;
     private Date timestamp;
     private boolean delivered;
-    @TableLogic
+    
     private boolean deleted;
 }

@@ -36,9 +36,8 @@ public class UserStatusServiceImpl implements UserStatusService {
     WsUserStatusService wsUserStatusService;
 
     @Override
-    public void userOnline(String userId, int port, int rpcPort) {
-        String wsServerIp = RpcContext.getContext().getRemoteAddress().getAddress().getHostAddress();
-        WsServerRoute wsServerRoute = new WsServerRoute(wsServerIp, port, rpcPort);
+    public void userOnline(String userId, String host, int port, int rpcPort) {
+        WsServerRoute wsServerRoute = new WsServerRoute(host, port, rpcPort);
         logger.info("add ws route to redis {}:{}", wsServerRoute.getIp(), wsServerRoute.getPort());
         redisTemplate.opsForValue().set(RedisConstant.STATUS_USER_ROUTE_PREFIX + userId, wsServerRoute);
     }
@@ -79,6 +78,9 @@ public class UserStatusServiceImpl implements UserStatusService {
         redisTemplate.delete(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX + userId);
     }
 
+    /**
+     * FIXME
+     */
     @Override
     public boolean isOfflineMsgPoolOver(String userId) {
         return redisTemplate.opsForValue().get(RedisConstant.OFFLINE_MSG_NOT_POOL_OVER_PREFIX + userId) == null;

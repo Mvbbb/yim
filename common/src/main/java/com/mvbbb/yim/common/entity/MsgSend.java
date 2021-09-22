@@ -23,6 +23,6 @@ public class MsgSend implements Serializable {
     private int msgType;
     private String msgData;
     private Date timestamp;
-    @TableLogic
+    
     private boolean deleted;
 }

@@ -42,6 +42,8 @@ public class MsgSendService {
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
 
     public void sendAckToUser(String userId, String msg) {
+        logger.info("发送 ack 消息给用户。 UserId:{}，msg:{}",userId,msg);
+
         Channel channel = connectionPool.findChannel(userId);
         if (channel == null) {
             logger.error("连接未建立");
@@ -105,9 +107,7 @@ public class MsgSendService {
                 logger.error("没有收到用户的 ack 消息，将用户离线");
                 userStatusService.userOffline(msgData.getRecvUserId());
                 redisStreamManager.failedDeliveredMsg(msgData);
-                if (channel != null) {
-                    channel.close();
-                }
+                channel.close();
             }
         });
         threadPoolExecutor.execute(waitAckedTask);
