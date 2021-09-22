@@ -1,7 +1,7 @@
 <template>
 <div class="left">
   <div class="portrait">
-    <el-avatar shape="square" :size="50" :src=header></el-avatar>
+    <el-avatar shape="square" :size="55" :src=header></el-avatar>
 
   </div>
   <div class="icon">

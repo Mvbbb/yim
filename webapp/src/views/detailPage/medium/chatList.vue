@@ -1,8 +1,9 @@
 <template>
+  <el-scrollbar>
 <div>
   <div class="titleFather">
   <el-affix style=" overflow: hidden;width: 100%; text-overflow:ellipsis;white-space:nowrap;" :offset="120">
-        <div class="title">
+        <div class="searchTitle">
           <div class="searchAdd">
         <el-input v-model=searchInf clearable
                   maxlength="20"
@@ -23,27 +24,31 @@
   </el-affix>
   </div>
   <div class="list">
-    <div v-for="(item,index) in listInf" :key="index" @click="sendInf(item)">
-      <div class="inf">
-        <div style="padding-right: 5px;width:50px;padding-left: 5px">
-          <el-avatar shape="square" :size="40" :src=item.header></el-avatar>
+
+      <div v-for="(item,index) in listInf" :key="index" @click="sendInf(item)"  class="inner">
+        <div class="inf">
+          <div style="padding-right: 5px;width:50px;padding-left: 5px">
+            <el-avatar shape="square" :size="40" :src=item.header></el-avatar>
+          </div>
+          <div style="width: 80px;padding-right: 20px;text-align: left">
+            {{item.name.length>5?item.name.slice(0,5).concat('…'):item.name}}
+          </div>
+
+          <div style="font-size: 5px;width: 80px;left: 20px;position: relative;">
+            {{item.time}}
+          </div>
+          <br>
+          <div style="font-size: 3px;width: 150px;left: -180px;position: relative;text-align: left">
+            {{item.lastMsg.length>15?item.lastMsg.slice(0,15).concat('…'):item.lastMsg}}
+          </div>
         </div>
-      <div style="width: 80px;padding-right: 20px;text-align: left">
-        {{item.name.length>5?item.name.slice(0,5).concat('…'):item.name}}
       </div>
 
-      <div style="font-size: 5px;width: 80px">
-        {{item.time}}
-      </div>
-        <br>
-        <div style="font-size: 3px;width: 150px;text-align: left">
-          {{item.lastMsg.length>15?item.lastMsg.slice(0,15).concat('…'):item.lastMsg}}
-        </div>
-      </div>
-    </div>
+
   </div>
 
 </div>
+  </el-scrollbar>
 </template>
 
 <script>
@@ -109,8 +114,30 @@ name: "chatList",
   },
   methods:{
   sendInf(item){
-      bus.emit('chatPeople',item)
+    var websocket= new WebSocket("ws://121.40.165.18:8800");
+    websocket.onopen = function (event) {
+      console.log("onopen");
+    };
+    websocket.onerror = function (error) {
+      console.log("onerror: " + event.data);
+    };
+    websocket.onmessage = function (message) {
+      console.log("onmessage: " + message.data);
+    };
+    bus.emit('chatPeople',item)
   }
+  },
+  mounted() {
+    var websocket= new WebSocket("ws://121.40.165.18:8800");
+    websocket.onopen = function (event) {
+      console.log("onopen");
+    };
+    websocket.onerror = function (error) {
+      console.log("onerror: " + event.data);
+    };
+    websocket.onmessage = function (message) {
+      console.log("onmessage: " + message.data);
+    };
   }
 
 
@@ -124,7 +151,7 @@ name: "chatList",
 
 }
 
-.title{
+.searchTitle{
   width: 100%;
   background-color: #F7F7F7;
   height: 60px;
@@ -150,13 +177,17 @@ name: "chatList",
   transform: rotate(-360deg);
 }
 .list{
-  width: 100%;
+
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.inner{
+  width: 10000px;
 }
 .inf{
-  align-items: center;
   background-color: #EAE8E7;
-  border-bottom: 1px solid black;
-  height: 50px;
+  height: 65px;
   width: 100%;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -167,6 +198,7 @@ name: "chatList",
   padding-top: 5px;
   overflow: hidden;
   float: left;
+
 }
 
 </style>

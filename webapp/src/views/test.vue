@@ -4,7 +4,7 @@
 
 <script>
 import {onBeforeUnmount, onMounted, reactive, ref} from "@vue/runtime-core";
-import  { io }  from "socket.io-client";
+// import  { io }  from "socket.io-client";
 export default {
 name: "test",
  setup(){
@@ -14,20 +14,37 @@ name: "test",
    onMounted(() => {
      console.log(1111)
      // 创建客户端 websocket 的实例
-     socket = io('ws://localhost:8862/webSocketBySpring/webSocketHandler/1')
-     console.log(socket)
-     // 建立连接的事件
-     socket.on('connect', () => console.log('connect: websocket 连接成功！'))
+     // socket = io('http://115.159.148.114:7111')//大坑：前后端没有都是用scoket.io导致无法连接
+     // console.log(socket)
+     // // 建立连接的事件
+     // socket.on('connection', () => console.log('connect: websocket 连接成功！'))
+     //
+     // send()
+     var socket = new WebSocket("ws://115.159.148.114:7111");
 
-     send()
+     socket.onopen = function (event) {
+       console.log("onopen");
+     };
+     socket.onerror = function (error) {
+       console.log("onerror: " + event.data);
+     };
+     socket.onmessage = function (message) {
+       console.log("onmessage: " + message.data);
+     };
+
+
+// // handle the event sent with socket.emit()
+//      socket.on("greetings", (elem1, elem2, elem3) => {
+//        console.log(elem1, elem2, elem3);
+//      });
    })
    // 组件被销毁之前，清空 sock 对象
    onBeforeUnmount(() => {
-     // 关闭连接
-     socket.close()
-
+     this.socket.onclose = function(closeEvent) {
+       console.log("WebSocket Server quit");
+     }
      // 销毁 websocket 实例对象
-     socket = null
+     this.socket = null
    })
   // // 关闭连接的事件
   //  socket.on('disconnect', () => console.log('disconnect: websocket 连接关闭！'))

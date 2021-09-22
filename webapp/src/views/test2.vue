@@ -1,31 +1,34 @@
 <template>
-  <div
-      v-for="(item,index) in list" :key="index"
-       @click="changeColor(index)"
-       :class="{active:select=== index}">
-    {{select}}
-<!--    <i :class="item" ></i>-->
-  </div>
+
 </template>
 
 <script>
 import {reactive, ref} from "@vue/runtime-core";
+import {Test} from "../service/test";
     export default {
       name: "personalInf",
-      setup(){
-        let select=ref(0)
-        let list=reactive([
-          'el-icon-chat-dot-round',
-          'el-icon-chat-dot-round'
-        ])
+      data(){
+        return{
+          form:{
+            userId:'xiaohei',
+            token:'8e8f54ca'
+          }
 
-        function changeColor(index){
-          select=ref(index)
-          console.log(select)
         }
-        return {changeColor,list,select}
       },
-}
+      methods:{
+        test(){
+          console.log(11)
+          Test(this.form).then((res)=>{
+            console.log(res.data)
+          })
+        }
+      },
+      mounted() {
+        this.test()
+      }
+
+    }
 </script>
 
 <style scoped>
