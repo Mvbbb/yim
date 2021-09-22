@@ -51,7 +51,10 @@ public class MsgHandler {
         }
     }
 
-    // 扩散写
+    /**
+     * 采用写扩散的方式发送群聊消息
+     * @param msgData 某个用户发送的群聊消息
+     */
     public void sendGroupMsg(MsgData msgData) {
         String groupId = msgData.getToSessionId();
         List<String> members = userGroupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))

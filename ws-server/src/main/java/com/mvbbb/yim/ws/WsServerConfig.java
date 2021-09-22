@@ -12,9 +12,11 @@ import java.net.UnknownHostException;
 @Data
 @Component
 public final class WsServerConfig {
-    public static final int READ_IDEL_TIME_OUT = 4; // 读超时
-    public static final int WRITE_IDEL_TIME_OUT = 5;// 写超时
-    public static final int ALL_IDEL_TIME_OUT = 7; // 所有超时
+    public static final int READ_IDEL_TIME_OUT = 4;
+    public static final int WRITE_IDEL_TIME_OUT = 5;
+    public static final int ALL_IDEL_TIME_OUT = 7;
+    public static final int MSG_SEND_FAILED_RETRY = 3;
+    public static final int REGISTRY_FAILED_RETRY = 3;
     private int port;
     private int rpcPort;
     private String host;
@@ -23,9 +25,13 @@ public final class WsServerConfig {
     @Value("${zk.connect.timeout}")
     private int zkConnectTimeout;
     private String redisStreamKey;
-    // 消费组名称
+    /**
+     * 消费组名称
+     */
     private String redisStreamConsumerGroupName;
-    // 消费者名称
+    /**
+     * 消费者名称
+     */
     private String redisStreamConsumerName;
 
     @PostConstruct

@@ -31,7 +31,11 @@ public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
         closeChannelHandler = this;
     }
 
-    // 用户关闭连接时清理状态
+    /**
+     * 用户关闭连接时清理状态
+     * @param ctx 用户 Channel
+     * @throws Exception
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();

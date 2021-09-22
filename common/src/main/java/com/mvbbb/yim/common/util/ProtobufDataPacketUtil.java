@@ -1,4 +1,4 @@
-package com.mvbbb.yim.ws;
+package com.mvbbb.yim.common.util;
 
 import com.mvbbb.yim.common.constant.ProtocConstant;
 import com.mvbbb.yim.common.protoc.Ack;
@@ -6,7 +6,7 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.common.util.BeanConvertor;
 
-public class ProtobufDataPacketUtil {
+public final class ProtobufDataPacketUtil {
 
     public static Protobuf.DataPacket buildMsgData(MsgData msgData) {
         Protobuf.DataPacket.Builder dataPacketBuilder = genDataPacketBuilder();

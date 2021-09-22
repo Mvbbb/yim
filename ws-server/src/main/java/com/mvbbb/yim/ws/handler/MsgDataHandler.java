@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
 
     private static final Logger logger = LoggerFactory.getLogger(MsgDataHandler.class);
-    private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
     private static MsgDataHandler msgDataHandler;
     @DubboReference(check = false)
     MsgService msgService;
@@ -41,39 +41,50 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
     protected void channelRead0(ChannelHandlerContext ctx, MsgData data) throws Exception {
 
         Channel channel = ctx.channel();
-        if (connectionPool.checkToClose(ctx.channel())) {
+        if (CONNECTION_POOL.checkToClose(channel)) {
             logger.error("请先发送 Greet 消息进行认证");
             return;
         }
 
-        String userId = connectionPool.getUseridByChannel(channel);
+        String userId = CONNECTION_POOL.getUseridByChannel(channel);
         data.setFromUserId(userId);
+        checkMsgValid(channel, data);
+
 
         logger.info("收到 msg data 消息：{}", data);
         data.setServerMsgId(SnowflakeIdWorker.generateId());
 
-        checkRelationValid(ctx.channel(),data);
+        checkRelationValid(channel, data);
 
         msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "服务器接收到消息了");
         msgDataHandler.msgService.handlerMsgData(data);
     }
 
-    private void checkRelationValid(Channel channel,MsgData data) {
+    private void checkMsgValid(Channel channel, MsgData data) {
+        if (
+                data.getMsgType() == null || data.getToSessionId() == null || data.getFromUserId() == null || data.getSessionType() == null
+        ) {
+            logger.error("消息格式错误，缺少必要信息。MsgData:{}", data);
+            msgDataHandler.sendDataToUserHandler.send(channel, "消息格式错误，缺少必要信息");
+        }
+    }
+
+    private void checkRelationValid(Channel channel, MsgData data) {
         String fromUserId = data.getFromUserId();
         String toSessionId = data.getToSessionId();
-        switch (data.getSessionType()){
+        switch (data.getSessionType()) {
             case SINGLE:
-                boolean friend = relationService.isFriend(fromUserId, toSessionId);
-                if(!friend){
-                    logger.error("非法发送消息，并非朋友关系。MsgData:{}",data);
-                    msgDataHandler.sendDataToUserHandler.send(channel,"你们还不是朋友关系，不能发送消息。");
+                boolean friend = msgDataHandler.relationService.isFriend(fromUserId, toSessionId);
+                if (!friend) {
+                    logger.error("非法发送消息，并非朋友关系。MsgData:{}", data);
+                    msgDataHandler.sendDataToUserHandler.send(channel, "你们还不是朋友关系，不能发送消息。");
                 }
                 break;
             case GROUP:
-                boolean member = relationService.isMember(fromUserId, toSessionId);
-                if(!member){
-                    logger.error("非法发送消息，并非群成员。MsgData：{}",data);
-                    msgDataHandler.sendDataToUserHandler.send(channel,"不是群成员，不能发送消息");
+                boolean member = msgDataHandler.relationService.isMember(fromUserId, toSessionId);
+                if (!member) {
+                    logger.error("非法发送消息，并非群成员。MsgData：{}", data);
+                    msgDataHandler.sendDataToUserHandler.send(channel, "不是群成员，不能发送消息");
                 }
                 break;
             default:

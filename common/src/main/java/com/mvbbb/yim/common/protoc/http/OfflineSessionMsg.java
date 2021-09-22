@@ -14,5 +14,8 @@ public class OfflineSessionMsg implements Serializable {
     private SessionType sessionType;
     private int cnt;
     private List<MsgVO> msgs;
-    private Date timestamp; // 当前会话的最后一条消息的时间戳
+    /**
+     * 当前会话的最后一条消息的时间戳
+     */
+    private Date timestamp;
 }

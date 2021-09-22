@@ -37,9 +37,12 @@ public class MsgSendService {
     RedisStreamManager redisStreamManager;
     @DubboReference(check = false)
     UserStatusService userStatusService;
-    private MsgAckPool msgAckPool = MsgAckPool.getInstance();
-    // FIXME
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
+    private final MsgAckPool msgAckPool = MsgAckPool.getInstance();
+    /**
+     * FIXME
+     * 用户等待用户返回 ack 消息的线程池
+     */
+    private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
 
     public void sendAckToUser(String userId, String msg) {
         logger.info("发送 ack 消息给用户。 UserId:{}，msg:{}",userId,msg);
@@ -52,10 +55,10 @@ public class MsgSendService {
         Ack ack = new Ack();
         ack.setUserId(userId);
         ack.setMsg(msg);
-//      Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
+        //Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(JSONObject.toJSONString(ack));
         try {
-//            channel.writeAndFlush(dataPacket).sync();
+            //channel.writeAndFlush(dataPacket).sync();
             channel.writeAndFlush(textWebSocketFrame).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -67,10 +70,10 @@ public class MsgSendService {
      */
     public void send(Channel channel, String msg) {
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
-//        Ack ack = new Ack(msg);
-//        Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
+        //Ack ack = new Ack(msg);
+        //Protobuf.DataPacket dataPacket = ProtobufDataPacketUtil.buildAck(ack);
         try {
-//          channel.writeAndFlush(dataPacket).sync();
+            //channel.writeAndFlush(dataPacket).sync();
             channel.writeAndFlush(textWebSocketFrame).sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

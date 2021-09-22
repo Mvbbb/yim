@@ -119,7 +119,7 @@ public class RelationServiceImpl implements RelationService {
         String groupId = null;
         int retry = 0;
         while (true) {
-            groupId = GenRandomUtil.genUserid();
+            groupId = GenRandomUtil.genGroupid();
             Group existGroup = groupMapper.selectById(groupId);
             if (existGroup != null) {
                 retry++;

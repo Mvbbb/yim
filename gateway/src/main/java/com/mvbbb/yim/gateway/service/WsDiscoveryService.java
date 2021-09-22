@@ -21,9 +21,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
-public class RegisterService {
+public class WsDiscoveryService {
 
-    private final Logger logger = LoggerFactory.getLogger(RegisterService.class);
+    private final Logger logger = LoggerFactory.getLogger(WsDiscoveryService.class);
     private final Random random = new Random();
     @Resource
     GatewayConfig gatewayConfig;
@@ -71,13 +71,6 @@ public class RegisterService {
             return;
         }
         treeCache = TreeCache.newBuilder(client, ZkConstant.ZK_ROOT).setCacheData(true).build();
-//        treeCache.getListenable().addListener((c,event)->{
-//            if(event.getData()!=null){
-//                System.out.println("TreeCache,type=" + event.getType() + " path=" + event.getData().getPath());
-//            }else{
-//                System.out.println("TreeCache,type=" + event.getType());
-//            }
-//        });
         try {
             treeCache.start();
         } catch (Exception e) {

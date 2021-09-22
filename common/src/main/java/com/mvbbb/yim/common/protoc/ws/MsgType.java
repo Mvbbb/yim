@@ -11,6 +11,8 @@ public enum MsgType implements Serializable {
                 return 0;
             case FILE:
                 return 1;
+            default:
+                break;
         }
         return -1;
     }
@@ -21,6 +23,8 @@ public enum MsgType implements Serializable {
                 return TEXT;
             case 1:
                 return FILE;
+            default:
+                break;
         }
         return null;
     }

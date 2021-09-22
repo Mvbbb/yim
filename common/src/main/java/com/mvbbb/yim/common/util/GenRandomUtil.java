@@ -7,23 +7,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class GenRandomUtil {
-    private static final AtomicLong msgIdAdder = new AtomicLong();
-    private static List<String> avatars = new ArrayList<>();
-    private static Random random = new Random();
+public final class GenRandomUtil {
+    private static final AtomicLong MSG_ID_ADDER = new AtomicLong();
+    private static final List<String> AVATARS = new ArrayList<>();
+    private static final Random RANDOM = new Random();
 
     static {
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(1).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(2).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(3).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(4).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(5).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(6).png");
-        avatars.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(7).png");
-    }
-
-    public static long genMsgId() {
-        return msgIdAdder.addAndGet(1);
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(1).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(2).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(3).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(4).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(5).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(6).png");
+        AVATARS.add("https://gitee.com/mvbbb/filehost/raw/master/avatar/avatar%20(7).png");
     }
 
     public static String genUserid() {
@@ -37,10 +33,7 @@ public class GenRandomUtil {
     }
 
     public static String randomAvatar() {
-        return avatars.get(random.nextInt(avatars.size()));
+        return AVATARS.get(RANDOM.nextInt(AVATARS.size()));
     }
 
-    public static String getSalt() {
-        return "1";
-    }
 }

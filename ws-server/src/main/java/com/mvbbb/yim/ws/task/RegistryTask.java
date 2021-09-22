@@ -70,7 +70,7 @@ public class RegistryTask implements Runnable {
         createRootNode();
         try {
             int retry = 0;
-            while (retry < 3 && client.checkExists().forPath(path) == null) {
+            while (retry < WsServerConfig.MSG_SEND_FAILED_RETRY && client.checkExists().forPath(path) == null) {
                 logger.info("第 {} 次尝试注册节点", retry);
                 client.create().withMode(CreateMode.EPHEMERAL).forPath(path);
                 if (client.checkExists().forPath(path) != null) {
@@ -79,7 +79,7 @@ public class RegistryTask implements Runnable {
                 }
                 retry++;
             }
-            if (retry == 3) {
+            if (retry == WsServerConfig.MSG_SEND_FAILED_RETRY) {
                 logger.error("节点注册失败");
             }
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class RegistryTask implements Runnable {
     private void createRootNode() {
         try {
             int retry = 0;
-            while (retry < 3 && client.checkExists().forPath(ZkConstant.ZK_ROOT) == null) {
+            while (retry < WsServerConfig.REGISTRY_FAILED_RETRY && client.checkExists().forPath(ZkConstant.ZK_ROOT) == null) {
                 client.create().withMode(CreateMode.PERSISTENT).forPath(ZkConstant.ZK_ROOT);
                 retry++;
             }

@@ -24,7 +24,6 @@ import java.net.UnknownHostException;
 public class SnowflakeIdWorker {
 
     static Logger logger = LoggerFactory.getLogger(SnowflakeIdWorker.class);
-    // ==============================Fields===========================================
     private static SnowflakeIdWorker idWorker;
 
     static {
@@ -149,19 +148,6 @@ public class SnowflakeIdWorker {
     public static synchronized Long generateId() {
         long id = idWorker.nextId();
         return id;
-    }
-
-    /**
-     * 测试
-     */
-    public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
-        long startTime = System.nanoTime();
-        for (int i = 0; i < 50000; i++) {
-            long id = SnowflakeIdWorker.generateId();
-            System.out.println(id);
-        }
-        System.out.println((System.nanoTime() - startTime) / 1000000 + "ms");
     }
 
     /**

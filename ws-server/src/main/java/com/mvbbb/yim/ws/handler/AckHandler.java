@@ -19,8 +19,8 @@ import javax.annotation.Resource;
 public class AckHandler extends SimpleChannelInboundHandler<Ack> {
 
     private static final Logger logger = LoggerFactory.getLogger(AckHandler.class);
-    private static final MsgAckPool msgAckPool = MsgAckPool.getInstance();
-    private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static final MsgAckPool MSG_ACK_POOL = MsgAckPool.getInstance();
+    private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
     private static AckHandler ackHandler;
 
     @Resource
@@ -35,15 +35,14 @@ public class AckHandler extends SimpleChannelInboundHandler<Ack> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Ack data) throws Exception {
 
-        if (connectionPool.checkToClose(ctx.channel())) {
+        if (CONNECTION_POOL.checkToClose(ctx.channel())) {
             return;
         }
-        ;
 
         logger.info("收到 Ack 消息：{}", data);
         String key = data.getServerMsgId() + ":" + data.getUserId();
         logger.info("消息投递成功 {}", key);
-        msgAckPool.acked(key);
+        MSG_ACK_POOL.acked(key);
         ackHandler.msgSendService.sendAckToUser(data.getUserId(), "服务器接收到消息");
     }
 }

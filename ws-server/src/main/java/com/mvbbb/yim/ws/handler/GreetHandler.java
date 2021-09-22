@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 public class GreetHandler extends SimpleChannelInboundHandler<GreetRequest> {
 
     private static final Logger logger = LoggerFactory.getLogger(GreetHandler.class);
-    private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
     private static GreetHandler greetHandler;
     @Resource
     StatusService statusService;
@@ -33,7 +33,7 @@ public class GreetHandler extends SimpleChannelInboundHandler<GreetRequest> {
     protected void channelRead0(ChannelHandlerContext ctx, GreetRequest data) throws Exception {
         Channel channel = ctx.channel();
         logger.info("receive greet message: {}", data);
-        String userId = connectionPool.getUseridByChannel(channel);
+        String userId = CONNECTION_POOL.getUseridByChannel(channel);
         greetHandler.statusService.greet(channel, data);
     }
 }

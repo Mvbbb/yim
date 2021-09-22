@@ -105,6 +105,8 @@ public final class BeanConvertor {
                 break;
             case GROUP:
                 msgData.setSessionType(SessionType.GROUP);
+            default:
+                break;
         }
         msgData.setToSessionId(dataPacket.getToSessionId());
         msgData.setRecvUserId(dataPacket.getRecvUserId());
@@ -115,6 +117,8 @@ public final class BeanConvertor {
                 break;
             case FILE:
                 msgData.setMsgType(MsgType.FILE);
+                break;
+            default:
                 break;
         }
         msgData.setData(dataPacket.getData());

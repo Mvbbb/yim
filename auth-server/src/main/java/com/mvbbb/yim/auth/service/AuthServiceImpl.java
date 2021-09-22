@@ -27,7 +27,12 @@ public class AuthServiceImpl implements AuthService {
     UserStatusService userStatusService;
     private Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    // TODO set ttl for token and refresh
+    /**
+     * TODO 为token设置 ttl
+     * @param userId 用户 ID
+     * @param token 代校验 Token
+     * @return 认证结果的枚举类
+     */
     @Override
     public AuthEnum checkToken(String userId, String token) {
         String rToken = ((String) redisTemplate.opsForValue().get(RedisConstant.USER_TOKEN_PREFIX + userId));

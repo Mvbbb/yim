@@ -20,7 +20,7 @@ public class HttpRequestLogger extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String requestURI = request.getRequestURI();
+        String uri = request.getRequestURI();
         String userId = request.getHeader("userId");
         String token = request.getHeader("token");
         ServletRequest servletRequest = new ContentCachingRequestWrapper(request);
@@ -29,7 +29,7 @@ public class HttpRequestLogger extends HandlerInterceptorAdapter {
         params.forEach((key, value) -> {
             stringBuffer.append(key).append(":").append(value[0]).append("|");
         });
-        logger.info("==>> RequestURI:{}, userId:{}, token:{}, params: {}", requestURI, userId, token, stringBuffer);
+        logger.info("==>> URI:{}, userId:{}, token:{}, params: {}", uri, userId, token, stringBuffer);
 
         return true;
     }

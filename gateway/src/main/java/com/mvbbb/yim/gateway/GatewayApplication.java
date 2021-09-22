@@ -1,6 +1,6 @@
 package com.mvbbb.yim.gateway;
 
-import com.mvbbb.yim.gateway.service.RegisterService;
+import com.mvbbb.yim.gateway.service.WsDiscoveryService;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 @PropertySource("classpath:/dubbo-consumer.properties")
 public class GatewayApplication implements CommandLineRunner {
     @Resource
-    RegisterService zkService;
+    WsDiscoveryService zkService;
 
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);

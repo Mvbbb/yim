@@ -12,7 +12,7 @@ import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.protoc.http.response.RegisterResponse;
 import com.mvbbb.yim.common.vo.UserVO;
 import com.mvbbb.yim.gateway.CheckAuth;
-import com.mvbbb.yim.gateway.service.RegisterService;
+import com.mvbbb.yim.gateway.service.WsDiscoveryService;
 import com.mvbbb.yim.logic.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,7 +34,7 @@ public class UserController {
     @DubboReference(check = false)
     UserService userService;
     @Resource
-    RegisterService zkService;
+    WsDiscoveryService zkService;
 
     @ApiOperation("登录")
     @RequestMapping(path = "/login", method = RequestMethod.POST)

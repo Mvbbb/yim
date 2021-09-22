@@ -11,5 +11,5 @@ public class UserVO implements Serializable {
     private String userId;
     private String username;
     private String avatar;
-    private boolean isOnline;
+    private Boolean online;
 }
