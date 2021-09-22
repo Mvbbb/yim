@@ -3,10 +3,12 @@
 
     <!-- For console -->
     <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
         <withJansi>true</withJansi>
         <encoder>
             <charset>UTF-8</charset>
-            <!--            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%logger] [tr=%mdc{TRACE_ID:-0}] %msg %n</Pattern>-->
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %green([%thread]) %highlight(%-5level) %boldMagenta(%logger{10}) - [%msg%n]
             </pattern>
         </encoder>
@@ -22,9 +24,7 @@
         <file>log/ws-server-${server-port}.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover with gz -->
             <fileNamePattern>log/ws-server-${server-port}-%d{yyyy_MM_dd}.log</fileNamePattern>
-            <!-- keep 30 days' max -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
