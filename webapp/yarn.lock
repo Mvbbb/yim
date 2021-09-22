@@ -5475,6 +5475,11 @@ mitt@^2.1.0:
   resolved "https://registry.nlark.com/mitt/download/mitt-2.1.0.tgz?cache=0&sync_timestamp=1624483449786&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmitt%2Fdownload%2Fmitt-2.1.0.tgz#f740577c23176c6205b121b2973514eade1b2230"
   integrity sha1-90BXfCMXbGIFsSGylzUU6t4bIjA=
 
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.nlark.com/mitt/download/mitt-3.0.0.tgz?cache=0&sync_timestamp=1624483449786&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmitt%2Fdownload%2Fmitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha1-ae+b1cgP9vV0c+jYkybQHEFL4L0=
+
 mixin-deep@^1.2.0:
   version "1.3.2"
   resolved "https://registry.npm.taobao.org/mixin-deep/download/mixin-deep-1.3.2.tgz#1120b43dc359a785dce65b55b82e257ccf479566"
@@ -8088,7 +8093,7 @@ vue-axios@^3.3.7:
   resolved "https://registry.nlark.com/vue-axios/download/vue-axios-3.3.7.tgz?cache=0&sync_timestamp=1631865685355&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fvue-axios%2Fdownload%2Fvue-axios-3.3.7.tgz#1958b6fb712eb4011ab21db433b2350e2a6d684f"
   integrity sha1-GVi2+3EutAEash20M7I1DiptaE8=
 
-vue-demi@*, vue-demi@^0.11.4:
+vue-demi@*:
   version "0.11.4"
   resolved "https://registry.nlark.com/vue-demi/download/vue-demi-0.11.4.tgz?cache=0&sync_timestamp=1630868339719&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fvue-demi%2Fdownload%2Fvue-demi-0.11.4.tgz#6101992fe4724cf5634018a16e953f3052e94e2a"
   integrity sha1-YQGZL+RyTPVjQBihbpU/MFLpTio=

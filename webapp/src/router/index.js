@@ -11,6 +11,16 @@ const routes = [
     name: 'Interface',
     component:()=>import('../views/Interface')
   },
+  // {
+  //   path: '/PersonalInf',
+  //   name: 'PersonalInf',
+  //   component:()=>import('../views/detailPage/left/personalInf')
+  // },
+  // {
+  //   path: '/ChatList',
+  //   name: 'PersonalInf',
+  //   component:()=>import('../views/detailPage/left/personalInf')
+  // },
   {
     path: '/test',
     name: 'test',
