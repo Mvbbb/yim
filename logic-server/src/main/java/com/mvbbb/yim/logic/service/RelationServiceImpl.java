@@ -39,12 +39,15 @@ public class RelationServiceImpl implements RelationService {
     private Logger logger = LoggerFactory.getLogger(RelationServiceImpl.class);
 
     @Override
-    public List<User> listFriend(String userId) {
+    public List<UserVO> listFriend(String userId) {
         List<String> friendIds = friendRelationMapper.selectFriendRelation(userId).stream().map((friendRelation -> {
             return friendRelation.getUserid1().equals(userId) ? friendRelation.getUserid2() : friendRelation.getUserid1();
         })).collect(Collectors.toList());
         return friendIds.stream().map((friendId) -> {
-            return userMapper.selectById(friendId);
+            UserVO userVO = new UserVO();
+            User user = userMapper.selectById(friendId);
+            BeanUtil.copyProperties(user,userVO);
+            return userVO;
         }).collect(Collectors.toList());
     }
 

@@ -2,12 +2,13 @@ package com.mvbbb.yim.logic.service;
 
 import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.vo.GroupVO;
+import com.mvbbb.yim.common.vo.UserVO;
 
 import java.util.List;
 
 public interface RelationService {
 
-    List<User> listFriend(String userId);
+    List<UserVO> listFriend(String userId);
 
     void addFriend(String userId, String friendId);
 

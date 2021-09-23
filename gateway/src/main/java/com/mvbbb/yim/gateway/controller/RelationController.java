@@ -7,6 +7,7 @@ import com.mvbbb.yim.common.protoc.http.request.GenericRequest;
 import com.mvbbb.yim.common.protoc.http.request.GroupMemberRequest;
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
 import com.mvbbb.yim.common.vo.GroupVO;
+import com.mvbbb.yim.common.vo.UserVO;
 import com.mvbbb.yim.gateway.CheckAuth;
 import com.mvbbb.yim.logic.service.RelationService;
 import io.swagger.annotations.ApiOperation;
@@ -24,8 +25,8 @@ public class RelationController {
 
     @ApiOperation("获取朋友列表")
     @RequestMapping(path = "/friend/list", method = RequestMethod.GET)
-    public GenericResponse<List<User>> friendList(@RequestHeader String userId, @RequestHeader String token) {
-        List<User> friends = relationService.listFriend(userId);
+    public GenericResponse<List<UserVO>> friendList(@RequestHeader String userId, @RequestHeader String token) {
+        List<UserVO> friends = relationService.listFriend(userId);
         return GenericResponse.success(friends);
     }
 
