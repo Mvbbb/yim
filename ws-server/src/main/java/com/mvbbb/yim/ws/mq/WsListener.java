@@ -40,10 +40,10 @@ public class WsListener implements StreamListener<String, ObjectRecord<String, M
         RecordId messageId = message.getId();
         MsgData msgData = message.getValue();
         logger.info("接收到消息 # consumer # messageId={}, stream={}, value = {}", messageId, message.getStream(), msgData);
-        String recvUserId = msgData.getRecvUserId();
-        Channel channel = connectionPool.findChannel(recvUserId);
+        String toUserId = msgData.getToUserId();
+        Channel channel = connectionPool.findChannel(toUserId);
         if (channel == null) {
-            logger.error("指定用户的 channel 没找到，将用户离线. user: [{}], msg: [{}]", recvUserId, msgData);
+            logger.error("指定用户的 channel 没找到，将用户离线. user: [{}], msg: [{}]", toUserId, msgData);
             redisStreamManager.failedDeliveredMsg(msgData);
         } else {
             //发送 json 文本

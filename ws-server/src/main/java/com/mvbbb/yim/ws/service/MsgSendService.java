@@ -88,31 +88,31 @@ public class MsgSendService {
         String msg = JSONObject.toJSONString(msgVO);
         TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(msg);
         channel.writeAndFlush(textWebSocketFrame);
-        logger.info("发送消息给用户 [{}]", msgData.getRecvUserId());
+        logger.info("发送消息给用户 [{}]", msgData.getToUserId());
 
         // TODO 使用时间轮优化
-        Thread waitAckedTask = new Thread(() -> {
-            msgAckPool.putMsg(msgData);
-            boolean success = false;
-            for (int i = 0; i < 3; i++) {
-                try {
-                    Thread.sleep(Duration.ofSeconds(10).toMillis());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                WrappedMsg wrappedMsg = msgAckPool.getWrappedMsg(msgData);
-                if (wrappedMsg == null) {
-                    success = true;
-                    break;
-                }
-            }
-            if (!success) {
-                logger.error("没有收到用户的 ack 消息，将用户离线");
-                userStatusService.userOffline(msgData.getRecvUserId());
-                redisStreamManager.failedDeliveredMsg(msgData);
-                channel.close();
-            }
-        });
-        threadPoolExecutor.execute(waitAckedTask);
+//        Thread waitAckedTask = new Thread(() -> {
+//            msgAckPool.putMsg(msgData);
+//            boolean success = false;
+//            for (int i = 0; i < 3; i++) {
+//                try {
+//                    Thread.sleep(Duration.ofSeconds(10).toMillis());
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                WrappedMsg wrappedMsg = msgAckPool.getWrappedMsg(msgData);
+//                if (wrappedMsg == null) {
+//                    success = true;
+//                    break;
+//                }
+//            }
+//            if (!success) {
+//                logger.error("没有收到用户的 ack 消息，将用户离线");
+//                userStatusService.userOffline(msgData.getRecvUserId());
+//                redisStreamManager.failedDeliveredMsg(msgData);
+//                channel.close();
+//            }
+//        });
+//        threadPoolExecutor.execute(waitAckedTask);
     }
 }

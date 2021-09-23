@@ -1,6 +1,7 @@
 package com.mvbbb.yim.ws.handler;
 
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.util.SnowflakeIdWorker;
 import com.mvbbb.yim.logic.service.RelationService;
 import com.mvbbb.yim.msg.service.MsgService;
@@ -54,30 +55,34 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
         logger.info("收到 msg data 消息：{}", data);
         data.setServerMsgId(SnowflakeIdWorker.generateId());
 
-        checkRelationValid(channel, data);
+        if (!checkRelationValid(channel, data)) {
+            return;
+        }
 
         msgDataHandler.sendDataToUserHandler.sendAckToUser(data.getFromUserId(), "服务器接收到消息了");
+        logger.info("消息传递给 MsgService。MsgData:{}", data);
         msgDataHandler.msgService.handlerMsgData(data);
     }
 
     private void checkMsgValid(Channel channel, MsgData data) {
         if (
-                data.getMsgType() == null || data.getToSessionId() == null || data.getFromUserId() == null || data.getSessionType() == null
+                data.getMsgType() == null || data.getFromUserId() == null || (data.getToUserId() == null && data.getGroupId() == null)
         ) {
             logger.error("消息格式错误，缺少必要信息。MsgData:{}", data);
             msgDataHandler.sendDataToUserHandler.send(channel, "消息格式错误，缺少必要信息");
         }
     }
 
-    private void checkRelationValid(Channel channel, MsgData data) {
+    private boolean checkRelationValid(Channel channel, MsgData data) {
         String fromUserId = data.getFromUserId();
-        String toSessionId = data.getToSessionId();
+        String toSessionId = data.getSessionType()== SessionType.SINGLE?data.getToUserId():data.getGroupId();
         switch (data.getSessionType()) {
             case SINGLE:
                 boolean friend = msgDataHandler.relationService.isFriend(fromUserId, toSessionId);
                 if (!friend) {
                     logger.error("非法发送消息，并非朋友关系。MsgData:{}", data);
                     msgDataHandler.sendDataToUserHandler.send(channel, "你们还不是朋友关系，不能发送消息。");
+                    return false;
                 }
                 break;
             case GROUP:
@@ -85,10 +90,12 @@ public class MsgDataHandler extends SimpleChannelInboundHandler<MsgData> {
                 if (!member) {
                     logger.error("非法发送消息，并非群成员。MsgData：{}", data);
                     msgDataHandler.sendDataToUserHandler.send(channel, "不是群成员，不能发送消息");
+                    return false;
                 }
                 break;
             default:
                 break;
         }
+        return true;
     }
 }

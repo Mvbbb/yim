@@ -15,8 +15,8 @@ public class MsgData implements Serializable {
     private long serverMsgId;
     private String fromUserId;
     private SessionType sessionType;
-    private String toSessionId;
-    private String recvUserId;
+    private String groupId;
+    private String toUserId;
     private MsgType msgType;
     private String data;
     private Date timestamp;

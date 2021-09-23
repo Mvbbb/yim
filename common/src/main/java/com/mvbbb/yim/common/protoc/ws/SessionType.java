@@ -26,6 +26,6 @@ public enum SessionType implements Serializable {
             default:
                 break;
         }
-        return null;
+        return SINGLE;
     }
 }

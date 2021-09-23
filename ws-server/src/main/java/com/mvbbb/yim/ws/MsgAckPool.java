@@ -23,7 +23,7 @@ public class MsgAckPool {
     }
 
     public WrappedMsg getWrappedMsg(MsgData msgData) {
-        String key = msgData.getServerMsgId() + ":" + msgData.getRecvUserId();
+        String key = msgData.getServerMsgId() + ":" + msgData.getToUserId();
         return map.get(key);
     }
 
@@ -32,7 +32,7 @@ public class MsgAckPool {
     }
 
     public void putMsg(MsgData msgData) {
-        String key = msgData.getServerMsgId() + ":" + msgData.getRecvUserId();
+        String key = msgData.getServerMsgId() + ":" + msgData.getToUserId();
         WrappedMsg wrappedMsg = new WrappedMsg();
         wrappedMsg.setMsgData(msgData);
         // todo times remove

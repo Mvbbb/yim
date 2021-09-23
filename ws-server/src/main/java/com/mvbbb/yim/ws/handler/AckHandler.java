@@ -38,11 +38,11 @@ public class AckHandler extends SimpleChannelInboundHandler<Ack> {
         if (CONNECTION_POOL.checkToClose(ctx.channel())) {
             return;
         }
-
+        String userId = CONNECTION_POOL.getUseridByChannel(ctx.channel());
         logger.info("收到 Ack 消息：{}", data);
-        String key = data.getServerMsgId() + ":" + data.getUserId();
+        String key = data.getServerMsgId() + ":" + userId;
         logger.info("消息投递成功 {}", key);
         MSG_ACK_POOL.acked(key);
-        ackHandler.msgSendService.sendAckToUser(data.getUserId(), "服务器接收到消息");
+        ackHandler.msgSendService.sendAckToUser(userId, "服务器接收到消息");
     }
 }

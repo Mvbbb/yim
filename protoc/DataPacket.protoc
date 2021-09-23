@@ -37,8 +37,8 @@ message MsgData{
   int64 serverMsgId = 2;
   string fromUserId = 3;
   SessionType sessionType = 4 ;
-  string toSessionId = 5;
-  string recvUserId = 6;
+  string groupId = 5;
+  string toUserId = 6;
   MsgType msgType = 7;
   string data = 8;
   int64 timestamp = 9;

@@ -16,14 +16,14 @@ import java.util.Date;
 public final class BeanConvertor {
 
     @Deprecated
-    public static MsgData msgSendToMsgData(String userId, MsgSend msgSend, SessionType sessionType) {
+    public static MsgData msgSendToMsgData(MsgSend msgSend, SessionType sessionType) {
         MsgData msgData = new MsgData();
         msgData.setClientMsgId(msgSend.getClientMsgId());
         msgData.setServerMsgId(msgSend.getServerMsgId());
         msgData.setFromUserId(msgSend.getFromUid());
         msgData.setSessionType(sessionType);
-        msgData.setToSessionId(userId);
-        msgData.setRecvUserId(userId);
+        msgData.setGroupId(msgSend.getGroupId());
+        msgData.setToUserId(msgSend.getToUid());
         msgData.setSessionType(sessionType);
         msgData.setData(msgSend.getMsgData());
         msgData.setTimestamp(msgSend.getTimestamp());
@@ -62,8 +62,9 @@ public final class BeanConvertor {
         msgSend.setServerMsgId(msgData.getServerMsgId());
         msgSend.setClientMsgId(msgData.getClientMsgId());
         msgSend.setFromUid(msgData.getFromUserId());
-        msgSend.setToUid(msgData.getSessionType() == SessionType.SINGLE ? msgData.getToSessionId() : null);
-        msgSend.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getToSessionId() : null);
+        msgSend.setSessionType(SessionType.getInt(msgData.getSessionType()));
+        msgSend.setToUid(msgData.getSessionType() == SessionType.SINGLE ? msgData.getToUserId(): null);
+        msgSend.setGroupId(msgData.getSessionType() == SessionType.GROUP ?msgData.getGroupId() : null);
         msgSend.setMsgType(msgSend.getMsgType());
         msgSend.setMsgData(msgData.getData());
         msgSend.setTimestamp(msgData.getTimestamp());
@@ -76,9 +77,10 @@ public final class BeanConvertor {
         msgRecv.setClientMsgId(msgData.getClientMsgId());
         msgRecv.setServerMsgId(msgData.getServerMsgId());
         msgRecv.setFromUid(msgData.getFromUserId());
-        msgRecv.setToUid(msgData.getRecvUserId());
-        msgRecv.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getToSessionId() : null);
-        msgRecv.setMsgType(msgData.getMsgType() == MsgType.TEXT ? 0 : 1);
+        msgRecv.setToUid(msgData.getToUserId());
+        msgRecv.setGroupId(msgData.getSessionType() == SessionType.GROUP ?msgData.getGroupId() : null);
+        msgRecv.setSessionType(SessionType.getInt(msgData.getSessionType()));
+        msgRecv.setMsgType(MsgType.getInt(msgData.getMsgType()));
         msgRecv.setTimestamp(msgData.getTimestamp());
         msgRecv.setMsgData(msgData.getData());
         msgRecv.setDeleted(false);
@@ -89,7 +91,6 @@ public final class BeanConvertor {
         GreetRequest greetRequest = new GreetRequest();
         greetRequest.setUserId(greet.getUserId());
         greetRequest.setToken(greet.getToken());
-        ;
         return greetRequest;
     }
 
@@ -108,8 +109,6 @@ public final class BeanConvertor {
             default:
                 break;
         }
-        msgData.setToSessionId(dataPacket.getToSessionId());
-        msgData.setRecvUserId(dataPacket.getRecvUserId());
         Protobuf.MsgType msgType = dataPacket.getMsgType();
         switch (msgType) {
             case TEXT:
@@ -144,13 +143,10 @@ public final class BeanConvertor {
         msgVoBuilder.setClientMsgId(msgData.getClientMsgId());
         msgVoBuilder.setServerMsgId(msgData.getServerMsgId());
         msgVoBuilder.setFromUid(msgData.getFromUserId());
-        if (msgData.getSessionType() == SessionType.GROUP) {
-            msgVoBuilder.setGroupId(msgData.getToSessionId());
-        }
+        msgVoBuilder.setGroupId(msgData.getGroupId());
         switch (msgData.getSessionType()) {
             case GROUP:
                 msgVoBuilder.setSessionType(Protobuf.SessionType.GROUP);
-                msgVoBuilder.setGroupId(msgData.getToSessionId());
                 break;
             case SINGLE:
                 msgVoBuilder.setSessionType(Protobuf.SessionType.SINGLE);
@@ -168,10 +164,10 @@ public final class BeanConvertor {
         msgVO.setClientMsgId(msgData.getClientMsgId());
         msgVO.setServerMsgId(String.valueOf((msgData.getServerMsgId())));
         msgVO.setFromUid(msgData.getFromUserId());
+        msgVO.setGroupId(msgData.getGroupId());
         switch (msgData.getSessionType()) {
             case GROUP:
                 msgVO.setSessionType(SessionType.GROUP);
-                msgVO.setGroupId(msgData.getToSessionId());
                 break;
             case SINGLE:
                 msgVO.setSessionType(SessionType.SINGLE);

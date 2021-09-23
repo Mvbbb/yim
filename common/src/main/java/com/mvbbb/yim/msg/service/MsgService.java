@@ -4,5 +4,5 @@ import com.mvbbb.yim.common.protoc.MsgData;
 
 public interface MsgService {
 
-    public void handlerMsgData(MsgData msgData);
+    void handlerMsgData(MsgData msgData);
 }

@@ -23,9 +23,9 @@ public class test {
         msgData.setServerMsgId(1);
         msgData.setFromUserId("1");
         msgData.setSessionType(SessionType.SINGLE);
-        msgData.setToSessionId("2");
+        msgData.setToUserId("2");
         msgData.setMsgType(MsgType.TEXT);
-        msgData.setData("你好");
+        msgData.setData("你好1q");
 
         dataPacket.setVersion(1);
         dataPacket.setCmdType(CmdType.MSG_DATA);
@@ -100,7 +100,7 @@ public class test {
         msgData.setServerMsgId(1);
         msgData.setFromUserId("1");
         msgData.setSessionType(SessionType.GROUP);
-        msgData.setToSessionId("1");
+        msgData.setGroupId("1");
         msgData.setMsgType(MsgType.TEXT);
         msgData.setData("这是一条群聊消息");
 
