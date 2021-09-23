@@ -4,7 +4,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path:'/',
-    redirect:'/Interface',
+    redirect:'/Login',
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component:()=>import('../views/Login')
   },
   {
     path: '/Interface',
