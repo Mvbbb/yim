@@ -1,27 +1,24 @@
 <template>
 
   <el-scrollbar>
-<!--<div class="chatBox">-->
-<!--  {{chatMsg}}-->
-<!--</div>-->
     <div class="chat-content">
       <!-- recordContent 聊天记录数组-->
-      <div v-for="(itemc,indexc) in recordContent" :key="indexc">
+      <div v-for="(item,index) in msg" :key="index">
         <!-- 对方 -->
-        <div class="word" v-if="!itemc.mineMsg">
-          <img :src="itemc.headUrl">
+        <div class="word" v-if="item.fromUid">
+          <img :src="this.otherpic">
           <div class="info">
-            <p class="time">{{itemc.nickName}}  {{itemc.timestamp}}</p>
-            <div class="info-content">{{itemc.contactText}}</div>
+            <p class="time">  {{getdate(item.timestamp)}}</p>
+            <div class="info-content">{{item.msgData}}</div>
           </div>
         </div>
         <!-- 我的 -->
         <div class="word-my" v-else>
           <div class="info">
-            <p class="time">{{itemc.nickName}}  {{itemc.timestamp}}</p>
-            <div class="info-content">{{itemc.contactText}}</div>
+            <p class="time">  {{getdate(item.timestamp)}}</p>
+            <div class="info-content">{{item.msgData}}</div>
           </div>
-          <img :src="itemc.headUrl">
+          <img :src="item.avatar">
         </div>
       </div>
     </div>
@@ -36,33 +33,24 @@ export default {
   data(){
     return{
       chatMsg:'',
-      recordContent:[
-        {
-          mineMsg:true,
-          nickName:'sss',
-          timestamp:'2021/09/22',
-          contactText:'testetstets'
-        },
-        {
-          mineMsg:true,
-          nickName:'sss',
-          timestamp:'2021/09/22',
-          contactText:'testetstets'
-        },
-        {
-          mineMsg:false,
-          nickName:'sss',
-          timestamp:'2021/09/22',
-          contactText:'testetstets'
-        },
-        {
-          mineMsg:true,
-          nickName:'sss',
-          timestamp:'2021/09/22',
-          contactText:'testetstets'
-        }
+      minepic:'',
+      otherpic:'',
+      msg:[],
 
-      ]
+    }
+  },
+  methods:{
+    getdate(timestamp) {
+
+      var now = new Date(timestamp),
+
+          y = now.getFullYear(),
+
+          m = now.getMonth() + 1,
+
+          d = now.getDate();
+
+      return y + "/" + (m < 10 ? "0" + m : m) + "/" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
 
     }
   },
@@ -70,6 +58,15 @@ export default {
 
     bus.on('chatPeople',(e)=>{
       this.chatMsg=e.name
+    })
+    bus.on('chatMsg',(e)=>{
+      this.msg=null
+      if(e.msgs==null){
+
+      }else{
+        this.msg=e.msgs
+        this.otherpic=e.avatar
+      }
     })
   }
 }

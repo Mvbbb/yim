@@ -103,6 +103,7 @@ export default {
             console.log(token)
             //本地存储
             localStorage.setItem('Authorization',token)
+            localStorage.setItem('userId',this.formData.userId)
             // localStorage.setItem('level',level)
             // store.dispatch('setLevel',res.data.data.level)
 

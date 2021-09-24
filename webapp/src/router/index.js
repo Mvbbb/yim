@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 // import Home from '../views/Home.vue'
 
 const routes = [
@@ -14,18 +15,10 @@ const routes = [
   {
     path: '/Interface',
     name: 'Interface',
-    component:()=>import('../views/Interface')
+    component:()=>import('../views/Interface'),
+    meta:{title:'界面',
+      keepAlive: true}
   },
-  // {
-  //   path: '/PersonalInf',
-  //   name: 'PersonalInf',
-  //   component:()=>import('../views/detailPage/left/personalInf')
-  // },
-  // {
-  //   path: '/ChatList',
-  //   name: 'PersonalInf',
-  //   component:()=>import('../views/detailPage/left/personalInf')
-  // },
   {
     path: '/test',
     name: 'test',
