@@ -5,7 +5,6 @@ import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.entity.*;
 import com.mvbbb.yim.common.mapper.*;
 import com.mvbbb.yim.common.protoc.MsgData;
-import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.mq.RedisStreamManager;
@@ -44,7 +43,7 @@ public class MsgHandler {
 
         String toUserId = msgData.getToUserId();
         if(!fromGroup){
-            updateRecentMsg(msgData);
+            updateRecentMsg(msgData,false);
         }
         if (!userStatusService.isUserOnline(toUserId)) {
             // 写入离线消息
@@ -68,11 +67,16 @@ public class MsgHandler {
         List<String> members = userGroupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))
                 .stream().map(UserGroupRelation::getUserId).collect(Collectors.toList());
         members.forEach((memberId) -> {
-            if (memberId != null && !memberId.equals(msgData.getFromUserId())) {
-                logger.info("发送消息给群成员。UserId:{}",memberId);
-                msgData.setToUserId(memberId);
-                updateRecentMsg(msgData);
-                sendSingleMsg(msgData,true);
+            if (memberId != null ){
+                if(!memberId.equals(msgData.getFromUserId())) {
+                    logger.info("发送消息给群成员。UserId:{}",memberId);
+                    msgData.setToUserId(memberId);
+                    updateRecentMsg(msgData,true);
+                    sendSingleMsg(msgData,true);
+                }else{
+                    msgData.setToUserId(msgData.getFromUserId());
+                    updateRecentMsg(msgData,true);
+                }
             }
         });
     }
@@ -83,10 +87,14 @@ public class MsgHandler {
         msgRecvMapper.insert(msgRecv);
     }
 
-    public void updateRecentMsg(MsgData msgData){
+    public void updateRecentMsg(MsgData msgData,boolean isGroup){
 
         //msgRecent 只保留最新的一条消息记录
-        msgRecentMapper.deleteSessionOldMsg(msgData.getFromUserId(),msgData.getToUserId(),msgData.getGroupId());
+        if(isGroup){
+            msgRecentMapper.deleteGroupChatOldMsg(msgData.getGroupId(),msgData.getToUserId());
+        }else{
+            msgRecentMapper.deleteSingleChatOldMsg(msgData.getFromUserId(),msgData.getToUserId());
+        }
         MsgRecent msgRecent = new MsgRecent();
         String name = null;
         String avatar = null;
@@ -112,8 +120,8 @@ public class MsgHandler {
             default:break;
         }
         msgRecent.setFromUid(msgData.getFromUserId());
-        msgRecent.setToUid(msgData.getToUserId());
         msgRecent.setGroupId(msgData.getGroupId());
+        msgRecent.setToUid(msgData.getToUserId());
         msgRecent.setSessionType(SessionType.getInt(msgData.getSessionType()));
         msgRecent.setContent(msgData.getData());
         msgRecent.setName(name);

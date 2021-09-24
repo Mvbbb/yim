@@ -1,6 +1,7 @@
 spring:
   redis:
     host: yim-redis
+#    host: 192.168.163.133
 server:
   port: 7006
 
