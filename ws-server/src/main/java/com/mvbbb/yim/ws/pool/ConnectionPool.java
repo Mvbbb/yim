@@ -1,4 +1,4 @@
-package com.mvbbb.yim.ws;
+package com.mvbbb.yim.ws.pool;
 
 import io.netty.channel.Channel;
 import org.slf4j.Logger;

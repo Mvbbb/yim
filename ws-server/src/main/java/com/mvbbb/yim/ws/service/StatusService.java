@@ -5,7 +5,7 @@ import com.mvbbb.yim.common.protoc.AuthEnum;
 import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.logic.service.UserStatusService;
-import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.pool.ConnectionPool;
 import com.mvbbb.yim.ws.WsServerConfig;
 import io.netty.channel.Channel;
 import org.apache.dubbo.config.annotation.DubboReference;

@@ -3,7 +3,7 @@ package com.mvbbb.yim.ws.mq;
 
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.mq.RedisStreamManager;
-import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.pool.ConnectionPool;
 import com.mvbbb.yim.ws.service.MsgSendService;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;

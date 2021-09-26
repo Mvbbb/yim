@@ -3,7 +3,7 @@ package com.mvbbb.yim.ws.task;
 import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.WsStatus;
 import com.mvbbb.yim.common.constant.ZkConstant;
-import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.pool.ConnectionPool;
 import com.mvbbb.yim.ws.WsServerConfig;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;

@@ -1,6 +1,6 @@
 package com.mvbbb.yim.ws.service;
 
-import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.pool.ConnectionPool;
 import io.netty.channel.Channel;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;

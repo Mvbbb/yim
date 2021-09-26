@@ -6,8 +6,12 @@ import com.mvbbb.yim.common.protoc.Bye;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
+import com.mvbbb.yim.ws.EventEnum;
+import com.mvbbb.yim.ws.EventExecutor;
+import com.mvbbb.yim.ws.pool.EventPool;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
@@ -18,36 +22,39 @@ import java.util.List;
 
 @ChannelHandler.Sharable
 @Component
-public class JsonProtocHandler extends MessageToMessageDecoder<TextWebSocketFrame> {
+public class JsonProtocHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonProtocHandler.class);
+    private static final EventPool eventPool = EventPool.getInstance();
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, TextWebSocketFrame textWebSocketFrame, List<Object> out) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame textWebSocketFrame) throws Exception {
 
         String jsonText = textWebSocketFrame.text();
         logger.info("接收到 JSON 报文：{}", jsonText);
         DataPacket dataPacket = JSONObject.parseObject(jsonText, DataPacket.class);
         JSONObject data = (JSONObject) dataPacket.getData();
+
         switch (dataPacket.getCmdType()) {
             case MSG_DATA:
                 MsgData msgData = data.toJavaObject(MsgData.class);
-                out.add(msgData);
+                EventExecutor.execute(eventPool.find(EventEnum.MSG_DATA), msgData, ctx);
                 break;
             case BYE:
                 Bye bye = data.toJavaObject(Bye.class);
-                out.add(bye);
+                EventExecutor.execute(eventPool.find(EventEnum.BYE),bye,ctx);
                 break;
             case GREET:
                 GreetRequest greetRequest = data.toJavaObject(GreetRequest.class);
-                out.add(greetRequest);
+                EventExecutor.execute(eventPool.find(EventEnum.GREET),greetRequest,ctx);
                 break;
             case ACK:
                 Ack ack = data.toJavaObject(Ack.class);
-                out.add(ack);
+                EventExecutor.execute(eventPool.find(EventEnum.ACK),ack,ctx);
                 break;
             default:
                 break;
         }
     }
+
 }

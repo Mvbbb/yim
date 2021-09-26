@@ -1,6 +1,7 @@
-package com.mvbbb.yim.ws;
+package com.mvbbb.yim.ws.pool;
 
 import com.mvbbb.yim.common.protoc.MsgData;
+import com.mvbbb.yim.ws.WrappedMsg;
 
 import java.util.concurrent.ConcurrentHashMap;
 

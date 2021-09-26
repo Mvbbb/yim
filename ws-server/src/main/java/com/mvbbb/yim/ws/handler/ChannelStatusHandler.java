@@ -1,7 +1,7 @@
 package com.mvbbb.yim.ws.handler;
 
 import com.mvbbb.yim.logic.service.UserStatusService;
-import com.mvbbb.yim.ws.ConnectionPool;
+import com.mvbbb.yim.ws.pool.ConnectionPool;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

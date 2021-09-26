@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 public class WebSocketServer {
 
-    Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketServer.class);
+
 
     private int port;
 
@@ -45,4 +46,6 @@ public class WebSocketServer {
             e.printStackTrace();
         }
     }
+
+
 }
