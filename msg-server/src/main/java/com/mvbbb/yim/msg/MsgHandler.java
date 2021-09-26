@@ -1,5 +1,6 @@
 package com.mvbbb.yim.msg;
 
+import cn.hutool.db.Session;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.entity.*;
@@ -43,7 +44,7 @@ public class MsgHandler {
 
         String toUserId = msgData.getToUserId();
         if(!fromGroup){
-            updateRecentMsg(msgData,false);
+            updateRecentMsg(msgData);
         }
         if (!userStatusService.isUserOnline(toUserId)) {
             // 写入离线消息
@@ -71,11 +72,11 @@ public class MsgHandler {
                 if(!memberId.equals(msgData.getFromUserId())) {
                     logger.info("发送消息给群成员。UserId:{}",memberId);
                     msgData.setToUserId(memberId);
-                    updateRecentMsg(msgData,true);
+                    updateRecentMsg(msgData);
                     sendSingleMsg(msgData,true);
                 }else{
                     msgData.setToUserId(msgData.getFromUserId());
-                    updateRecentMsg(msgData,true);
+                    updateRecentMsg(msgData);
                 }
             }
         });
@@ -87,46 +88,66 @@ public class MsgHandler {
         msgRecvMapper.insert(msgRecv);
     }
 
-    public void updateRecentMsg(MsgData msgData,boolean isGroup){
+    public void updateSingleChatContent(String userId1,String userId2,String content){
 
-        //msgRecent 只保留最新的一条消息记录
-        if(isGroup){
-            msgRecentMapper.deleteGroupChatOldMsg(msgData.getGroupId(),msgData.getToUserId());
-        }else{
-            msgRecentMapper.deleteSingleChatOldMsg(msgData.getFromUserId(),msgData.getToUserId());
-        }
-        MsgRecent msgRecent = new MsgRecent();
-        String name = null;
-        String avatar = null;
+    }
+
+    public void updateRecentMsg(MsgData msgData){
+
+        MsgRecent msgRecent;
         switch (msgData.getSessionType()){
             case SINGLE:
-                User user = userMapper.selectById(msgData.getToUserId());
-                if(user==null){
-                    logger.error("发生错误");
-                    return;
+                msgRecent = msgRecentMapper.selectUserSingleRecentMsg(msgData.getToUserId(),msgData.getFromUserId());
+                if(msgRecent==null){
+                    //insert
+                    MsgRecent msgRecent1 = new MsgRecent();
+                    msgRecent1.setUserId(msgData.getFromUserId());
+                    msgRecent1.setSessionUid(msgData.getToUserId());
+                    msgRecent1.setSessionType(SessionType.getInt(SessionType.SINGLE));
+                    User user1 = userMapper.selectById(msgData.getToUserId());
+                    msgRecent1.setName(user1.getUsername());
+                    msgRecent1.setAvatar(user1.getAvatar());
+                    msgRecent1.setContent(msgData.getData());
+                    msgRecent1.setTimestamp(msgData.getTimestamp());
+                    msgRecentMapper.insert(msgRecent1);
+
+                    MsgRecent msgRecent2 = new MsgRecent();
+                    msgRecent2.setUserId(msgData.getToUserId());
+                    msgRecent2.setSessionUid(msgData.getFromUserId());
+                    msgRecent2.setSessionType(SessionType.getInt(SessionType.SINGLE));
+                    User user2 = userMapper.selectById(msgData.getFromUserId());
+                    msgRecent2.setName(user2.getUsername());
+                    msgRecent2.setAvatar(user2.getAvatar());
+                    msgRecent2.setContent(msgData.getData());
+                    msgRecent2.setTimestamp(msgData.getTimestamp());
+                    msgRecentMapper.insert(msgRecent2);
+
+                }else{
+                    //update
+                    msgRecentMapper.updateSingleChatContent(msgData.getFromUserId(),msgData.getToUserId(),msgData.getData());
                 }
-                name = user.getUsername();
-                avatar = user.getAvatar();
+
                 break;
             case GROUP:
-                Group group = groupMapper.selectById(msgData.getGroupId());
-                if(group==null) {
-                    logger.error("发生错误");
-                    return;
+                msgRecent = msgRecentMapper.selectUserGroupRecentMsg(msgData.getToUserId(),msgData.getGroupId());
+                if(msgRecent==null){
+                    MsgRecent msgRecent3 = new MsgRecent();
+                    msgRecent3.setUserId(msgData.getToUserId());
+                    msgRecent3.setSessionGroupId(msgData.getGroupId());
+                    msgRecent3.setSessionType(SessionType.getInt(SessionType.GROUP));
+                    Group group = groupMapper.selectById(msgData.getGroupId());
+                    msgRecent3.setName(group.getGroupName());
+                    msgRecent3.setAvatar(group.getAvatar());
+                    msgRecent3.setTimestamp(msgData.getTimestamp());
+                    msgRecent3.setContent(msgData.getData());
+                    msgRecentMapper.insert(msgRecent3);
+
+                }else if(!msgRecent.getContent().equals(msgData.getData())){
+                    msgRecentMapper.updateGroupChantContent(msgData.getGroupId(),msgData.getData());
                 }
-                name = group.getGroupName() ;
-                avatar = group.getAvatar();
+
                 break;
-            default:break;
+            default: break;
         }
-        msgRecent.setFromUid(msgData.getFromUserId());
-        msgRecent.setGroupId(msgData.getGroupId());
-        msgRecent.setToUid(msgData.getToUserId());
-        msgRecent.setSessionType(SessionType.getInt(msgData.getSessionType()));
-        msgRecent.setContent(msgData.getData());
-        msgRecent.setName(name);
-        msgRecent.setAvatar(avatar);
-        msgRecent.setTimestamp(msgData.getTimestamp());
-        msgRecentMapper.insert(msgRecent);
     }
 }

@@ -13,9 +13,9 @@ import java.util.Date;
 public class MsgRecent implements Serializable {
     @TableId(value = "id",type = IdType.AUTO)
     private Long id;
-    private String fromUid;
-    private String toUid;
-    private String groupId;
+    private String userId;
+    private String sessionUid;
+    private String sessionGroupId;
     private int sessionType;
     private String content;
     private String avatar;

@@ -129,14 +129,13 @@ public class MsgServiceImpl implements MsgService {
 
         List<MsgRecv> msgOffline = msgRecvMapper.selectOfflineMsgs(userId);
         List<MsgRecent> msgRecents = msgRecentMapper.selectUserRecentMsg(userId);
-        // 群组过滤
+
         Set<RecentChatItem> recentChatItems = new HashSet<>();
         for (MsgRecent msgRecent : msgRecents) {
             RecentChatItem recentChatItem = new RecentChatItem();
             recentChatItem.setName(msgRecent.getName());
-            recentChatItem.setToUid(msgRecent.getToUid());
-            recentChatItem.setFromUid(msgRecent.getFromUid());
-            recentChatItem.setGroupId(msgRecent.getGroupId());
+            recentChatItem.setUserId(msgRecent.getSessionUid());
+            recentChatItem.setGroupId(msgRecent.getSessionGroupId());
             recentChatItem.setSessionType(SessionType.getType(msgRecent.getSessionType()));
             recentChatItem.setAvatar(msgRecent.getAvatar());
             recentChatItem.setLatestMsgContent(msgRecent.getContent());
@@ -145,8 +144,8 @@ public class MsgServiceImpl implements MsgService {
         }
 
         // 将所有的离线消息分组
-        Map<String, List<MsgVO>> friendRecentMsgs = new HashMap<>();
-        Map<String, List<MsgVO>> groupRecentMsgs = new HashMap<>();
+        Map<String, List<MsgVO>> friendOfflineMsgs = new HashMap<>();
+        Map<String, List<MsgVO>> groupOfflineMsgs = new HashMap<>();
         Map<String,Integer> friendUnread = new HashMap<>();
         Map<String,Integer> groupUnread = new HashMap<>();
         // 离线消息拼接
@@ -157,11 +156,11 @@ public class MsgServiceImpl implements MsgService {
             switch (SessionType.getType(msgRecv.getSessionType())){
                 case SINGLE:
                     String friendUid = msgRecv.getFromUid();
-                    List<MsgVO> msgVOS1 = friendRecentMsgs.get(friendUid);
+                    List<MsgVO> msgVOS1 = friendOfflineMsgs.get(friendUid);
                     if(msgVOS1==null){
                         ArrayList<MsgVO> msgVOS = new ArrayList<>();
                         msgVOS.add(msgVO);
-                        friendRecentMsgs.put(friendUid,msgVOS);
+                        friendOfflineMsgs.put(friendUid,msgVOS);
                     }else{
                         msgVOS1.add(msgVO);
                     }
@@ -171,11 +170,11 @@ public class MsgServiceImpl implements MsgService {
 
                 case GROUP:
                     String groupId = msgRecv.getGroupId();
-                    List<MsgVO> msgVOS = groupRecentMsgs.get(groupId);
+                    List<MsgVO> msgVOS = groupOfflineMsgs.get(groupId);
                     if(msgVOS==null){
                         ArrayList<MsgVO> msgVOS2 = new ArrayList<>();
                         msgVOS2.add(msgVO);
-                        groupRecentMsgs.put(groupId,msgVOS2);
+                        groupOfflineMsgs.put(groupId,msgVOS2);
                     }else{
                         msgVOS.add(msgVO);
                     }
@@ -189,10 +188,10 @@ public class MsgServiceImpl implements MsgService {
         }));
 
         // 对离线消息就行排序
-        friendRecentMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
+        friendOfflineMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
             return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
         });});
-        groupRecentMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
+        groupOfflineMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
             return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
         });});
 
@@ -200,13 +199,13 @@ public class MsgServiceImpl implements MsgService {
             List<MsgVO> msgs = null;
             switch (recentChatItem.getSessionType()){
                 case SINGLE:
-                    String friendId = recentChatItem.getFromUid();
-                    msgs = friendRecentMsgs.get(friendId);
+                    String friendId = recentChatItem.getUserId();
+                    msgs = friendOfflineMsgs.get(friendId);
                     recentChatItem.setUnread(friendUnread.get(friendId));
                     break;
                 case GROUP:
                     String groupId = recentChatItem.getGroupId();
-                    msgs = groupRecentMsgs.get(groupId);
+                    msgs = groupOfflineMsgs.get(groupId);
                     recentChatItem.setUnread(groupUnread.get(groupId));
                     break;
                 default:

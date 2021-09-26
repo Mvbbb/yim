@@ -3,6 +3,7 @@ package com.mvbbb.yim.common.util;
 import com.mvbbb.yim.common.entity.MsgRecv;
 import com.mvbbb.yim.common.entity.MsgSend;
 import com.mvbbb.yim.common.protoc.Ack;
+import com.mvbbb.yim.common.protoc.Bye;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
@@ -126,8 +127,8 @@ public final class BeanConvertor {
     }
 
 
-    public static ByeRequest protocToBye(Protobuf.Bye bye) {
-        return new ByeRequest();
+    public static Bye protocToBye(Protobuf.Bye bye) {
+        return new Bye();
     }
 
     public static Protobuf.Ack protocFromAck(Ack ack) {

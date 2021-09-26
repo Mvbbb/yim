@@ -11,8 +11,7 @@ import java.util.List;
 @Data
 public class RecentChatItem implements Serializable {
     private SessionType sessionType;
-    private String fromUid;
-    private String toUid;
+    private String userId;
     private String groupId;
     private String name;
     private String avatar;
@@ -25,10 +24,9 @@ public class RecentChatItem implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof RecentChatItem) {
             RecentChatItem chatItem = (RecentChatItem) obj;
-            if (chatItem.getSessionType() == SessionType.SINGLE && this.sessionType == SessionType.SINGLE) {
-                return (chatItem.getFromUid().equals(this.fromUid) && chatItem.getToUid().equals(this.toUid))
-                        ||(chatItem.getFromUid().equals(this.toUid)&&chatItem.getToUid().equals(this.fromUid));
-            } else if (chatItem.getSessionType() == SessionType.GROUP && this.sessionType == SessionType.GROUP) {
+            if(chatItem.getSessionType()==SessionType.SINGLE&&this.sessionType==SessionType.SINGLE){
+                return chatItem.getUserId().equals(this.userId);
+            }else if(chatItem.getSessionType()==SessionType.GROUP&&this.sessionType==SessionType.GROUP){
                 return chatItem.getGroupId().equals(this.groupId);
             }
         }
