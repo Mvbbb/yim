@@ -6,22 +6,18 @@ import com.mvbbb.yim.common.protoc.Bye;
 import com.mvbbb.yim.common.protoc.DataPacket;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
-import com.mvbbb.yim.ws.EventEnum;
-import com.mvbbb.yim.ws.EventExecutor;
+import com.mvbbb.yim.ws.event.EventEnum;
+import com.mvbbb.yim.ws.event.EventExecutor;
 import com.mvbbb.yim.ws.pool.EventPool;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @ChannelHandler.Sharable
-@Component
 public class JsonProtocHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonProtocHandler.class);

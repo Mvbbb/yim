@@ -1,8 +1,7 @@
-package com.mvbbb.yim.ws.handler;
+package com.mvbbb.yim.ws.event;
 
-import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
+import com.mvbbb.yim.common.protoc.Bye;
 import com.mvbbb.yim.ws.pool.ConnectionPool;
-import com.mvbbb.yim.ws.IEvent;
 import com.mvbbb.yim.ws.service.StatusService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,18 +12,19 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class GreetHandler implements IEvent<GreetRequest> {
+public class ByeEventHandler implements IEvent<Bye> {
 
-    private static final Logger logger = LoggerFactory.getLogger(GreetHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ByeEventHandler.class);
     private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
     @Resource
     StatusService statusService;
 
     @Override
-    public void handler(GreetRequest greetRequest, ChannelHandlerContext ctx) {
+    public void handler(Bye bye, ChannelHandlerContext ctx) {
         Channel channel = ctx.channel();
-        logger.info("receive greet message: {}", greetRequest);
+        logger.info("收到 Bye 消息：{}", bye);
         String userId = CONNECTION_POOL.getUseridByChannel(channel);
-        statusService.greet(channel, greetRequest);
+        statusService.bye(ctx.channel(), userId);
     }
 }
+

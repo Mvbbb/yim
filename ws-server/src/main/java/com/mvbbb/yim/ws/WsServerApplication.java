@@ -1,9 +1,6 @@
 package com.mvbbb.yim.ws;
 
-import com.mvbbb.yim.ws.handler.AckHandler;
-import com.mvbbb.yim.ws.handler.ByeHandler;
-import com.mvbbb.yim.ws.handler.GreetHandler;
-import com.mvbbb.yim.ws.handler.MsgDataHandler;
+import com.mvbbb.yim.ws.event.*;
 import com.mvbbb.yim.ws.pool.EventPool;
 import com.mvbbb.yim.ws.task.RegistryTask;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
@@ -27,13 +24,17 @@ public class WsServerApplication implements CommandLineRunner {
     @Resource
     RegistryTask registryTask;
     @Resource
-    AckHandler ackHandler;
+    AckEventHandler ackEventHandler;
     @Resource
-    ByeHandler byeHandler;
+    ByeEventHandler byeEventHandler;
     @Resource
-    GreetHandler greetHandler;
+    GreetEventHandler greetEventHandler;
     @Resource
-    MsgDataHandler msgDataHandler;
+    MsgDataEventHandler msgDataEventHandler;
+    @Resource
+    ActiveEventHandler activeEventHandler;
+    @Resource
+    OfflineEventHandler offlineEventHandler;
 
     public static void main(String[] args) {
         SpringApplication.run(WsServerApplication.class, args);
@@ -49,9 +50,11 @@ public class WsServerApplication implements CommandLineRunner {
     }
 
     void registerEvents(){
-        eventPool.register(EventEnum.ACK,ackHandler);
-        eventPool.register(EventEnum.BYE, byeHandler);
-        eventPool.register(EventEnum.GREET,greetHandler);
-        eventPool.register(EventEnum.MSG_DATA,msgDataHandler);
+        eventPool.register(EventEnum.ACK,ackEventHandler);
+        eventPool.register(EventEnum.BYE, byeEventHandler);
+        eventPool.register(EventEnum.GREET,greetEventHandler);
+        eventPool.register(EventEnum.MSG_DATA,msgDataEventHandler);
+        eventPool.register(EventEnum.ACTIVE,activeEventHandler);
+        eventPool.register(EventEnum.OFFLINE,offlineEventHandler);
     }
 }

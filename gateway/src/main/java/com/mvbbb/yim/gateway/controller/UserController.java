@@ -44,11 +44,12 @@ public class UserController {
         if (token == null) {
             return GenericResponse.failed(ResCode.FAILED);
         }
-        String wsUrl = zkService.getWsForUser();
         AuthWsInfoResponse authWsInfoResponse = new AuthWsInfoResponse();
-        authWsInfoResponse.setUserId(loginRequest.getUserId());
+        String wsUrl = zkService.getWsForUser();
+        UserVO userInfo = userService.getUserInfo(loginRequest.getUserId());
         authWsInfoResponse.setToken(token);
         authWsInfoResponse.setWsUrl(wsUrl);
+        authWsInfoResponse.setUserInfo(userInfo);
         return GenericResponse.success(authWsInfoResponse);
     }
 

@@ -1,7 +1,7 @@
 package com.mvbbb.yim.ws.pool;
 
-import com.mvbbb.yim.ws.EventEnum;
-import com.mvbbb.yim.ws.IEvent;
+import com.mvbbb.yim.ws.event.EventEnum;
+import com.mvbbb.yim.ws.event.IEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package com.mvbbb.yim.ws;
+package com.mvbbb.yim.ws.event;
 
 import io.netty.channel.ChannelHandlerContext;
 

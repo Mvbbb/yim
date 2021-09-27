@@ -23,10 +23,11 @@ public class WebSocketServer {
     void startWebSocketServer() {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
+        WSChannelInitializer wsChannelInitializer = new WSChannelInitializer();
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
-                .childHandler(new WSChannelInitializer());
+                .childHandler(wsChannelInitializer);
         Channel channel = null;
         try {
             channel = bootstrap.bind(port).sync().addListener((ChannelFutureListener) future -> {

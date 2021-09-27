@@ -1,8 +1,7 @@
-package com.mvbbb.yim.ws.handler;
+package com.mvbbb.yim.ws.event;
 
 import com.mvbbb.yim.common.protoc.Ack;
 import com.mvbbb.yim.ws.pool.ConnectionPool;
-import com.mvbbb.yim.ws.IEvent;
 import com.mvbbb.yim.ws.pool.MsgAckPool;
 import com.mvbbb.yim.ws.service.MsgSendService;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class AckHandler implements IEvent<Ack> {
+public class AckEventHandler implements IEvent<Ack> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AckHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AckEventHandler.class);
     private static final MsgAckPool MSG_ACK_POOL = MsgAckPool.getInstance();
     private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
 

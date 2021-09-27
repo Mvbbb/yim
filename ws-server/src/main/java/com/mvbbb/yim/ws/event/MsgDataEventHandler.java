@@ -1,4 +1,4 @@
-package com.mvbbb.yim.ws.handler;
+package com.mvbbb.yim.ws.event;
 
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
@@ -6,7 +6,6 @@ import com.mvbbb.yim.common.util.SnowflakeIdWorker;
 import com.mvbbb.yim.logic.service.RelationService;
 import com.mvbbb.yim.msg.service.MsgService;
 import com.mvbbb.yim.ws.pool.ConnectionPool;
-import com.mvbbb.yim.ws.IEvent;
 import com.mvbbb.yim.ws.service.MsgSendService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,10 +17,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class MsgDataHandler implements IEvent<MsgData> {
+public class MsgDataEventHandler implements IEvent<MsgData> {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(MsgDataHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(MsgDataEventHandler.class);
     private static final ConnectionPool CONNECTION_POOL = ConnectionPool.getInstance();
     @DubboReference(check = false)
     MsgService msgService;

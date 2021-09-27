@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
@@ -48,13 +47,16 @@ public class WSChannelInitializer extends ChannelInitializer<SocketChannel> {
                 buf.retain();
             }
         });
+        // 处理半包消息
         pipeline.addLast(new ProtobufVarint32FrameDecoder());
         pipeline.addLast(new ProtobufDecoder(Protobuf.DataPacket.getDefaultInstance()));
         pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
         pipeline.addLast(new ProtobufEncoder());
         pipeline.addLast(new ProtobufHandler());
 
+        // 读写超市处理器
         pipeline.addLast(new IdleStateHandler(WsServerConfig.READ_IDEL_TIME_OUT, WsServerConfig.WRITE_IDEL_TIME_OUT, WsServerConfig.ALL_IDEL_TIME_OUT, TimeUnit.MINUTES));
+        // Channel 状态维护
         pipeline.addLast(new ChannelStatusHandler());
     }
 }
