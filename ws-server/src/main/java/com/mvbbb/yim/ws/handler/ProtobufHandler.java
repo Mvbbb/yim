@@ -14,7 +14,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @ChannelHandler.Sharable
 public class ProtobufHandler extends SimpleChannelInboundHandler<Protobuf.DataPacket> {
@@ -35,17 +34,17 @@ public class ProtobufHandler extends SimpleChannelInboundHandler<Protobuf.DataPa
             case BYE:
                 Protobuf.Bye protobufBye = msg.getBye();
                 Bye bye = BeanConvertor.protocToBye(protobufBye);
-                EventExecutor.execute(eventPool.find(EventEnum.BYE),bye,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.BYE), bye, ctx);
                 break;
             case GREET:
                 Protobuf.Greet protobufGreet = msg.getGreet();
                 GreetRequest greetRequest = BeanConvertor.protocToGreetRequest(protobufGreet);
-                EventExecutor.execute(eventPool.find(EventEnum.GREET),greetRequest,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.GREET), greetRequest, ctx);
                 break;
             case ACK:
                 Protobuf.Ack protobufAck = msg.getAck();
                 Ack ack = BeanConvertor.protocToAck(protobufAck);
-                EventExecutor.execute(eventPool.find(EventEnum.ACK),ack,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.ACK), ack, ctx);
                 break;
             default:
                 break;

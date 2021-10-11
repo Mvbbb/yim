@@ -29,6 +29,49 @@ services:
       - ./data/mysql/log:/var/log/mysql
       - ./sql:/docker-entrypoint-initdb.d/
 
+  yim-rocketmq-nameserver:
+    image: foxiswho/rocketmq:server
+    container_name: yim-rocketmq-nameserver
+    ports:
+      - "9876:9876"
+    volumes:
+      - ./data/rocketmq/nameserver/logs:/opt/logs
+      - ./data/rocketmq/nameserver/store:/opt/store
+    networks:
+      - yim-network
+
+  yim-rocketmq-broker:
+    image: foxiswho/rocketmq:broker
+    container_name: yim-rocketmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+    volumes:
+      - ./data/rocketmq/broker/logs:/opt/logs
+      - ./data/rocketmq/broker/store:/opt/store
+      - ./data/rocketmq/broker/brokerconf/broker.conf:/etc/rocketmq/broker.conf
+    environment:
+      NAMESRV_ADDR: "rmqnamesrv:9876"
+      JAVA_OPTS: " -Duser.home=/opt"
+      JAVA_OPT_EXT: "-server -Xms128m -Xmx128m -Xmn128m"
+    command: mqbroker -c /etc/rocketmq/broker.conf
+    depends_on:
+      - yim-rocketmq-nameserver
+    networks:
+      - yim-network
+
+  yim-rocketmq-console:
+    image: styletang/rocketmq-console-ng
+    container_name: yim-rocketmq-console
+    ports:
+      - "8077:8080"
+    environment:
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=yim-rocketmq-nameserver:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+    depends_on:
+      - yim-rocketmq-nameserver
+    networks:
+      - yim-network
+
   yim-zookeeper:
     image: zookeeper
     container_name: yim-zookeeper
@@ -133,6 +176,7 @@ services:
     environment:
       - server-port=7111
       - dubbo.protocol.port=20889
+      # 为 ws-server 指定绑定的 IP 地址，用于外部暴露
       - host.addr=115.159.148.114
     entrypoint: [ "java","-jar","/yim-ws-server-7111/ws-server-1.0-SNAPSHOT.jar" ]
 

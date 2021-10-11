@@ -1,7 +1,6 @@
 package com.mvbbb.yim.gateway.controller;
 
 import com.mvbbb.yim.common.protoc.http.response.GenericResponse;
-import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.protoc.http.response.RecentChatResponse;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.vo.MsgVO;
@@ -51,8 +50,8 @@ public class MsgController {
 //    }
 
     @ApiOperation("获取最近聊天列表 (登录之后，拉取一次，用于获取会话列表及其未读消息)")
-    @RequestMapping(path = "/recent/chat",method = RequestMethod.GET)
-    public GenericResponse<RecentChatResponse> getRecentOfflineMsg(@RequestHeader String userId, @RequestHeader String token){
+    @RequestMapping(path = "/recent/chat", method = RequestMethod.GET)
+    public GenericResponse<RecentChatResponse> getRecentOfflineMsg(@RequestHeader String userId, @RequestHeader String token) {
         RecentChatResponse recentChatResponse = msgService.getRecentOfflineMsg(userId);
         return GenericResponse.success(recentChatResponse);
     }

@@ -1,6 +1,5 @@
 package com.mvbbb.yim.gateway.controller;
 
-import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.protoc.http.ResCode;
 import com.mvbbb.yim.common.protoc.http.request.CreateGroupRequest;
 import com.mvbbb.yim.common.protoc.http.request.GenericRequest;

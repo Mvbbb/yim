@@ -2,7 +2,6 @@ import axios from 'axios'
 import {Decrypt} from "../util/secret";
 
 
-
 // const CODE_MESSAGE =  {
 //   200: '服务器成功返回请求的数据。',
 //   201: '新建或修改数据成功。',
@@ -26,44 +25,44 @@ import {Decrypt} from "../util/secret";
 //   return router.push({name: 'LoginChart'})
 // }
 
-export default (url, options={}) => {
+export default (url, options = {}) => {
 
-  const defaultOptions = {
-    method: 'get',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
+    const defaultOptions = {
+        method: 'get',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
     }
-  }
-  if(localStorage.getItem('Authorization')!= null){
-    defaultOptions.headers["Authorization"] = Decrypt(localStorage.getItem('Authorization'))
-  }
+    if (localStorage.getItem('Authorization') != null) {
+        defaultOptions.headers["Authorization"] = Decrypt(localStorage.getItem('Authorization'))
+    }
 
-  const newOptions = {...defaultOptions, ...options, url}
+    const newOptions = {...defaultOptions, ...options, url}
 
 
-  return new Promise((resolve,reject) => {
-    axios(newOptions).then((response) => {
-      // console.log(response.data)
-      // if (response.data.code === HttpResponseCode.invalid) {
-      //   console.log(JSON.stringify(newOptions))
-      //   console.log(JSON.stringify(response))
-      //   HandleAuthFailed()
-      // }
-      // if (response.data.code === HttpResponseCode.success) {
-      //   return resolve(response.data)
-      // }
-      // if (!response.data.code) {
-      //   return reject({
-      //     code: 2001,
-      //     message: '服务端返回的数据格式不规范,无法解析',
-      //   })
-      // }
-      // if (response.data)
-      return resolve(response)
-      }).catch((error) => {
-      return reject(error)
+    return new Promise((resolve, reject) => {
+        axios(newOptions).then((response) => {
+            // console.log(response.data)
+            // if (response.data.code === HttpResponseCode.invalid) {
+            //   console.log(JSON.stringify(newOptions))
+            //   console.log(JSON.stringify(response))
+            //   HandleAuthFailed()
+            // }
+            // if (response.data.code === HttpResponseCode.success) {
+            //   return resolve(response.data)
+            // }
+            // if (!response.data.code) {
+            //   return reject({
+            //     code: 2001,
+            //     message: '服务端返回的数据格式不规范,无法解析',
+            //   })
+            // }
+            // if (response.data)
+            return resolve(response)
+        }).catch((error) => {
+            return reject(error)
 
+        })
     })
-  })
 }

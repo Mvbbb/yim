@@ -1,7 +1,6 @@
 package com.mvbbb.yim.common.protoc.http.response;
 
 import com.mvbbb.yim.common.protoc.http.RecentChatItem;
-import com.mvbbb.yim.common.vo.MsgVO;
 import lombok.Data;
 import lombok.ToString;
 

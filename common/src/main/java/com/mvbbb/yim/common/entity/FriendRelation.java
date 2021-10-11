@@ -2,7 +2,6 @@ package com.mvbbb.yim.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -20,6 +19,6 @@ public class FriendRelation implements Serializable {
     @TableField("user_id_2")
     private String userid2;
 
-    
+
     private boolean deleted;
 }

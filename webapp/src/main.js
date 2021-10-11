@@ -1,10 +1,9 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-
 
 
 // io('ws://172.20.10.2:8080')
@@ -15,7 +14,6 @@ import 'element-plus/dist/index.css'
 //     vuex: {
 //     }
 // })
-
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 

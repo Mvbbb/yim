@@ -2,10 +2,10 @@
 
   <el-container class="container">
 
-    <el-aside width="8%" style="background-color: black;overflow: hidden;display: inline-block">
+    <el-aside style="background-color: black;overflow: hidden;display: inline-block" width="8%">
       <personal-inf></personal-inf>
     </el-aside>
-    <el-aside width="23.5%" >
+    <el-aside width="23.5%">
       <chat-list></chat-list>
     </el-aside>
     <el-container class="container2">
@@ -29,9 +29,10 @@ import chatList from "./detailPage/medium/chatList";
 import chatNmae from "./detailPage/main/chatNmae";
 import chatBox from "./detailPage/main/chatBox";
 import inputBox from "./detailPage/main/inputBox";
+
 export default {
-name: "Interface",
-  components:{
+  name: "Interface",
+  components: {
     personalInf,
     chatList,
     chatNmae,
@@ -42,14 +43,16 @@ name: "Interface",
 </script>
 
 <style scoped>
-.container{
+.container {
   margin: 120px 200px 120px 200px;
   height: 500px;
   position: relative;
 }
-.container2{
+
+.container2 {
   width: 75%;
 }
+
 .el-header,
 .el-footer {
   background-color: #b3c0d1;
@@ -57,7 +60,8 @@ name: "Interface",
   text-align: center;
   line-height: 60px;
 }
-.el-footer{
+
+.el-footer {
   height: 150px;
   background-color: white;
 }

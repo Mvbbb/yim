@@ -1,7 +1,6 @@
 package com.mvbbb.yim.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
@@ -19,7 +18,7 @@ public class Group implements Serializable {
     private String avatar;
     private String ownerUid;
     private int userCnt;
-    
+
     private boolean deleted;
 
 }

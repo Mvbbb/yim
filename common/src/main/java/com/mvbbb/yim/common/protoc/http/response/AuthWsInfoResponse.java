@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class AuthWsInfoResponse {
-    private UserVO userInfo;
+    private UserVO info;
     private String token;
     private String wsUrl;
 }

@@ -10,15 +10,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventPool {
     private static final Logger logger = LoggerFactory.getLogger(EventPool.class);
     private static EventPool eventPool = null;
+    private ConcurrentHashMap<EventEnum, IEvent> events;
 
     private EventPool() {
         events = new ConcurrentHashMap<>();
     }
 
-    public static EventPool getInstance(){
-        if(eventPool==null){
-            synchronized (EventPool.class){
-                if(eventPool==null){
+    public static EventPool getInstance() {
+        if (eventPool == null) {
+            synchronized (EventPool.class) {
+                if (eventPool == null) {
                     eventPool = new EventPool();
                 }
             }
@@ -26,15 +27,13 @@ public class EventPool {
         return eventPool;
     }
 
-    private ConcurrentHashMap<EventEnum, IEvent> events;
-
-    public void register(EventEnum event,IEvent iEvent){
-        logger.info("register event. event:{}",event);
-        events.put(event,iEvent);
+    public void register(EventEnum event, IEvent iEvent) {
+        logger.info("register event. event:{}", event);
+        events.put(event, iEvent);
     }
 
 
-    public IEvent find(EventEnum event){
+    public IEvent find(EventEnum event) {
         return events.get(event);
     }
 

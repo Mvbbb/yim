@@ -15,7 +15,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @ChannelHandler.Sharable
 public class JsonProtocHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
@@ -38,15 +37,15 @@ public class JsonProtocHandler extends SimpleChannelInboundHandler<TextWebSocket
                 break;
             case BYE:
                 Bye bye = data.toJavaObject(Bye.class);
-                EventExecutor.execute(eventPool.find(EventEnum.BYE),bye,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.BYE), bye, ctx);
                 break;
             case GREET:
                 GreetRequest greetRequest = data.toJavaObject(GreetRequest.class);
-                EventExecutor.execute(eventPool.find(EventEnum.GREET),greetRequest,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.GREET), greetRequest, ctx);
                 break;
             case ACK:
                 Ack ack = data.toJavaObject(Ack.class);
-                EventExecutor.execute(eventPool.find(EventEnum.ACK),ack,ctx);
+                EventExecutor.execute(eventPool.find(EventEnum.ACK), ack, ctx);
                 break;
             default:
                 break;

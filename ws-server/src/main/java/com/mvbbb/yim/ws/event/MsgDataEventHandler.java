@@ -66,7 +66,7 @@ public class MsgDataEventHandler implements IEvent<MsgData> {
 
     private boolean checkRelationValid(Channel channel, MsgData data) {
         String fromUserId = data.getFromUserId();
-        String toSessionId = data.getSessionType()== SessionType.SINGLE?data.getToUserId():data.getGroupId();
+        String toSessionId = data.getSessionType() == SessionType.SINGLE ? data.getToUserId() : data.getGroupId();
         switch (data.getSessionType()) {
             case SINGLE:
                 boolean friend = relationService.isFriend(fromUserId, toSessionId);

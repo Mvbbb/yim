@@ -2,7 +2,6 @@ package com.mvbbb.yim.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -18,6 +17,6 @@ public class UserGroupRelation implements Serializable {
     private String groupId;
     @TableField("last_acked_msgid")
     private long lastAckedMsgid;
-    
+
     private boolean deleted;
 }

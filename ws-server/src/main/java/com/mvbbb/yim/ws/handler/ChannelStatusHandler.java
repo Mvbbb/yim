@@ -13,23 +13,23 @@ import org.slf4j.LoggerFactory;
 @ChannelHandler.Sharable
 public class ChannelStatusHandler extends ChannelInboundHandlerAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(ChannelStatusHandler.class);
     private static final EventPool eventPool = EventPool.getInstance();
-
+    private final Logger logger = LoggerFactory.getLogger(ChannelStatusHandler.class);
 
     /**
      * 用户关闭连接时清理状态
+     *
      * @param ctx 用户 Channel
      * @throws Exception
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        EventExecutor.execute(eventPool.find(EventEnum.OFFLINE),null,ctx);
+        EventExecutor.execute(eventPool.find(EventEnum.OFFLINE), null, ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        EventExecutor.execute(eventPool.find(EventEnum.ACTIVE),null,ctx);
+        EventExecutor.execute(eventPool.find(EventEnum.ACTIVE), null, ctx);
     }
 
     /**

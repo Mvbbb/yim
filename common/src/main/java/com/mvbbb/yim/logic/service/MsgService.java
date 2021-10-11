@@ -1,6 +1,5 @@
 package com.mvbbb.yim.logic.service;
 
-import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.protoc.http.response.RecentChatResponse;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.vo.MsgVO;

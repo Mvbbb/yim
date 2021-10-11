@@ -1,6 +1,5 @@
 package com.mvbbb.yim.msg;
 
-import cn.hutool.db.Session;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.entity.*;
@@ -8,7 +7,7 @@ import com.mvbbb.yim.common.mapper.*;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.util.BeanConvertor;
-import com.mvbbb.yim.mq.RedisStreamManager;
+import com.mvbbb.yim.msg.mq.MqSender;
 import com.mvbbb.yim.msg.service.RouteService;
 import com.mvbbb.yim.msg.service.UserStatusService;
 import org.slf4j.Logger;
@@ -37,13 +36,13 @@ public class MsgHandler {
     @Resource
     UserMapper userMapper;
     @Resource
-    RedisStreamManager redisStreamManager;
+    MqSender mqSender;
     private Logger logger = LoggerFactory.getLogger(MsgHandler.class);
 
-    public void sendSingleMsg(MsgData msgData,boolean fromGroup) {
+    public void sendSingleMsg(MsgData msgData, boolean fromGroup) {
 
         String toUserId = msgData.getToUserId();
-        if(!fromGroup){
+        if (!fromGroup) {
             updateRecentMsg(msgData);
         }
         if (!userStatusService.isUserOnline(toUserId)) {
@@ -54,13 +53,14 @@ public class MsgHandler {
         } else {
             // 写入消息投递队列
             WsServerRoute userWsServer = routeService.getUserWsServer(toUserId);
-            logger.info("投递消息到接收用户所在的 ws 的消息队列。ToUserId:{},WsServerRoute:{}", toUserId,userWsServer);
-            redisStreamManager.produce(userWsServer, msgData);
+            logger.info("投递消息到接收用户所在的 ws 的消息队列。ToUserId:{},WsServerRoute:{}", toUserId, userWsServer);
+            mqSender.produce(userWsServer, msgData);
         }
     }
 
     /**
      * 采用写扩散的方式发送群聊消息
+     *
      * @param msgData 某个用户发送的群聊消息
      */
     public void sendGroupMsg(MsgData msgData) {
@@ -68,13 +68,13 @@ public class MsgHandler {
         List<String> members = userGroupRelationMapper.selectList(new LambdaQueryWrapper<UserGroupRelation>().eq(UserGroupRelation::getGroupId, groupId))
                 .stream().map(UserGroupRelation::getUserId).collect(Collectors.toList());
         members.forEach((memberId) -> {
-            if (memberId != null ){
-                if(!memberId.equals(msgData.getFromUserId())) {
-                    logger.info("发送消息给群成员。UserId:{}",memberId);
+            if (memberId != null) {
+                if (!memberId.equals(msgData.getFromUserId())) {
+                    logger.info("发送消息给群成员。UserId:{}", memberId);
                     msgData.setToUserId(memberId);
                     updateRecentMsg(msgData);
-                    sendSingleMsg(msgData,true);
-                }else{
+                    sendSingleMsg(msgData, true);
+                } else {
                     msgData.setToUserId(msgData.getFromUserId());
                     updateRecentMsg(msgData);
                 }
@@ -83,22 +83,22 @@ public class MsgHandler {
     }
 
     public void saveMsg(MsgData msgData) {
-        logger.info("持久化消息到 msg_recv 表中。msgData:{}",msgData);
+        logger.info("持久化消息到 msg_recv 表中。msgData:{}", msgData);
         MsgRecv msgRecv = BeanConvertor.msgDataToMsgRecv(msgData);
         msgRecvMapper.insert(msgRecv);
     }
 
-    public void updateSingleChatContent(String userId1,String userId2,String content){
+    public void updateSingleChatContent(String userId1, String userId2, String content) {
 
     }
 
-    public void updateRecentMsg(MsgData msgData){
+    public void updateRecentMsg(MsgData msgData) {
 
         MsgRecent msgRecent;
-        switch (msgData.getSessionType()){
+        switch (msgData.getSessionType()) {
             case SINGLE:
-                msgRecent = msgRecentMapper.selectUserSingleRecentMsg(msgData.getToUserId(),msgData.getFromUserId());
-                if(msgRecent==null){
+                msgRecent = msgRecentMapper.selectUserSingleRecentMsg(msgData.getToUserId(), msgData.getFromUserId());
+                if (msgRecent == null) {
                     //insert
                     MsgRecent msgRecent1 = new MsgRecent();
                     msgRecent1.setUserId(msgData.getFromUserId());
@@ -122,15 +122,15 @@ public class MsgHandler {
                     msgRecent2.setTimestamp(msgData.getTimestamp());
                     msgRecentMapper.insert(msgRecent2);
 
-                }else{
+                } else {
                     //update
-                    msgRecentMapper.updateSingleChatContent(msgData.getFromUserId(),msgData.getToUserId(),msgData.getData());
+                    msgRecentMapper.updateSingleChatContent(msgData.getFromUserId(), msgData.getToUserId(), msgData.getData());
                 }
 
                 break;
             case GROUP:
-                msgRecent = msgRecentMapper.selectUserGroupRecentMsg(msgData.getToUserId(),msgData.getGroupId());
-                if(msgRecent==null){
+                msgRecent = msgRecentMapper.selectUserGroupRecentMsg(msgData.getToUserId(), msgData.getGroupId());
+                if (msgRecent == null) {
                     MsgRecent msgRecent3 = new MsgRecent();
                     msgRecent3.setUserId(msgData.getToUserId());
                     msgRecent3.setSessionGroupId(msgData.getGroupId());
@@ -142,12 +142,13 @@ public class MsgHandler {
                     msgRecent3.setContent(msgData.getData());
                     msgRecentMapper.insert(msgRecent3);
 
-                }else if(!msgRecent.getContent().equals(msgData.getData())){
-                    msgRecentMapper.updateGroupChantContent(msgData.getGroupId(),msgData.getData());
+                } else if (!msgRecent.getContent().equals(msgData.getData())) {
+                    msgRecentMapper.updateGroupChantContent(msgData.getGroupId(), msgData.getData());
                 }
 
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 }

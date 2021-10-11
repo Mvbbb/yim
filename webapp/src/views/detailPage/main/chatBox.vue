@@ -5,18 +5,18 @@
       <!-- recordContent 聊天记录数组-->
       <div v-for="(item,index) in msg" :key="index">
         <!-- 对方 -->
-        <div class="word" v-if="item.fromUid">
+        <div v-if="item.fromUid" class="word">
           <img :src="this.otherpic">
           <div class="info">
-            <p class="time">  {{getdate(item.timestamp)}}</p>
-            <div class="info-content">{{item.msgData}}</div>
+            <p class="time"> {{ getdate(item.timestamp) }}</p>
+            <div class="info-content">{{ item.msgData }}</div>
           </div>
         </div>
         <!-- 我的 -->
-        <div class="word-my" v-else>
+        <div v-else class="word-my">
           <div class="info">
-            <p class="time">  {{getdate(item.timestamp)}}</p>
-            <div class="info-content">{{item.msgData}}</div>
+            <p class="time"> {{ getdate(item.timestamp) }}</p>
+            <div class="info-content">{{ item.msgData }}</div>
           </div>
           <img :src="item.avatar">
         </div>
@@ -28,18 +28,19 @@
 
 <script>
 import bus from "../../bus";
+
 export default {
   name: "chatBox",
-  data(){
-    return{
-      chatMsg:'',
-      minepic:'',
-      otherpic:'',
-      msg:[],
+  data() {
+    return {
+      chatMsg: '',
+      minepic: '',
+      otherpic: '',
+      msg: [],
 
     }
   },
-  methods:{
+  methods: {
     getdate(timestamp) {
 
       var now = new Date(timestamp),
@@ -56,16 +57,16 @@ export default {
   },
   mounted() {
 
-    bus.on('chatPeople',(e)=>{
-      this.chatMsg=e.name
+    bus.on('chatPeople', (e) => {
+      this.chatMsg = e.name
     })
-    bus.on('chatMsg',(e)=>{
-      this.msg=null
-      if(e.msgs==null){
+    bus.on('chatMsg', (e) => {
+      this.msg = null
+      if (e.msgs == null) {
 
-      }else{
-        this.msg=e.msgs
-        this.otherpic=e.avatar
+      } else {
+        this.msg = e.msgs
+        this.otherpic = e.avatar
       }
     })
   }
@@ -73,10 +74,11 @@ export default {
 </script>
 
 <style scoped>
-.chatBox{
+.chatBox {
 
   width: 1000px;
 }
+
 .chat-content {
   width: 700px;
   padding: 20px 0px 20px 40px;
@@ -88,40 +90,44 @@ export default {
   left: -20px;
   position: relative;
 }
-.word img{
+
+.word img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
+
 .word .info {
   margin-left: 10px;
 }
-.word .time{
+
+.word .time {
   font-size: 12px;
-  color: rgba(51,51,51,0.8);
+  color: rgba(51, 51, 51, 0.8);
   margin: 0;
   height: 20px;
   line-height: 20px;
   margin-top: -5px;
 }
-.word .info-content{
+
+.word .info-content {
   padding: 10px;
   font-size: 14px;
   background: #fff;
   position: relative;
   margin-top: 8px;
 }
-/*小三角形*/
-.word  .info-content::before{
-    position: absolute;
-    left: -8px;
-    top: 8px;
-    content: '';
-    border-right: 10px solid #FFF;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-  }
 
+/*小三角形*/
+.word .info-content::before {
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  content: '';
+  border-right: 10px solid #FFF;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
 
 
 .word-my {
@@ -130,26 +136,30 @@ export default {
   position: relative;
   margin-bottom: 20px;
 }
-.word-my img{
+
+.word-my img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
+
 .word-my .info {
   width: 90%;
   margin-left: 10px;
   text-align: right;
 }
-.word-my .time{
+
+.word-my .time {
   font-size: 12px;
-  color: rgba(51,51,51,0.8);
+  color: rgba(51, 51, 51, 0.8);
   margin: 0;
   height: 20px;
   line-height: 20px;
   margin-top: -5px;
   margin-right: 10px;
 }
-.word-my .info-content{
+
+.word-my .info-content {
   max-width: 70%;
   padding: 10px;
   font-size: 14px;
@@ -160,15 +170,16 @@ export default {
   background: #A3C3F6;
   text-align: left;
 }
+
 /*//小三角形*/
-.word-my  .info-content::after{
-    position: absolute;
-    right: -8px;
-    top: 8px;
-    content: '';
-    border-left: 10px solid #A3C3F6;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-  }
+.word-my .info-content::after {
+  position: absolute;
+  right: -8px;
+  top: 8px;
+  content: '';
+  border-left: 10px solid #A3C3F6;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
 
 </style>

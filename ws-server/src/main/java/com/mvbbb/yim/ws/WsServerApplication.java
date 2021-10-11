@@ -1,6 +1,7 @@
 package com.mvbbb.yim.ws;
 
 import com.mvbbb.yim.ws.event.*;
+import com.mvbbb.yim.ws.mq.DeliverMsgMqListener;
 import com.mvbbb.yim.ws.pool.EventPool;
 import com.mvbbb.yim.ws.task.RegistryTask;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
@@ -35,6 +36,8 @@ public class WsServerApplication implements CommandLineRunner {
     ActiveEventHandler activeEventHandler;
     @Resource
     OfflineEventHandler offlineEventHandler;
+    @Resource
+    DeliverMsgMqListener deliverMsgMqListener;
 
     public static void main(String[] args) {
         SpringApplication.run(WsServerApplication.class, args);
@@ -47,14 +50,17 @@ public class WsServerApplication implements CommandLineRunner {
             new WebSocketServer(wsServerConfig.getPort()).startWebSocketServer();
         }).start();
         new Thread(registryTask).start();
+        new Thread(() -> {
+            deliverMsgMqListener.listen();
+        }).start();
     }
 
-    void registerEvents(){
-        eventPool.register(EventEnum.ACK,ackEventHandler);
+    void registerEvents() {
+        eventPool.register(EventEnum.ACK, ackEventHandler);
         eventPool.register(EventEnum.BYE, byeEventHandler);
-        eventPool.register(EventEnum.GREET,greetEventHandler);
-        eventPool.register(EventEnum.MSG_DATA,msgDataEventHandler);
-        eventPool.register(EventEnum.ACTIVE,activeEventHandler);
-        eventPool.register(EventEnum.OFFLINE,offlineEventHandler);
+        eventPool.register(EventEnum.GREET, greetEventHandler);
+        eventPool.register(EventEnum.MSG_DATA, msgDataEventHandler);
+        eventPool.register(EventEnum.ACTIVE, activeEventHandler);
+        eventPool.register(EventEnum.OFFLINE, offlineEventHandler);
     }
 }

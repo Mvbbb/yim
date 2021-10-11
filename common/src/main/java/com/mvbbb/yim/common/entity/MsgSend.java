@@ -2,7 +2,6 @@ package com.mvbbb.yim.common.entity;
 
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -23,6 +22,6 @@ public class MsgSend implements Serializable {
     private int msgType;
     private String msgData;
     private Date timestamp;
-    
+
     private boolean deleted;
 }

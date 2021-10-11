@@ -34,7 +34,7 @@
 - [x] 使用 Redis 维护用户路由、用户状态信息
 - [x] 使用 Nginx 作 Gateway 的反向代理、负载均衡
 - [x] 自定义协议配合 Protobuf 实现高扩展性、高性能协议
-- [x] 使用 Redis Stream 作为消息中间件
+- [x] 使用 RocketMQ 作为消息中间件
 - [ ] 使用 sharding-jdbc 进行分库分表
 - [ ] Netty 开发 WebSocket 服务端，实现百万连接
 - [ ] 高可靠性、顺序性、重复性消息传输保障

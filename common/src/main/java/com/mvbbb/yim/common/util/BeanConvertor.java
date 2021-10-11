@@ -8,7 +8,6 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.protoc.Protobuf;
 import com.mvbbb.yim.common.protoc.ws.MsgType;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
-import com.mvbbb.yim.common.protoc.ws.request.ByeRequest;
 import com.mvbbb.yim.common.protoc.ws.request.GreetRequest;
 import com.mvbbb.yim.common.vo.MsgVO;
 
@@ -64,8 +63,8 @@ public final class BeanConvertor {
         msgSend.setClientMsgId(msgData.getClientMsgId());
         msgSend.setFromUid(msgData.getFromUserId());
         msgSend.setSessionType(SessionType.getInt(msgData.getSessionType()));
-        msgSend.setToUid(msgData.getSessionType() == SessionType.SINGLE ? msgData.getToUserId(): null);
-        msgSend.setGroupId(msgData.getSessionType() == SessionType.GROUP ?msgData.getGroupId() : null);
+        msgSend.setToUid(msgData.getSessionType() == SessionType.SINGLE ? msgData.getToUserId() : null);
+        msgSend.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getGroupId() : null);
         msgSend.setMsgType(msgSend.getMsgType());
         msgSend.setMsgData(msgData.getData());
         msgSend.setTimestamp(msgData.getTimestamp());
@@ -79,7 +78,7 @@ public final class BeanConvertor {
         msgRecv.setServerMsgId(msgData.getServerMsgId());
         msgRecv.setFromUid(msgData.getFromUserId());
         msgRecv.setToUid(msgData.getToUserId());
-        msgRecv.setGroupId(msgData.getSessionType() == SessionType.GROUP ?msgData.getGroupId() : null);
+        msgRecv.setGroupId(msgData.getSessionType() == SessionType.GROUP ? msgData.getGroupId() : null);
         msgRecv.setSessionType(SessionType.getInt(msgData.getSessionType()));
         msgRecv.setMsgType(MsgType.getInt(msgData.getMsgType()));
         msgRecv.setTimestamp(msgData.getTimestamp());

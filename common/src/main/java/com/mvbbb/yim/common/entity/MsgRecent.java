@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 @TableName("yim_msg_recent")
 public class MsgRecent implements Serializable {
-    @TableId(value = "id",type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private String userId;
     private String sessionUid;

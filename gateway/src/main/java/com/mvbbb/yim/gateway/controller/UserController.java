@@ -49,7 +49,7 @@ public class UserController {
         UserVO userInfo = userService.getUserInfo(loginRequest.getUserId());
         authWsInfoResponse.setToken(token);
         authWsInfoResponse.setWsUrl(wsUrl);
-        authWsInfoResponse.setUserInfo(userInfo);
+        authWsInfoResponse.setInfo(userInfo);
         return GenericResponse.success(authWsInfoResponse);
     }
 

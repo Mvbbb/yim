@@ -1,26 +1,22 @@
 package com.mvbbb.yim.logic.service;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.google.common.collect.Lists;
-import com.mvbbb.yim.common.entity.*;
-import com.mvbbb.yim.common.mapper.*;
-import com.mvbbb.yim.common.protoc.http.OfflineSessionMsg;
+import com.mvbbb.yim.common.entity.MsgRecent;
+import com.mvbbb.yim.common.entity.MsgRecv;
+import com.mvbbb.yim.common.entity.MsgSend;
+import com.mvbbb.yim.common.mapper.MsgRecentMapper;
+import com.mvbbb.yim.common.mapper.MsgRecvMapper;
+import com.mvbbb.yim.common.mapper.MsgSendMapper;
 import com.mvbbb.yim.common.protoc.http.RecentChatItem;
-import com.mvbbb.yim.common.protoc.http.response.PullOfflineMsgResponse;
 import com.mvbbb.yim.common.protoc.http.response.RecentChatResponse;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
 import com.mvbbb.yim.common.util.BeanConvertor;
-import com.mvbbb.yim.common.vo.GroupVO;
 import com.mvbbb.yim.common.vo.MsgVO;
-import com.mvbbb.yim.common.vo.UserVO;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import java.lang.invoke.SwitchPoint;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,7 +119,6 @@ public class MsgServiceImpl implements MsgService {
 //        logger.info("{}", pullOfflineMsgResponse);
 //        return pullOfflineMsgResponse;
 //    }
-
     @Override
     public RecentChatResponse getRecentOfflineMsg(String userId) {
 
@@ -146,40 +141,40 @@ public class MsgServiceImpl implements MsgService {
         // 将所有的离线消息分组
         Map<String, List<MsgVO>> friendOfflineMsgs = new HashMap<>();
         Map<String, List<MsgVO>> groupOfflineMsgs = new HashMap<>();
-        Map<String,Integer> friendUnread = new HashMap<>();
-        Map<String,Integer> groupUnread = new HashMap<>();
+        Map<String, Integer> friendUnread = new HashMap<>();
+        Map<String, Integer> groupUnread = new HashMap<>();
         // 离线消息拼接
         msgOffline.forEach((msgRecv -> {
 
             MsgVO msgVO = BeanConvertor.msgRecvToMsgVO(msgRecv);
             int unread;
-            switch (SessionType.getType(msgRecv.getSessionType())){
+            switch (SessionType.getType(msgRecv.getSessionType())) {
                 case SINGLE:
                     String friendUid = msgRecv.getFromUid();
                     List<MsgVO> msgVOS1 = friendOfflineMsgs.get(friendUid);
-                    if(msgVOS1==null){
+                    if (msgVOS1 == null) {
                         ArrayList<MsgVO> msgVOS = new ArrayList<>();
                         msgVOS.add(msgVO);
-                        friendOfflineMsgs.put(friendUid,msgVOS);
-                    }else{
+                        friendOfflineMsgs.put(friendUid, msgVOS);
+                    } else {
                         msgVOS1.add(msgVO);
                     }
-                    unread = friendUnread.getOrDefault(msgRecv.getToUid(),0)+1;
-                    friendUnread.put(msgRecv.getToUid(),unread);
+                    unread = friendUnread.getOrDefault(msgRecv.getToUid(), 0) + 1;
+                    friendUnread.put(msgRecv.getToUid(), unread);
                     break;
 
                 case GROUP:
                     String groupId = msgRecv.getGroupId();
                     List<MsgVO> msgVOS = groupOfflineMsgs.get(groupId);
-                    if(msgVOS==null){
+                    if (msgVOS == null) {
                         ArrayList<MsgVO> msgVOS2 = new ArrayList<>();
                         msgVOS2.add(msgVO);
-                        groupOfflineMsgs.put(groupId,msgVOS2);
-                    }else{
+                        groupOfflineMsgs.put(groupId, msgVOS2);
+                    } else {
                         msgVOS.add(msgVO);
                     }
-                    unread = groupUnread.getOrDefault(msgRecv.getGroupId(), 0)+1;
-                    groupUnread.put(msgRecv.getGroupId(),unread);
+                    unread = groupUnread.getOrDefault(msgRecv.getGroupId(), 0) + 1;
+                    groupUnread.put(msgRecv.getGroupId(), unread);
                     break;
 
                 default:
@@ -188,16 +183,20 @@ public class MsgServiceImpl implements MsgService {
         }));
 
         // 对离线消息就行排序
-        friendOfflineMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
-            return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
-        });});
-        groupOfflineMsgs.forEach((key,value)->{value.sort((msgVo1,msgVo2)->{
-            return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
-        });});
+        friendOfflineMsgs.forEach((key, value) -> {
+            value.sort((msgVo1, msgVo2) -> {
+                return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
+            });
+        });
+        groupOfflineMsgs.forEach((key, value) -> {
+            value.sort((msgVo1, msgVo2) -> {
+                return msgVo2.getTimestamp().compareTo(msgVo1.getTimestamp());
+            });
+        });
 
         for (RecentChatItem recentChatItem : recentChatItems) {
             List<MsgVO> msgs = null;
-            switch (recentChatItem.getSessionType()){
+            switch (recentChatItem.getSessionType()) {
                 case SINGLE:
                     String friendId = recentChatItem.getUserId();
                     msgs = friendOfflineMsgs.get(friendId);
@@ -212,10 +211,10 @@ public class MsgServiceImpl implements MsgService {
                     break;
             }
 
-            if(msgs==null){
+            if (msgs == null) {
                 recentChatItem.setUnread(0);
                 recentChatItem.setMsgs(null);
-            }else{
+            } else {
                 recentChatItem.setUnread(msgs.size());
                 recentChatItem.setMsgs(msgs);
             }

@@ -9,7 +9,7 @@
         <withJansi>true</withJansi>
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%logger] [tr=%X{TRACE_ID:-0}] %msg %n </pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%logger] [tr=%X{TRACE_ID:-0}] %msg %n</pattern>
         </encoder>
     </appender>
 

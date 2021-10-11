@@ -29,8 +29,9 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * TODO 为token设置 ttl
+     *
      * @param userId 用户 ID
-     * @param token 代校验 Token
+     * @param token  代校验 Token
      * @return 认证结果的枚举类
      */
     @Override
@@ -113,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthEnum logout(String userId, String token) {
         AuthEnum validToken = checkToken(userId, token);
         if (validToken == AuthEnum.WRONG_TOKEN) {
-            logger.error("用户 Token 错误。UserId:{},Token:{}",userId,token);
+            logger.error("用户 Token 错误。UserId:{},Token:{}", userId, token);
             return AuthEnum.WRONG_TOKEN;
         }
         userStatusService.userLogout(userId);

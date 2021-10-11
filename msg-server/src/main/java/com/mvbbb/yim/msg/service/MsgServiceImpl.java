@@ -1,11 +1,7 @@
 package com.mvbbb.yim.msg.service;
 
-import com.mvbbb.yim.common.entity.MsgRecent;
 import com.mvbbb.yim.common.entity.MsgSend;
-import com.mvbbb.yim.common.mapper.GroupMapper;
-import com.mvbbb.yim.common.mapper.MsgRecentMapper;
 import com.mvbbb.yim.common.mapper.MsgSendMapper;
-import com.mvbbb.yim.common.mapper.UserMapper;
 import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.msg.MsgHandler;
@@ -29,17 +25,17 @@ public class MsgServiceImpl implements MsgService {
 
         // 持久化消息
         MsgSend msgSend = BeanConvertor.msgDataToMsgSend(msgData);
-        logger.info("持久化消息到到表中：{}",msgData);
+        logger.info("持久化消息到到表中：{}", msgData);
         msgSendMapper.insert(msgSend);
 
         // 发送消息
         switch (msgData.getSessionType()) {
             case SINGLE:
-                logger.info("发送私聊消息。MsgData:{}",msgData);
-                msgHandler.sendSingleMsg(msgData,false);
+                logger.info("发送私聊消息。MsgData:{}", msgData);
+                msgHandler.sendSingleMsg(msgData, false);
                 break;
             case GROUP:
-                logger.info("发送群聊消息。MsgData:{}",msgData);
+                logger.info("发送群聊消息。MsgData:{}", msgData);
                 msgHandler.sendGroupMsg(msgData);
                 break;
             default:

@@ -3,11 +3,11 @@
     <div>
       <router-view v-slot="{ Component }">
         <keep-alive>
-          <component :is="Component"  :key="$route.path" v-if="$route.meta.keepAlive"/>
+          <component :is="Component" v-if="$route.meta.keepAlive" :key="$route.path"/>
         </keep-alive>
-        <component :is="Component"  v-if="!$route.meta.keepAlive"/>
+        <component :is="Component" v-if="!$route.meta.keepAlive"/>
       </router-view>
-<!--      <router-view></router-view>-->
+      <!--      <router-view></router-view>-->
     </div>
   </div>
 
@@ -26,12 +26,13 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 body {
   overflow: auto;
   height: 100%;
 
   background: linear-gradient(
-      60deg, #42b983,sandybrown, mediumpurple) no-repeat fixed center top;
+      60deg, #42b983, sandybrown, mediumpurple) no-repeat fixed center top;
   background-size: cover;
 }
 </style>

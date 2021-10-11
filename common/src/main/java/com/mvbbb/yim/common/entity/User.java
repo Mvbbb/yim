@@ -1,7 +1,6 @@
 package com.mvbbb.yim.common.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
@@ -17,6 +16,6 @@ public class User implements Serializable {
     private String username;
     private String avatar;
     private String password;
-    
+
     private boolean deleted;
 }

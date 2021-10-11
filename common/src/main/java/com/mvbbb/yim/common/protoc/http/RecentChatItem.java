@@ -24,9 +24,9 @@ public class RecentChatItem implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof RecentChatItem) {
             RecentChatItem chatItem = (RecentChatItem) obj;
-            if(chatItem.getSessionType()==SessionType.SINGLE&&this.sessionType==SessionType.SINGLE){
+            if (chatItem.getSessionType() == SessionType.SINGLE && this.sessionType == SessionType.SINGLE) {
                 return chatItem.getUserId().equals(this.userId);
-            }else if(chatItem.getSessionType()==SessionType.GROUP&&this.sessionType==SessionType.GROUP){
+            } else if (chatItem.getSessionType() == SessionType.GROUP && this.sessionType == SessionType.GROUP) {
                 return chatItem.getGroupId().equals(this.groupId);
             }
         }

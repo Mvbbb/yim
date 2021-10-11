@@ -46,7 +46,7 @@ public class RelationServiceImpl implements RelationService {
         return friendIds.stream().map((friendId) -> {
             UserVO userVO = new UserVO();
             User user = userMapper.selectById(friendId);
-            BeanUtil.copyProperties(user,userVO);
+            BeanUtil.copyProperties(user, userVO);
             return userVO;
         }).collect(Collectors.toList());
     }
@@ -258,12 +258,12 @@ public class RelationServiceImpl implements RelationService {
     @Override
     public boolean isFriend(String userId1, String userId2) {
         FriendRelation friendRelation = friendRelationMapper.findFriendRelation(userId1, userId2);
-        return friendRelation!=null;
+        return friendRelation != null;
     }
 
     @Override
     public boolean isMember(String userId, String groupId) {
         UserGroupRelation groupRelation = groupRelationMapper.findGroupRelation(userId, groupId);
-        return groupRelation!=null;
+        return groupRelation != null;
     }
 }

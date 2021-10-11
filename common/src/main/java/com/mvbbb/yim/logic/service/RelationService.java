@@ -1,6 +1,5 @@
 package com.mvbbb.yim.logic.service;
 
-import com.mvbbb.yim.common.entity.User;
 import com.mvbbb.yim.common.vo.GroupVO;
 import com.mvbbb.yim.common.vo.UserVO;
 

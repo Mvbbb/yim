@@ -6,7 +6,6 @@ import com.mvbbb.yim.common.protoc.MsgData;
 import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.common.vo.MsgVO;
 import com.mvbbb.yim.logic.service.UserStatusService;
-import com.mvbbb.yim.mq.RedisStreamManager;
 import com.mvbbb.yim.ws.pool.ConnectionPool;
 import com.mvbbb.yim.ws.pool.MsgAckPool;
 import io.netty.channel.Channel;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -31,19 +29,17 @@ public class MsgSendService {
     private static final Logger logger = LoggerFactory.getLogger(MsgSendService.class);
 
     private final ConnectionPool connectionPool = ConnectionPool.getInstance();
-    @Resource
-    RedisStreamManager redisStreamManager;
-    @DubboReference(check = false)
-    UserStatusService userStatusService;
     private final MsgAckPool msgAckPool = MsgAckPool.getInstance();
     /**
      * FIXME
      * 用户等待用户返回 ack 消息的线程池
      */
     private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.CallerRunsPolicy());
+    @DubboReference(check = false)
+    UserStatusService userStatusService;
 
     public void sendAckToUser(String userId, String msg) {
-        logger.info("发送 ack 消息给用户。 UserId:{}，msg:{}",userId,msg);
+        logger.info("发送 ack 消息给用户。 UserId:{}，msg:{}", userId, msg);
 
         Channel channel = connectionPool.findChannel(userId);
         if (channel == null) {

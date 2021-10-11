@@ -15,3 +15,10 @@ zk:
 dubbo:
   application:
     logger: slf4j
+
+
+#RocketMQ 配置
+rocketmq:
+  name-server: ubuntu:9876
+  producer:
+    group: Producer_Group_Failed_Msg
