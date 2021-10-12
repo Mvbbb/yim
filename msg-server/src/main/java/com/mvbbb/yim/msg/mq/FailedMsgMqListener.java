@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author: mvbbb
@@ -42,7 +43,7 @@ public class FailedMsgMqListener {
 
                 for (Message msg : msgs) {
                     byte[] body = msg.getBody();
-                    String json = new String(body);
+                    String json = new String(body, StandardCharsets.UTF_8);
                     logger.error("接收到MQ 中发送失败的消息：{}", json);
 
                     MsgData msgData = JSONObject.parseObject(json, MsgData.class);

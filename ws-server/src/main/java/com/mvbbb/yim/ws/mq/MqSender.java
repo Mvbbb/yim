@@ -1,5 +1,6 @@
 package com.mvbbb.yim.ws.mq;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mvbbb.yim.common.constant.MqConstant;
 import com.mvbbb.yim.common.protoc.MsgData;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -9,6 +10,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author: mvbbb
@@ -27,7 +29,8 @@ public class MqSender {
     public void failedDeliveredMsg(MsgData msgData) {
 
         logger.error("消息投递失败，将消息放到失败的消息队列：{}", msgData);
-        mqTemplate.send(MqConstant.TOPIC_FAILED_MSG, MessageBuilder.withPayload(msgData).build());
+        String json = JSONObject.toJSONString(msgData);
+        mqTemplate.send(MqConstant.TOPIC_FAILED_MSG, MessageBuilder.withPayload(json.getBytes(StandardCharsets.UTF_8)).build());
 
     }
 

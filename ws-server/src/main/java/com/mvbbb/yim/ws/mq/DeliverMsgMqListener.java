@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author: mvbbb
@@ -52,7 +54,7 @@ public class DeliverMsgMqListener {
                 for (Message msg : msgs) {
                     logger.info("从 MQ 中接收到待投递消息：{}", msg);
                     byte[] body = msg.getBody();
-                    String json = new String(body);
+                    String json = new String(body, StandardCharsets.UTF_8);
                     MsgData msgData = JSONObject.parseObject(json, MsgData.class);
                     String toUserId = msgData.getToUserId();
                     Channel channel = connectionPool.findChannel(toUserId);
