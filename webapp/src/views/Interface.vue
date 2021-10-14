@@ -7,18 +7,18 @@
     </el-aside>
     <el-aside width="23.5%" style="overflow: hidden">
       <search-title ></search-title>
-      <chat-list v-if="show" style="overflow: auto"></chat-list>
-      <friend-list v-else style="overflow: auto"></friend-list>
+      <chat-list v-show="!show" style="overflow: auto"></chat-list>
+      <friend-list v-show="show" style="overflow: auto"></friend-list>
     </el-aside>
     <el-container class="container2">
       <el-header>
-        <chat-nmae v-show="show"></chat-nmae>
+        <chat-nmae v-show="!show"></chat-nmae>
       </el-header>
       <el-main>
-        <chat-box v-show="show" ></chat-box>
+        <chat-box v-show="!show" ></chat-box>
       </el-main>
       <el-footer>
-        <input-box v-show="show"></input-box>
+        <input-box v-show="!show"></input-box>
       </el-footer>
     </el-container>
   </el-container>
@@ -34,6 +34,7 @@ import inputBox from "./detailPage/main/inputBox";
 import friendList from "./detailPage/medium/friendList";
 import searchTitle from "./detailPage/medium/searchTitle";
 import bus from "./bus";
+import {RecentChat} from "../service/chatList";
 
 export default {
 name: "Interface",
@@ -48,19 +49,81 @@ name: "Interface",
   },
   data(){
     return{
-      show:true,
+      show:false,
+      websocket:null,
+      handshake: {
+        cmdType: "GREET",
+        data: {
+          token: "",
+          userId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      },
 
     }
   },
-  mounted() {
-  //最近聊天与朋友列表的切换
-    bus.on('friendList',(e)=>{
-      this.show=e
-    })
-  },
+
   methods:{
 
-  }
+    createBigSocket(){
+      this.handshake.data.token = localStorage.getItem('Authorization')
+      this.handshake.data.userId = localStorage.getItem('userId')
+      this.websocket = new WebSocket(localStorage.getItem('ws'));
+      let _this = this
+      //连接
+      this.websocket.onopen = function (event) {
+        console.log(JSON.stringify(_this.handshake))
+        _this.websocket.send(JSON.stringify(_this.handshake))
+        console.log("onopen");
+      };
+      //错误
+      this.websocket.onerror = function (error) {
+        console.log("onerror: " + event.data);
+      };
+      //收取消息
+      this.websocket.onmessage = function (message) {
+        console.log(message)
+        // bus.emit('listNewMsg', JSON.parse(message.data))
+        bus.emit('listNewMsg', JSON.parse(message.data))
+        bus.emit('newChatMsg', JSON.parse(message.data))
+
+      };
+      // 关闭
+      // this.websocket.onclose = function (e) {
+      //   console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean)
+      //   console.log(e)
+      // }
+    },
+
+  },
+  mounted() {
+    this.createBigSocket()
+    //最近聊天与朋友列表的切换
+    bus.on('friendList', (e) => {
+      this.show = e
+    })
+
+    //接收输入框发送的信息
+    bus.on('sendMsg', (e) => {
+      console.log(111)
+      this.websocket.send(JSON.stringify(e))
+    })
+
+
+  },
+  beforeUnmount() {
+    // 组件被销毁之前，清空sock 对象
+    this.websocket.onclose=function (closeEvent){
+      console.log(closeEvent)
+      this.websocket.close()
+    }
+    // 销毁 websocket 实例对象
+    this.websocket = null
+  },
+
 }
 </script>
 

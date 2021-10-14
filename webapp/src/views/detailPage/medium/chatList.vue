@@ -3,7 +3,7 @@
     <div>
     <div class="clist">
 
-      <div v-for="(item,index) in recentChatItem" :key="index" @click="sendInf(item)" class="inner">
+      <div v-for="(item,index) in ChatItem" :key="index" @click="sendInf(item)" class="inner">
         <div class="inf">
           <div style="padding-right: 5px;width:50px;padding-left: 5px">
             <el-avatar shape="square" :size="40" :src=item.avatar></el-avatar>
@@ -40,8 +40,8 @@
 
 <script>
 import bus from "../../bus";
-import {RecentChat} from "../../../service/chatList";
-import {nextTick} from "@vue/runtime-core";
+// import {RecentChat} from "../../../service/chatList";
+// import {nextTick} from "@vue/runtime-core";
 
  require('../../../mock/mock')
 export default {
@@ -50,7 +50,7 @@ export default {
     return {
       chatShow: true,
       searchInf: "",
-      recentChatItem: [],
+      ChatItem: [],
       chatId: '',
       handshake: {
         cmdType: "GREET",
@@ -88,33 +88,40 @@ export default {
       bus.emit('chatPeople', item)
       bus.emit('chatMsg', item)
     },
-    //获取最近聊天
-    getChatList() {
-      let inf = {
-        userId: localStorage.getItem('userId'),
-        token: localStorage.getItem('Authorization')
-      }
-      RecentChat(inf).then((res) => {
-        console.log(res.data.data)
-        // console.log(res.data.data.recentChatItems)
-        this.recentChatItem = res.data.data.recentChatItems
-        // this.recentChatItem.pop()
-        // console.log(this.recentChatItems)
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+    // //获取最近聊天
+    // getChatList() {
+    //   let inf = {
+    //     userId: localStorage.getItem('userId'),
+    //     token: localStorage.getItem('Authorization')
+    //   }
+    //   RecentChat(inf).then((res) => {
+    //     console.log(res.data.data)
+    //     // console.log(res.data.data.ChatItems)
+    //     this.ChatItem = res.data.data.ChatItems
+    //     // this.ChatItem.pop()
+    //     // console.log(this.ChatItems)
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   })
+    //
+    // },
 
   },
   mounted() {
-    this.getChatList()
+    bus.on('chatList',(e)=>{
+
+      console.log(this.ChatItem)
+      this.ChatItem=e
+      console.log(this.ChatItem)
+    })
+//     this.getChatList()
 //列表最后的聊天记录更改
     //他人
     bus.on('listNewMsg', (e) => {
       // console.log(e)
       // console.log(e.groupId)
       var have = 0
-      this.recentChatItem.forEach(item => {
+      this.ChatItem.forEach(item => {
         //   console.log(item)
         if (item.groupId !== null && e.groupId !== undefined && item.groupId === e.groupId) {
 
@@ -157,15 +164,15 @@ export default {
         //       unread: e.unread,
         //       userId: e.userId
         //     }
-        //     this.recentChatItem.push(newChatPeo)
+        //     this.ChatItem.push(newChatPeo)
         //   }
       })
-      this.recentChatItem.sort((a,b)=>{return b.timestamp - a.timestamp})
+      this.ChatItem.sort((a,b)=>{return b.timestamp - a.timestamp})
     })
     //自己
     bus.on('newMyMsg', (e) => {
       // console.log(e.data)//自己定义的结构
-      this.recentChatItem.forEach(item => {
+      this.ChatItem.forEach(item => {
         if (e.groupId !== undefined && item.groupId === e.groupId) {
           item.latestMsgDate !== undefined ? item.latestMsgDate = e.timestamp : item.latestMsgDate
           item.latestMsgContent !== undefined ? item.latestMsgContent = e.data : item.latestMsgContent
@@ -195,7 +202,7 @@ export default {
          console.log(inf)
       let have=false
       console.log(have)
-      for(let i of this.recentChatItem)
+      for(let i of this.ChatItem)
      {
         if(i.userId===inf.userId&&i.groupId===inf.groupId) {
           have=true
@@ -204,11 +211,11 @@ export default {
       }
       console.log(have)
       if(have===false){
-        this.recentChatItem.push(inf)
+        this.ChatItem.push(inf)
       }else {
         this.sendInf(inf)
       }
-      console.log(this.recentChatItem)
+      console.log(this.ChatItem)
     })
 
   },
