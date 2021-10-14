@@ -1,33 +1,33 @@
 <template>
   <div class="inputBox">
 
-    <div class="chatIcon">
-      <el-popover class="emoBox" placement="top-start" trigger="click" width="300">
+    <div class="chatIcon" v-show="ibox">
+      <el-popover placement="top-start" width="300" trigger="click" class="emoBox">
         <template #reference>
           <el-button
               type="text"
           ><img src="../../../assets/img/emoji.png"></el-button>
         </template>
         <div class="emotionList">
-          <a v-for="(item,index) in faceList" :key="index" class="emotionItem" href="javascript:void(0);"
-             @click="getEmo(index)">{{ item }}</a>
+          <a href="javascript:void(0);" @click="getEmo(index)" v-for="(item,index) in faceList" :key="index"
+             class="emotionItem">{{ item }}</a>
         </div>
       </el-popover>
     </div>
 
-    <div class="inputDeep">
+    <div class="inputDeep" v-show="ibox">
 
       <el-input
-          id="textarea"
-          v-model="textarea"
+          style="width: 100%;left: -20px;top:-10px; position: relative"
           :rows="5"
           class="chatText"
-          placeholder="请输入内容"
-          style="width: 100%;left: -20px;top:-10px; position: relative"
+          id="textarea"
           type="textarea"
-          @keyup.enter.native="submitMessage"
+          placeholder="请输入内容"
+          v-model="textarea"
+
       >
-        <!--     @keyup.enter.native  按下回车键的作用-->
+        <!--     @keyup.enter.native=  按下回车键的作用-->
 
 
       </el-input>
@@ -35,12 +35,12 @@
 
     </div>
     <el-button
-
-        :disabled="content == ''"
+        v-show="ibox"
         class="submit-btn"
-        size="small"
         type="primary"
+        size="small"
         @click="submitMessage"
+        :disabled="textarea == ''"
     >发送
     </el-button>
 
@@ -49,22 +49,130 @@
 </template>
 
 <script>
+import bus from "../../bus";
+
 export default {
   name: "inputBox",
   data() {
     return {
+      count: 0,
+      ibox: false,
+      socket: [],
+      websocket: '',
+      websocket2: '',
       appData: require("../../../assets/img/emoji.json"),
       faceList: [],
-      textarea: ""
+      textarea: "",
+      chatPeopleUid: '',
+      //握手
+      handshake: {
+        cmdType: "GREET",
+        data: {
+          token: "",
+          userId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      },
+      handshake2: {
+        cmdType: "GREET",
+        data: {
+          token: "",
+          userId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      },
+      communication: {
+        cmdType: "MSG_DATA",
+        data: {
+          clientMsgId: "1",
+          data: "",
+          msgType: "TEXT",
+          sessionType: "",
+          toUserId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      }
     }
   },
+
   mounted() {
+    this.createBigSocket()
+
+    //表情列表
     for (let i in this.appData) {
       this.faceList.push(this.appData[i].char);
     }
 
+    bus.on('chatMsg', (e) => {
+      var _this = this
+      console.log(e)
+      this.ibox = true,
 
+          this.communication.data.sessionType = e.sessionType
+
+
+      this.handshake.data.token = localStorage.getItem('Authorization')
+      if (e.sessionType == "GROUP") {
+
+        delete this.communication.data.toUserId
+        this.handshake.data.userId = localStorage.getItem('userId')
+        this.communication.data.groupId = e.groupId
+
+      } else {
+        delete this.communication.data.groupId
+        this.handshake.data.userId = localStorage.getItem('userId')
+        this.communication.data.toUserId = e.userId
+      }
+
+      // if(this.websocket.readyState===0){
+      //   this.websocket.onclose=function (closeEvent){
+      //     console.log(closeEvent)
+      //     this.websocket.close()
+      //   }
+      // }
+
+      this.websocket = new WebSocket("ws://115.159.148.114:7110");
+      console.log(this.websocket)
+//连接
+      this.websocket.onopen = function (event) {
+        console.log(JSON.stringify(_this.handshake))
+        _this.websocket.send(JSON.stringify(_this.handshake))
+        console.log("onopen");
+      };
+//错误报告
+      this.websocket.onerror = function (error) {
+        console.log("onerror: " + event.data);
+      };
+//接收信息
+      this.websocket.onmessage = function (message) {
+        console.log(message)
+        console.log(message.data)
+        bus.emit('listNewMsg', JSON.parse(message.data))
+        bus.emit('newChatMsg', JSON.parse(message.data))
+      };
+
+    })
   },
+  beforeUnmount() {
+    // 组件被销毁之前，清空sock 对象
+    this.websocket.onclose=function (closeEvent){
+      console.log(closeEvent)
+      this.websocket.close()
+    }
+    // 销毁 websocket 实例对象
+    this.websocket = null
+  },
+
+
   methods: {
     getEmo(index) {
       var textArea = document.getElementById('textarea');
@@ -90,7 +198,45 @@ export default {
 
       return;
     },
+    submitMessage() {
+
+      this.communication.data.data = this.textarea
+      let time_tamp = new Date()
+      this.communication.data.timestamp = time_tamp
+       console.log(this.communication)
+      this.websocket.send(JSON.stringify(this.communication))
+      this.textarea = ""
+      bus.emit('newMyMsg', this.communication.data)
+    },
+
+    createBigSocket(){
+      this.handshake2.data.token = localStorage.getItem('Authorization')
+      this.handshake2.data.userId = localStorage.getItem('userId')
+      this.websocket2 = new WebSocket(localStorage.getItem('ws'));
+      let _this = this
+      this.websocket2.onopen = function (event) {
+        console.log(JSON.stringify(_this.handshake2))
+        _this.websocket2.send(JSON.stringify(_this.handshake2))
+        console.log("onopen");
+      };
+
+      this.websocket2.onerror = function (error) {
+        console.log("onerror: " + event.data);
+      };
+
+      this.websocket2.onmessage = function (message) {
+        console.log(message)
+        bus.emit('listNewMsg', JSON.parse(message.data))
+
+      };
+      this.websocket2.onclose = function (e) {
+        console.log('websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean)
+        console.log(e)
+      }
+    }
+
   }
+
 
 }
 </script>

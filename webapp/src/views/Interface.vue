@@ -2,21 +2,23 @@
 
   <el-container class="container">
 
-    <el-aside style="background-color: black;overflow: hidden;display: inline-block" width="8%">
+    <el-aside width="8%" style="background-color: black;overflow: hidden;display: inline-block">
       <personal-inf></personal-inf>
     </el-aside>
-    <el-aside width="23.5%">
-      <chat-list></chat-list>
+    <el-aside width="23.5%" style="overflow: hidden">
+      <search-title ></search-title>
+      <chat-list v-if="show" style="overflow: auto"></chat-list>
+      <friend-list v-else style="overflow: auto"></friend-list>
     </el-aside>
     <el-container class="container2">
       <el-header>
-        <chat-nmae></chat-nmae>
+        <chat-nmae v-show="show"></chat-nmae>
       </el-header>
       <el-main>
-        <chat-box></chat-box>
+        <chat-box v-show="show" ></chat-box>
       </el-main>
       <el-footer>
-        <input-box></input-box>
+        <input-box v-show="show"></input-box>
       </el-footer>
     </el-container>
   </el-container>
@@ -29,30 +31,48 @@ import chatList from "./detailPage/medium/chatList";
 import chatNmae from "./detailPage/main/chatNmae";
 import chatBox from "./detailPage/main/chatBox";
 import inputBox from "./detailPage/main/inputBox";
+import friendList from "./detailPage/medium/friendList";
+import searchTitle from "./detailPage/medium/searchTitle";
+import bus from "./bus";
 
 export default {
-  name: "Interface",
-  components: {
+name: "Interface",
+  components:{
     personalInf,
     chatList,
+    friendList,
     chatNmae,
     chatBox,
-    inputBox
+    inputBox,
+    searchTitle
+  },
+  data(){
+    return{
+      show:true,
+
+    }
+  },
+  mounted() {
+  //最近聊天与朋友列表的切换
+    bus.on('friendList',(e)=>{
+      this.show=e
+    })
+  },
+  methods:{
+
   }
 }
 </script>
 
 <style scoped>
-.container {
+.container{
   margin: 120px 200px 120px 200px;
   height: 500px;
   position: relative;
 }
-
-.container2 {
+.container2{
   width: 75%;
 }
-
 .el-header,
 .el-footer {
   background-color: #b3c0d1;
@@ -60,8 +80,7 @@ export default {
   text-align: center;
   line-height: 60px;
 }
-
-.el-footer {
+.el-footer{
   height: 150px;
   background-color: white;
 }
