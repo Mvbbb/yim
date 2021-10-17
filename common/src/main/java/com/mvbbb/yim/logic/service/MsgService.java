@@ -12,4 +12,8 @@ public interface MsgService {
 //    PullOfflineMsgResponse getOfflineMsg(String userId);
 
     RecentChatResponse getRecentOfflineMsg(String userId);
+
+    long getAllUnreadCount(String userId);
+
+    void clearUnreadReaded(String userId, SessionType sessionType, String sessionId);
 }

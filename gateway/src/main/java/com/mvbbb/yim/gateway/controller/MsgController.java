@@ -36,24 +36,25 @@ public class MsgController {
         return GenericResponse.success(historyMsg);
     }
 
-//    @ApiOperation("获取离线消息")
-//    @RequestMapping(path = "/message/offline", method = RequestMethod.GET)
-//    public GenericResponse<PullOfflineMsgResponse> getOfflineMsg(@RequestHeader String userId, @RequestHeader String token) {
-//        PullOfflineMsgResponse offlineMsg = msgService.getOfflineMsg(userId);
-//        return GenericResponse.success(offlineMsg);
-//    }
-
-//    @RequestMapping(path = "/message/recent",method = RequestMethod.GET)
-//    public GenericResponse<> getRecentMsg(GenericRequest<Object> request){
-//        String userId = request.getUserId();
-//
-//    }
-
     @ApiOperation("获取最近聊天列表 (登录之后，拉取一次，用于获取会话列表及其未读消息)")
     @RequestMapping(path = "/recent/chat", method = RequestMethod.GET)
     public GenericResponse<RecentChatResponse> getRecentOfflineMsg(@RequestHeader String userId, @RequestHeader String token) {
         RecentChatResponse recentChatResponse = msgService.getRecentOfflineMsg(userId);
         return GenericResponse.success(recentChatResponse);
+    }
+
+    @ApiOperation("获取未读消息的条目（非web端api，不适用于web端）")
+    @RequestMapping(path = "/unread/count/all", method = RequestMethod.GET)
+    public GenericResponse<String> getUnreadMsgCount(@RequestHeader String userId, @RequestHeader String token) {
+        long count = msgService.getAllUnreadCount(userId);
+        return GenericResponse.success(String.valueOf(count));
+    }
+
+    @ApiOperation("清空一个会话的所有未读消息条数（非web端api，不适用于web端）")
+    @RequestMapping(path = "/unread/count/session/clear", method = RequestMethod.POST)
+    public GenericResponse allUnreadReaded(@RequestHeader String userId, @RequestHeader String token, @RequestHeader SessionType sessionType, @RequestHeader String sessionId) {
+        msgService.clearUnreadReaded(userId, sessionType, sessionId);
+        return GenericResponse.success();
     }
 
 }

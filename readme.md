@@ -35,8 +35,8 @@
 - [x] 使用 Nginx 作 Gateway 的反向代理、负载均衡
 - [x] 自定义协议配合 Protobuf 实现高扩展性、高性能协议
 - [x] 使用 RocketMQ 作为消息中间件
+- [x] Netty 开发 WebSocket 服务端
 - [ ] 使用 sharding-jdbc 进行分库分表
-- [ ] Netty 开发 WebSocket 服务端，实现百万连接
 - [ ] 高可靠性、顺序性、重复性消息传输保障
 - [ ] 高性能分布式 ID 生成
 - [ ] 自动短线重连，心跳检查

@@ -1,6 +1,7 @@
 package com.mvbbb.yim.msg;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mvbbb.yim.common.service.UnreadService;
 import com.mvbbb.yim.common.WsServerRoute;
 import com.mvbbb.yim.common.entity.*;
 import com.mvbbb.yim.common.mapper.*;
@@ -37,12 +38,15 @@ public class MsgHandler {
     UserMapper userMapper;
     @Resource
     MqSender mqSender;
+    @Resource
+    UnreadService unreadService;
     private Logger logger = LoggerFactory.getLogger(MsgHandler.class);
 
     public void sendSingleMsg(MsgData msgData, boolean fromGroup) {
 
         String toUserId = msgData.getToUserId();
         if (!fromGroup) {
+            unreadService.updateUnreadCount(toUserId,SessionType.SINGLE,msgData.getFromUserId(),1);
             updateRecentMsg(msgData);
         }
         if (!userStatusService.isUserOnline(toUserId)) {
@@ -73,6 +77,8 @@ public class MsgHandler {
                     logger.info("发送消息给群成员。UserId:{}", memberId);
                     msgData.setToUserId(memberId);
                     updateRecentMsg(msgData);
+                    // 原子化更新未读消息数
+                    unreadService.updateUnreadCount(memberId,SessionType.GROUP,groupId,1);
                     sendSingleMsg(msgData, true);
                 } else {
                     msgData.setToUserId(msgData.getFromUserId());
@@ -86,10 +92,6 @@ public class MsgHandler {
         logger.info("持久化消息到 msg_recv 表中。msgData:{}", msgData);
         MsgRecv msgRecv = BeanConvertor.msgDataToMsgRecv(msgData);
         msgRecvMapper.insert(msgRecv);
-    }
-
-    public void updateSingleChatContent(String userId1, String userId2, String content) {
-
     }
 
     public void updateRecentMsg(MsgData msgData) {

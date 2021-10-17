@@ -9,12 +9,14 @@ import com.mvbbb.yim.common.mapper.MsgSendMapper;
 import com.mvbbb.yim.common.protoc.http.RecentChatItem;
 import com.mvbbb.yim.common.protoc.http.response.RecentChatResponse;
 import com.mvbbb.yim.common.protoc.ws.SessionType;
+import com.mvbbb.yim.common.service.UnreadService;
 import com.mvbbb.yim.common.util.BeanConvertor;
 import com.mvbbb.yim.common.vo.MsgVO;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -31,6 +33,10 @@ public class MsgServiceImpl implements MsgService {
     MsgSendMapper msgSendMapper;
     @Resource
     MsgRecentMapper msgRecentMapper;
+    @Resource(name = "jsonRedisTemplate")
+    RedisTemplate<Object, Object> redisTemplate;
+    @Resource
+    UnreadService unreadService;
     @DubboReference(check = false)
     UserStatusService userStatusService;
 
@@ -226,5 +232,15 @@ public class MsgServiceImpl implements MsgService {
         msgRecvMapper.delivered(userId);
         userStatusService.offlineMsgPoolOver(userId);
         return recentChatResponse;
+    }
+
+    @Override
+    public long getAllUnreadCount(String userId) {
+        return unreadService.getAllUnreadCount(userId);
+    }
+
+    @Override
+    public void clearUnreadReaded(String userId, SessionType sessionType, String sessionId) {
+        unreadService.clearSessionUnreadCount(userId, sessionType, sessionId);
     }
 }

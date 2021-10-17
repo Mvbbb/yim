@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.msg", "com.mvbbb.yim.common", "com.mvbbb.yim.mq"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.msg", "com.mvbbb.yim.common"})
 @EnableDubbo
 @PropertySource("classpath:/dubbo-provider.properties")
 @MapperScan("com.mvbbb.yim.common.mapper")
