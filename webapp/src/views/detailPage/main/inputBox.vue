@@ -1,33 +1,33 @@
 <template>
   <div class="inputBox">
 
-    <div class="chatIcon">
-      <el-popover class="emoBox" placement="top-start" trigger="click" width="300">
+    <div class="chatIcon" v-show="ibox">
+      <el-popover placement="top-start" width="300" trigger="click" class="emoBox">
         <template #reference>
           <el-button
               type="text"
           ><img src="../../../assets/img/emoji.png"></el-button>
         </template>
         <div class="emotionList">
-          <a v-for="(item,index) in faceList" :key="index" class="emotionItem" href="javascript:void(0);"
-             @click="getEmo(index)">{{ item }}</a>
+          <a href="javascript:void(0);" @click="getEmo(index)" v-for="(item,index) in faceList" :key="index"
+             class="emotionItem">{{ item }}</a>
         </div>
       </el-popover>
     </div>
 
-    <div class="inputDeep">
+    <div class="inputDeep" v-show="ibox">
 
       <el-input
-          id="textarea"
-          v-model="textarea"
+          style="width: 100%;left: -20px;top:-10px; position: relative"
           :rows="5"
           class="chatText"
-          placeholder="请输入内容"
-          style="width: 100%;left: -20px;top:-10px; position: relative"
+          id="textarea"
           type="textarea"
+          placeholder="请输入内容"
+          v-model="textarea"
           @keyup.enter.native="submitMessage"
       >
-        <!--     @keyup.enter.native  按下回车键的作用-->
+        <!--     @keyup.enter.native=  按下回车键的作用-->
 
 
       </el-input>
@@ -35,12 +35,12 @@
 
     </div>
     <el-button
-
-        :disabled="content == ''"
+        v-show="ibox"
         class="submit-btn"
-        size="small"
         type="primary"
+        size="small"
         @click="submitMessage"
+        :disabled="textarea == ''"
     >发送
     </el-button>
 
@@ -49,22 +49,80 @@
 </template>
 
 <script>
+import bus from "../../bus";
+
 export default {
   name: "inputBox",
   data() {
     return {
+      count: 0,
+      ibox: false,
+      socket: [],
+      websocket: '',
+      websocket2: '',
       appData: require("../../../assets/img/emoji.json"),
       faceList: [],
-      textarea: ""
+      textarea: "",
+      chatPeopleUid: '',
+      //握手
+      handshake: {
+        cmdType: "GREET",
+        data: {
+          token: "",
+          userId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      },
+
+      communication: {
+        cmdType: "MSG_DATA",
+        data: {
+          clientMsgId: "1",
+          data: "",
+          msgType: "TEXT",
+          sessionType: "",
+          toUserId: ""
+        },
+        headFlag: 55,
+        logId: 1,
+        sequenceId: 1,
+        version: 1
+      }
     }
   },
+
   mounted() {
+
+
+    //表情列表
     for (let i in this.appData) {
       this.faceList.push(this.appData[i].char);
     }
 
+    bus.on('chatMsg', (e) => {
+      var _this = this
+      console.log(e)
+      this.ibox = true
+      this.communication.data.sessionType = e.sessionType
 
+      this.handshake.data.token = localStorage.getItem('Authorization')
+      if (e.sessionType == "GROUP") {
+
+        delete this.communication.data.toUserId
+        this.handshake.data.userId = localStorage.getItem('userId')
+        this.communication.data.groupId = e.groupId
+
+      } else {
+        delete this.communication.data.groupId
+        this.handshake.data.userId = localStorage.getItem('userId')
+        this.communication.data.toUserId = e.userId
+      }
+    })
   },
+
   methods: {
     getEmo(index) {
       var textArea = document.getElementById('textarea');
@@ -90,7 +148,22 @@ export default {
 
       return;
     },
+    submitMessage() {
+
+      this.communication.data.data = this.textarea
+      let time_tamp = new Date()
+      this.communication.data.timestamp = time_tamp
+       console.log(this.communication)
+      bus.emit("sendMsg",this.communication)
+      // this.websocket.send(JSON.stringify(this.communication))
+      this.textarea = ""
+      bus.emit('newMyMsg', this.communication.data)
+    },
+
+
+
   }
+
 
 }
 </script>
