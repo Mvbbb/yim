@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.Resource;
 
-@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws", "com.mvbbb.yim.common", "com.mvbbb.yim.mq"})
+@SpringBootApplication(scanBasePackages = {"com.mvbbb.yim.ws", "com.mvbbb.yim.common"})
 @EnableDubbo
 @EnableScheduling
 @PropertySource({"classpath:/dubbo-consumer.properties", "classpath:/dubbo-provider.properties"})
